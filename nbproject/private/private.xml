@@ -3,10 +3,19 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+<<<<<<< HEAD
+            <file>file:/Z:/GORAS_EditeurGrapheProbalistiques/src/traitement/Graphe.java</file>
+            <file>file:/Z:/GORAS_EditeurGrapheProbalistiques/src/traitement/Arc.java</file>
+            <file>file:/Z:/GORAS_EditeurGrapheProbalistiques/src/application/AccueilController.java</file>
+            <file>file:/Z:/GORAS_EditeurGrapheProbalistiques/src/traitement/Lien.java</file>
+            <file>file:/Z:/GORAS_EditeurGrapheProbalistiques/src/traitement/TraitementProbabiliste.java</file>
+            <file>file:/Z:/GORAS_EditeurGrapheProbalistiques/src/traitement/ArcProbabiliste.java</file>
+=======
             <file>file:/Z:/SAE/Graphe/GrapheProba/src/traitement/Arc.java</file>
             <file>file:/Z:/SAE/Graphe/GrapheProba/src/traitement/Noeud.java</file>
             <file>file:/Z:/SAE/Graphe/GrapheProba/src/application/AccueilController.java</file>
             <file>file:/Z:/SAE/Graphe/GrapheProba/src/traitement/ArcProbabiliste.java</file>
+>>>>>>> ee64fe0ff7a986140157470cf349e0924c0d29a6
         </group>
     </open-files>
 </project-private>

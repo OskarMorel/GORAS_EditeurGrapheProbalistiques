@@ -313,7 +313,7 @@ class ArcProbabiliste extends Lien{
                     alert.setTitle("Erreur Pondération");
                     alert.setHeaderText("Pondération totale supérieur à 1");
                     alert.showAndWait();
-                    ponderationText.setText(Double.toString(ponderation));
+                    zonePropriete.getChildren().clear();
                     
                 }else{
                     //setPropriete(noeudsSource, noeudsCible, graphe, zoneDessin, groupe, nouvellePonderation);

@@ -147,26 +147,7 @@ public abstract class Lien {
             }  
         }
         zonePropriete.getChildren().addAll(labelCible, noeudsCible);
-       
-        /*
-        // Titre de TextField du changement de pondération de l'arc
-        Label labelPonderation = new Label();
-        labelPonderation.setText("Pondération : ");
-        labelPonderation.setLayoutX(10);
-        labelPonderation.setLayoutY(153);
-        */
         
-        /*
-        // récupération de la pondération de l'arc
-        Label getterPonderation = (Label) groupe.getChildren().get(3);
-        // Pour changer la pondération de l'arc
-        TextField ponderation = new TextField();
-        ponderation.setLayoutX(90);
-        ponderation.setLayoutY(150);
-        ponderation.setText(getterPonderation.getText());
-        
-        zonePropriete.getChildren().addAll(labelPonderation, ponderation);
-        */
         
         // Bouton de validation
         Button validationModif = new Button("Valider");
@@ -190,8 +171,8 @@ public abstract class Lien {
         
         // Bouton de suppression de l'arc
         Button supprimerLien = new Button("Supprimer");
-        supprimerLien.setLayoutX(60);
-        supprimerLien.setLayoutY(233);
+        supprimerLien.setLayoutX(120);
+        supprimerLien.setLayoutY(203);
         zonePropriete.getChildren().addAll(supprimerLien);
         
         

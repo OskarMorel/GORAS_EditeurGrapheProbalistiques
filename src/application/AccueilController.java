@@ -119,6 +119,7 @@ public class AccueilController implements Initializable {
     private void dessin(javafx.scene.input.MouseEvent evt) {  
         try {
             if (selectionBtn.isSelected()) { //Cas si on selectionne l'option selections
+                
                 try {
                     noeudASelectionner = (NoeudSimple)graphe.estNoeudGraphe(evt.getX(), evt.getY());
                     noeudASelectionner.selectionGroupe(modificationContainer, noeudEnCoursGroup, graphe, zoneDessin);
@@ -417,6 +418,7 @@ public class AccueilController implements Initializable {
         
         TraitementProbabiliste traitement = new TraitementProbabiliste(graphe);
         traitement.matriceTransition();
+        traitement.affichageChemin(modificationContainer);
      
     }
 }    

@@ -26,7 +26,7 @@ public class TraitementProbabiliste extends Traitement {
     
     Noeud noeudSFinal;
     Noeud noeudCFinal;
-    List<String> cheminFinal = new ArrayList<>();
+    String cheminExistant;
     
     
     public TraitementProbabiliste(Graphe graphe) {
@@ -133,20 +133,25 @@ public class TraitementProbabiliste extends Traitement {
                     }
                 }
                 
-                existenceChemin(noeudSFinal);
+                if (existenceChemin(noeudSFinal)){
+                    cheminExistant = "Chemin Existant";
+                }else{
+                    cheminExistant = "Chemin Inexistant";
+                }
+                
         
                 zonePropriete.getChildren().clear();
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Chemin");
                 alert.setHeaderText("Chemin : ");
-                alert.setContentText(cheminFinal.toString());
+                alert.setContentText(cheminExistant);
                 alert.showAndWait();
             }
             
         });
     } 
     
-    public void existenceChemin(Noeud noeudSourceFinal){
+    public boolean existenceChemin(Noeud noeudSourceFinal){
         
         Noeud noeudS = noeudSourceFinal;
         List<String> chemin = new ArrayList<>();
@@ -161,9 +166,7 @@ public class TraitementProbabiliste extends Traitement {
                 noeudS = graphe.liens.get(i).getCible();
             }
             if(graphe.liens.get(i).getCible() == noeudCFinal){
-                chemin.add(noeudCFinal.getLibelle());
-                cheminFinal = chemin;
-                cheminFinal.add("///");
+                return true;
             }
             if(graphe.liens.get(i).getCible() != noeudCFinal && graphe.liens.get(i).getCible() == null){
                 indice++;
@@ -171,5 +174,6 @@ public class TraitementProbabiliste extends Traitement {
                 existenceChemin(noeudSFinal);
             }
         }
+        return false;
     }
 }

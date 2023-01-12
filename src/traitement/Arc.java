@@ -22,9 +22,7 @@ public class Arc extends Lien {
 
     public Arc(Noeud source, Noeud cible) {
         super(source, cible);
-        //groupe() = new Group();
     }
-    
     
     @Override
     public Group dessinerLien(AnchorPane zoneDessin) {
@@ -112,24 +110,24 @@ public class Arc extends Lien {
         Line flecheHaut = new Line(xCible, yCible, xflecheH, yflecheH);
         Line flecheBas = new Line(xCible, yCible, xflecheB, yflecheB);
                         
-        getGroupe().getChildren().clear();
-        getGroupe().getChildren().addAll(ligne, flecheBas, flecheHaut);
+        Group groupe = new Group();
+        groupe.getChildren().addAll(ligne, flecheBas, flecheHaut);
         
         //Action s'il on clique sur l'arc
-        getGroupe().setOnMousePressed((new EventHandler<MouseEvent>() {
+        groupe.setOnMousePressed((new EventHandler<MouseEvent>() {
 
             @Override
             public void handle(MouseEvent evt) {
                 AccueilController.estLien = true;
-                AccueilController.lienEnCoursGroup = getGroupe();
+                AccueilController.lienEnCoursGroup = groupe;
                 AccueilController.noeudSource = getSource();
                 AccueilController.noeudCible = getCible();
             }
         }));
         
-        zoneDessin.getChildren().addAll(getGroupe());
+        zoneDessin.getChildren().addAll(groupe);
 
-        return getGroupe();
+        return groupe;
     }
 
     /**

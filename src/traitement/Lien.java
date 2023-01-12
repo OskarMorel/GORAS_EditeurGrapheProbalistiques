@@ -1,7 +1,5 @@
 package traitement;
 
-//import java.util.ArrayList;
-
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
@@ -9,20 +7,14 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
-//import java.util.List;
 
 public abstract class Lien {
 
     /** Source du lien*/ 
-    private Noeud source;
+    Noeud source;
 
     /** Cible du lien*/
-    private Noeud cible;
-    
-    /** Groupe du lien (dessin) */
-    private Group groupe;
-    
-    //public List<ElementGraphe> elementGraphe = new ArrayList<ElementGraphe> ();
+    Noeud cible;
     
     public Lien () {
         
@@ -36,7 +28,7 @@ public abstract class Lien {
     public Lien(Noeud source, Noeud cible) {
         this.source = source;
         this.cible = cible;
-        groupe = new Group();
+        //groupe = new Group();
     }
     
     /** @return la source du lien */
@@ -48,11 +40,6 @@ public abstract class Lien {
 
     public Noeud getCible() {
         return cible;
-    }
-
-    /** @return le group du lien */
-    public Group getGroupe() {
-        return groupe;
     }
     
     /**
@@ -69,14 +56,6 @@ public abstract class Lien {
      */
     public void setCible(Noeud nouvelleCible) {
         cible = nouvelleCible;
-    }
-    
-    /**
-     * Modifie la cible du lien
-     * @param nouveauGroupe le nouveau dessin du lien
-     */
-    public void setGroupe(Group nouveauGroupe) {
-        groupe = nouveauGroupe;
     }
     
     /**
@@ -186,16 +165,10 @@ public abstract class Lien {
                 zonePropriete.getChildren().clear();
             }
         });
-        
-        
-        
+   
     }
     
     public void setPropriete(ComboBox noeudsSource, ComboBox noeudsCible, Graphe graphe, AnchorPane zoneDessin, Group groupe) { }
     public void setPropriete(ComboBox noeudsSource, ComboBox noeudsCible, Graphe graphe, AnchorPane zoneDessin, Group groupe, double ponderation) { }
     
-    
-    public Group dessinerModifLien() {
-        return null;
-    }
 }

@@ -15,10 +15,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
 public class NoeudSimple extends Noeud {
-    
-    /** Compteur du nombre de noeud que contient un graphe */
-    public static int cpt = 0;
-    
+        
     public NoeudSimple() {
     }
     
@@ -30,14 +27,6 @@ public class NoeudSimple extends Noeud {
     public NoeudSimple(double coordX, double coordY) {
         super(Integer.toString(cpt+=1), coordX, coordY);
         id = cpt;
-    }
-    
-    public int getCpt() {
-        return cpt;
-    }
-    
-    public void setCpt(int value) {
-        cpt = value;
     }
     
 
@@ -66,7 +55,7 @@ public class NoeudSimple extends Noeud {
         libelle.setLayoutY(this.getCoordY() - 8);
 
         /* Groupe cercle + label */
-        groupe = new Group();
+        Group groupe = new Group();
         groupe.getChildren().addAll(cercle, libelle, cercleExterieur);
 
         groupe.setOnMousePressed((new EventHandler<MouseEvent>() {
@@ -156,7 +145,7 @@ public class NoeudSimple extends Noeud {
                         
                         for (int i = 0; i < graphe.getNoeuds().size(); i++) {
                             if(graphe.getNoeuds().get(i).getId() != AccueilController.noeudASelectionner.getId()){
-                                if (Math.sqrt(Math.pow((graphe.getNoeuds().get(i).getCoordX()-nouvelleCoordX), 2)+Math.pow((graphe.getNoeuds().get(i).getCoordY()-nouvelleCoordY), 2)) < 100) {
+                                if (Math.sqrt(Math.pow((graphe.getNoeuds().get(i).getCoordX()-nouvelleCoordX), 2)+Math.pow((graphe.getNoeuds().get(i).getCoordY()-nouvelleCoordY), 2)) < 70) {
                                     noeudMemePosition = true;
                                 } 
                             }
@@ -257,7 +246,7 @@ public class NoeudSimple extends Noeud {
     
     @Override
     public String toString() {
-        String noeud = libelle + " X: " + coordX + " Y :" + coordY + " id : " + id;
+        String noeud = libelle + " X : " + coordX + " Y : " + coordY + " id : " + id;
         return noeud;
     }
 }

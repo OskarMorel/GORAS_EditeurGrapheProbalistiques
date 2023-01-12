@@ -19,7 +19,7 @@ import javafx.scene.shape.QuadCurve;
  *
  * @author Gouzy
  */
-class ArcProbabiliste extends Lien{
+public class ArcProbabiliste extends Lien{
     
 
     private double ponderation = 0.0;
@@ -36,12 +36,11 @@ class ArcProbabiliste extends Lien{
     public void setPonderation(double nouvellePonderation) {
        ponderation = nouvellePonderation;
     }
-    
+  
     public double getPonderation() {
         return ponderation;
     }
-    
-    
+
     @Override
     public Group dessinerLien(AnchorPane zoneDessin) {
         
@@ -136,26 +135,25 @@ class ArcProbabiliste extends Lien{
         
         Line flecheHaut = new Line(xCible, yCible, xflecheH, yflecheH);
         Line flecheBas = new Line(xCible, yCible, xflecheB, yflecheB);
-                
         
-        getGroupe().getChildren().clear();        
-        getGroupe().getChildren().addAll(ligne, flecheBas, flecheHaut, labelPonderation);
-        
+        Group groupe = new Group();
+        groupe.getChildren().addAll(ligne, flecheBas, flecheHaut,labelPonderation);
+
         //Action s'il on clique sur l'arc
-        getGroupe().setOnMousePressed((new EventHandler<MouseEvent>() {
+        groupe.setOnMousePressed((new EventHandler<MouseEvent>() {
 
             @Override
             public void handle(MouseEvent evt) {
                 AccueilController.estLien = true;
-                AccueilController.lienEnCoursGroup = getGroupe();
+                AccueilController.lienEnCoursGroup = groupe;
                 AccueilController.noeudSource = getSource();
                 AccueilController.noeudCible = getCible();
             }
         }));
         
-        zoneDessin.getChildren().addAll(getGroupe());
+        zoneDessin.getChildren().addAll(groupe);
         
-        return getGroupe();
+        return groupe;
     }
 
     /**
@@ -164,6 +162,8 @@ class ArcProbabiliste extends Lien{
      * @param noeudsCible ComboBox contenant tous les noeuds du graphe
      * @param graphe graphe en cours de traitement
      * @param zoneDessin zone de dessin du graphe
+     * @param groupe
+     * @param nouvellePonderation
      */
     @Override
     public void setPropriete(ComboBox noeudsSource, ComboBox noeudsCible, Graphe graphe, AnchorPane zoneDessin, Group groupe, double nouvellePonderation) {
@@ -230,6 +230,7 @@ class ArcProbabiliste extends Lien{
         ComboBox noeudsSource = new ComboBox();
         noeudsSource.setLayoutX(120);
         noeudsSource.setLayoutY(50);
+        
         for (Noeud noeud : graphe.getNoeuds()) {
             
             if (noeud == getSource()) { // Si le noeud actuel est la source du lien
@@ -288,44 +289,40 @@ class ArcProbabiliste extends Lien{
             
             @Override
             public void handle(ActionEvent evt) {
-                double anciennePonde = ponderation;
-                Noeud ancienneSource = getSource();
-                Noeud ancienneCible = getCible();
                 
                 double nouvellePonderation = Double.parseDouble(ponderationText.getText());
                 
+                String libelleNoeudSource = (String) noeudsSource.getValue();
+                Noeud noeudSource = null; //Init pour le compilateur
                 
-                setPropriete(noeudsSource, noeudsCible, graphe, zoneDessin, groupe, nouvellePonderation);
-                GrapheProbabiliste grapheProba = (GrapheProbabiliste) graphe;
-                boolean ponderationOk = grapheProba.getPondeNoeud(getSource());
-                
-                if (!ponderationOk){
-                    
-                    supprimer(zoneDessin, getGroupe());
-                    //Dessin du nouveau lien
-                    dessinerLien(zoneDessin);
-                    noeudsSource.setValue(ancienneSource.getLibelle());
-                    noeudsCible.setValue(ancienneCible.getLibelle());
+                //Recuperation du noeud source en fonction du libelle
+                for (Noeud noeud : graphe.getNoeuds()) {
 
-                    setPropriete(noeudsSource, noeudsCible, graphe, zoneDessin, getGroupe(), anciennePonde);
+                    if (noeud.getLibelle().equals(libelleNoeudSource)) {
+                        noeudSource = noeud;                
+                    }
+                }
+                
+                if (((NoeudProbabiliste) noeudSource).getPonderation() + nouvellePonderation > 1) {
                     
                     Alert alert = new Alert(Alert.AlertType.ERROR);
                     alert.setTitle("Erreur Pondération");
                     alert.setHeaderText("Pondération totale supérieur à 1");
                     alert.showAndWait();
-                    zonePropriete.getChildren().clear();
                     
-                }else{
-                    //setPropriete(noeudsSource, noeudsCible, graphe, zoneDessin, groupe, nouvellePonderation);
-                    zonePropriete.getChildren().clear();
+                } else {
+                    ((NoeudProbabiliste) noeudSource).setPonderation( ((NoeudProbabiliste) noeudSource).getPonderation() + nouvellePonderation );
+                    setPropriete(noeudsSource, noeudsCible, graphe, zoneDessin, groupe, nouvellePonderation);
                 }
+                
+                zonePropriete.getChildren().clear();
             } 
         });
         
         // Bouton de suppression de l'arc
         Button supprimerLien = new Button("Supprimer");
-        supprimerLien.setLayoutX(60);
-        supprimerLien.setLayoutY(233);
+        supprimerLien.setLayoutX(120);
+        supprimerLien.setLayoutY(203);
         zonePropriete.getChildren().addAll(supprimerLien);
         
         
@@ -341,4 +338,10 @@ class ArcProbabiliste extends Lien{
         });
     }
     
+    
+    @Override
+    public String toString() {
+        String arc = "pond: " + ponderation + "\n source: " + source + " cible: " + cible;
+        return arc;
+    }
 }

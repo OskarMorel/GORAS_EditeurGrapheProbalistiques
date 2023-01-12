@@ -111,11 +111,6 @@ public class TraitementProbabiliste extends Traitement {
         zonePropriete.getChildren().addAll(validationModif);
         
         
-        
-        
-        
-        
-        
         // Si validation des changements
         validationModif.setOnAction(new EventHandler<ActionEvent>() {  
             @Override
@@ -133,11 +128,11 @@ public class TraitementProbabiliste extends Traitement {
                     }
                 }
                 
-                if (existenceChemin(noeudSFinal)){
-                    cheminExistant = "Chemin Existant";
-                }else{
-                    cheminExistant = "Chemin Inexistant";
-                }
+//                if (existenceChemin(noeudSFinal)){
+//                    cheminExistant = "Chemin Existant";
+//                }else{
+//                    cheminExistant = "Chemin Inexistant";
+//                }
                 
         
                 zonePropriete.getChildren().clear();
@@ -151,29 +146,29 @@ public class TraitementProbabiliste extends Traitement {
         });
     } 
     
-    public boolean existenceChemin(Noeud noeudSourceFinal){
-        
-        Noeud noeudS = noeudSourceFinal;
-        List<String> chemin = new ArrayList<>();
-        int indice = 0;
-        for (int i = indice ; i < graphe.liens.size() ; i++) {
-            if (graphe.liens.get(i).getSource() == noeudSFinal) {
-                chemin.add(noeudSFinal.getLibelle());
-                noeudS = graphe.liens.get(i).getCible();
-            }
-            if (graphe.liens.get(i).getSource() == noeudS && graphe.liens.get(i).getSource() != noeudSFinal) {
-                chemin.add(noeudS.getLibelle());
-                noeudS = graphe.liens.get(i).getCible();
-            }
-            if(graphe.liens.get(i).getCible() == noeudCFinal){
-                return true;
-            }
-            if(graphe.liens.get(i).getCible() != noeudCFinal && graphe.liens.get(i).getCible() == null){
-                indice++;
-                chemin.clear();
-                existenceChemin(noeudSFinal);
-            }
-        }
-        return false;
-    }
+//    public boolean existenceChemin(Noeud noeudSourceFinal){
+//        
+//        Noeud noeudS = noeudSourceFinal;
+//        List<String> chemin = new ArrayList<>();
+//        int indice = 0;
+//        for (int i = indice ; i < graphe.liens.size() ; i++) {
+//            if (graphe.liens.get(i).getSource() == noeudSFinal) {
+//                chemin.add(noeudSFinal.getLibelle());
+//                noeudS = graphe.liens.get(i).getCible();
+//            }
+//            if (graphe.liens.get(i).getSource() == noeudS && graphe.liens.get(i).getSource() != noeudSFinal) {
+//                chemin.add(noeudS.getLibelle());
+//                noeudS = graphe.liens.get(i).getCible();
+//            }
+//            if(graphe.liens.get(i).getCible() == noeudCFinal){
+//                return true;
+//            }
+//            if(graphe.liens.get(i).getCible() != noeudCFinal && graphe.liens.get(i).getCible() == null){
+//                indice++;
+//                chemin.clear();
+//                existenceChemin(noeudSFinal);
+//            }
+//        }
+//        return false;
+//    }
 }

@@ -18,13 +18,13 @@ import javafx.scene.layout.AnchorPane;
 public class GrapheProbabiliste extends Graphe{
 
      /** Libelle du graphe */
-    public String libelle;
+    private String libelle;
 
     /** Liste des noeuds du graphe */
-    public List<NoeudSimple> noeuds;
+    private ArrayList<NoeudProbabiliste> noeuds;
 
     /** Liste des liens du graphe */
-    public List<ArcProbabiliste> liens;
+    private ArrayList<ArcProbabiliste> liens;
     
     public GrapheProbabiliste() {
         
@@ -49,7 +49,7 @@ public class GrapheProbabiliste extends Graphe{
      */
     @Override
     public boolean estLienDuGraphe(Noeud noeudATester, Noeud noeudATester2) {
-        for (Lien lien : liens) {
+        for (ArcProbabiliste lien : liens) {
             if (lien.getSource() == noeudATester && lien.getCible() == noeudATester2) {
                 return true;
             }
@@ -104,18 +104,28 @@ public class GrapheProbabiliste extends Graphe{
     }
     
     @Override
-    public List<NoeudSimple> getLiensNoeud(Noeud noeudCourant) {
-        List<NoeudSimple> noeudLien = new ArrayList<>();
+    public List<NoeudProbabiliste> getLiensNoeud(Noeud noeudCourant) {
+        
+        List<NoeudProbabiliste> noeudLien = new ArrayList<>();
         for (Lien lien : liens) {
             if (lien.getCible() == noeudCourant) {
-                noeudLien.add((NoeudSimple) lien.getSource());
-                noeudLien.add((NoeudSimple) noeudCourant);
+                noeudLien.add((NoeudProbabiliste) lien.getSource());
+                noeudLien.add((NoeudProbabiliste) noeudCourant);
             } else if (lien.getSource() == noeudCourant) {
-                noeudLien.add((NoeudSimple) noeudCourant);
-                noeudLien.add((NoeudSimple) lien.getCible());
+                noeudLien.add((NoeudProbabiliste) noeudCourant);
+                noeudLien.add((NoeudProbabiliste) lien.getCible());
             }
         }        
         return noeudLien;
+    }
+    
+    /**
+     * Ajoute un noeud au graphe
+     * @param noeud noeud a ajouter au graphe
+     */
+    @Override
+    public void ajouterNoeud(Noeud noeud) {
+        noeuds.add((NoeudProbabiliste) noeud);
     }
     
     
@@ -130,13 +140,19 @@ public class GrapheProbabiliste extends Graphe{
     
     /** @return la liste des liens de ce graphe */
     @Override
-    public List<ArcProbabiliste> getLiens() {
+    public ArrayList<ArcProbabiliste> getLiens() {
         return liens;
+    }
+    
+    /** @return la liste des noeuds de ce graphe */
+    @Override
+    public ArrayList<NoeudProbabiliste> getNoeuds() {
+        return noeuds;
     }
     
     @Override
     public String toString() {
-        String tout = "nom : " + libelle + "   noeuds : " + noeuds.toString() + "   liens : " + liens.toString();
+        String tout = "nom : " + libelle + " noeuds : " + noeuds.toString() + " liens : " + liens.toString();
         return tout;
     }   
     
@@ -147,12 +163,18 @@ public class GrapheProbabiliste extends Graphe{
         while(liensASuppr.hasNext()) {
             ArcProbabiliste lien = (ArcProbabiliste) liensASuppr.next();
             if (lien.getSource().getId() == noeud.getId() || lien.getCible().getId() == noeud.getId()) {
-                lien.getGroupe().getChildren().clear();
-                zoneDessin.getChildren().remove(lien.getGroupe());
                 liensASuppr.remove();  
             }
         }
         getNoeuds().remove(noeud);
+        
+        zoneDessin.getChildren().clear();
+        for (NoeudProbabiliste noeudADessiner : noeuds) {
+                noeudADessiner.dessinerNoeud(zoneDessin);
+        }
+        for (ArcProbabiliste lienADessiner : liens) {
+            lienADessiner.dessinerLien(zoneDessin);
+        }
     }
     
     public boolean getPondeNoeud(Noeud noeudATester) {
@@ -168,6 +190,39 @@ public class GrapheProbabiliste extends Graphe{
                 return false;
             }
         }    
+        return true;
+    }
+    
+    /**
+     * Determine si des coordonnées font partie d'un noeud du graphe
+     * @param xATester
+     * @param yATester
+     * @return true si les coordonnées en paramètre corresponde à un noeud, false sinon
+     */
+    @Override
+    public NoeudProbabiliste estNoeudGraphe(double xATester ,double yATester) {
+        
+        for(NoeudProbabiliste noeud : noeuds) {
+            double minX = noeud.getCoordX() - Noeud.getRadius();
+            double maxX = noeud.getCoordX() + Noeud.getRadius();
+            double minY = noeud.getCoordY() - Noeud.getRadius();
+            double maxY = noeud.getCoordY() + Noeud.getRadius();
+            
+            if (minX < xATester && xATester < maxX && minY < yATester && yATester < maxY) {
+                return noeud;   
+            }
+        }
+        
+        return null;
+    }
+    
+    @Override
+    public boolean estGrapheProbabiliste() {
+        for (NoeudProbabiliste noeud : noeuds) {
+            if (noeud.getPonderation() != 1) {
+                return false;
+            }
+        }
         return true;
     }
     

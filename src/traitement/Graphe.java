@@ -12,7 +12,7 @@ public abstract class Graphe {
     public String libelle;
 
     /** Liste des noeuds du graphe */
-    public List<Noeud> noeuds;
+    public ArrayList<Noeud> noeuds;
 
     /** Liste des liens du graphe */
     public List<Lien> liens;
@@ -53,7 +53,7 @@ public abstract class Graphe {
     }
     
     public void setNoeuds(List nouveauxNoeuds) {
-        noeuds = nouveauxNoeuds;
+        noeuds = (ArrayList<Noeud>) nouveauxNoeuds;
     }
     
     public List<? extends Lien> getLiens() {

@@ -90,12 +90,8 @@ public class TraitementProbabiliste extends Traitement {
   
         //Création de la matrice
         double[][] mat = new double [graphe.getNoeuds().size()][graphe.getNoeuds().size()];
-        for(int i = 0; i < mat.length; i++){
-            mat[i] = new double[graphe.getNoeuds().size()];
-        }
         
         for (int i = 0; i<graphe.getNoeuds().size(); i++){ 
-
             for (int j = 0; j<graphe.getNoeuds().size(); j++){
                 if(graphe.getLienDuGraphe(graphe.getNoeuds().get(i), graphe.getNoeuds().get(j)) != null){
                     mat[i][j] = graphe.getLienDuGraphe(graphe.getNoeuds().get(i), graphe.getNoeuds().get(j)).getPonderation();

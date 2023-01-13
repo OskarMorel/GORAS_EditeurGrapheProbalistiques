@@ -75,9 +75,9 @@
                 </MenuItem>
             </items>
           </Menu>
-          <Menu mnemonicParsing="false" text="Traitements">
+          <Menu mnemonicParsing="false" text="Traitements" fx:id="traitementMenu">
             <items>
-              <MenuItem mnemonicParsing="false" text="TODO" onAction ="#traitement"/>
+              
             </items>
           </Menu>
             <Menu mnemonicParsing="false" text="Aide">

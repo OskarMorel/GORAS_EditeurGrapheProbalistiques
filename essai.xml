@@ -1,17 +1,88 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <java version="1.8.0_172" class="java.beans.XMLDecoder">
- <object class="traitement.NoeudSimple">
-  <void property="coordX">
-   <double>10.0</double>
+ <object class="traitement.ArcProbabiliste">
+  <void property="cible">
+   <object class="traitement.NoeudSimple" id="NoeudSimple0">
+    <void property="coordX">
+     <double>100.0</double>
+    </void>
+    <void property="coordY">
+     <double>200.0</double>
+    </void>
+    <void property="groupe">
+     <object class="javafx.scene.Group"/>
+    </void>
+    <void property="id">
+     <int>1</int>
+    </void>
+    <void property="libelle">
+     <string>1</string>
+    </void>
+   </object>
   </void>
-  <void property="coordY">
-   <double>20.0</double>
+  <void property="flecheBas">
+   <object class="javafx.scene.shape.Line">
+    <void property="endX">
+     <double>10.0</double>
+    </void>
+    <void property="endY">
+     <double>10.0</double>
+    </void>
+    <void property="startX">
+     <double>200.0</double>
+    </void>
+    <void property="startY">
+     <double>100.0</double>
+    </void>
+   </object>
   </void>
-  <void property="id">
-   <int>1</int>
+  <void property="flecheHaut">
+   <object class="javafx.scene.shape.Line">
+    <void property="endX">
+     <double>-10.0</double>
+    </void>
+    <void property="endY">
+     <double>-10.0</double>
+    </void>
+    <void property="startX">
+     <double>200.0</double>
+    </void>
+    <void property="startY">
+     <double>100.0</double>
+    </void>
+   </object>
   </void>
-  <void property="libelle">
-   <string>1</string>
+  <void property="labelPonderation">
+   <object class="javafx.scene.control.Label">
+    <void property="text">
+     <string>mjk</string>
+    </void>
+   </object>
+  </void>
+  <void property="ligne">
+   <object class="javafx.scene.shape.QuadCurve">
+    <void property="controlX">
+     <double>50.0</double>
+    </void>
+    <void property="controlY">
+     <double>50.0</double>
+    </void>
+    <void property="endX">
+     <double>200.0</double>
+    </void>
+    <void property="endY">
+     <double>200.0</double>
+    </void>
+    <void property="startX">
+     <double>10.0</double>
+    </void>
+    <void property="startY">
+     <double>10.0</double>
+    </void>
+   </object>
+  </void>
+  <void property="source">
+   <object idref="NoeudSimple0"/>
   </void>
  </object>
 </java>

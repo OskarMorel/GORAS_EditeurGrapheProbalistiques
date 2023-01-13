@@ -1,9 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package application;
+package essai_serialisationXml;
 
 import java.beans.XMLDecoder;
 import java.beans.XMLEncoder;
@@ -12,24 +7,21 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import traitement.NoeudSimple;
 
-/**
- *
- * @author antoine.gouzy
- */
-public class Test {
+
+public class EssaiXML {
     
     public static void main(String[] args) {
-        try {
+        try { 
             // Sérialisation XML d'un noeud dans fichier essai.xml
             XMLEncoder encoder = new XMLEncoder(new FileOutputStream("essai.xml"));
-            NoeudSimple n1 = new NoeudSimple(10, 20);
+            NoeudSimple n1 = new NoeudSimple(100, 200);
             encoder.writeObject(n1);
             encoder.close();
            
             // Déserialisation et affichage du noeud pour véfification
             XMLDecoder decoder = new XMLDecoder(new FileInputStream("essai.xml"));
             NoeudSimple n2 = (NoeudSimple)decoder.readObject();
-            System.out.println("n2 : x ="+n2.getCoordX()+ " y="+n2.getCoordY());
+            System.out.println("n2 : "+n2.toString());
         }
         catch(FileNotFoundException e) {
             

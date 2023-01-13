@@ -51,24 +51,24 @@ public class Arete extends Lien {
         //Parametre seulement lors du dev Color.RED, sinon Color.TRANSPARENT
         enveloppe.setStroke(Color.TRANSPARENT);
         
-        getGroupe().getChildren().clear();
+        Group groupe = new Group();
         
-        getGroupe().getChildren().addAll(enveloppe, ligne);
+        groupe.getChildren().addAll(enveloppe, ligne);
         
         //Action s'il on clique sur l'arete
-        getGroupe().setOnMousePressed((new EventHandler<MouseEvent>() {
+        groupe.setOnMousePressed((new EventHandler<MouseEvent>() {
 
             @Override
             public void handle(MouseEvent evt) {
                 AccueilController.estLien = true;
-                AccueilController.lienEnCoursGroup = getGroupe();
+                AccueilController.lienEnCoursGroup = groupe;
                 AccueilController.noeudSource = getSource();
                 AccueilController.noeudCible = getCible();
             }
         }));
-        zoneDessin.getChildren().addAll(getGroupe());
+        zoneDessin.getChildren().addAll(groupe);
         
-        return getGroupe();
+        return groupe;
     }
 
     

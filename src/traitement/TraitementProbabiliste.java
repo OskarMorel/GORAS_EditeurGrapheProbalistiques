@@ -5,6 +5,11 @@
  */
 package traitement;
 
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
+import java.text.FieldPosition;
+import java.text.NumberFormat;
+import java.text.ParsePosition;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -39,52 +44,176 @@ public class TraitementProbabiliste extends Traitement {
     ArrayList<Noeud> listeNoeud;
     ArrayList<Noeud> classe = new ArrayList<>();
     
-    
+    /**
+     * Creer un instance de traitement probabiliste pour le graphe courant
+     * @param graphe graphe courant
+     */
     public TraitementProbabiliste(Graphe graphe) {
         super(graphe);
         this.graphe = (GrapheProbabiliste) graphe;
         listeNoeud = (ArrayList<Noeud>) graphe.noeuds.clone();
     }
     
-    public void matriceTransition(){
-        
-        String matrice = "";
-        
+    /**
+     * Determine la matrice de transition du graphe
+     * @return la matrice de transition
+     */
+    public double[][] matriceTransition(){
+
         //Création de la matrice
         double[][] mat = new double [graphe.getNoeuds().size()][graphe.getNoeuds().size()];
         for(int i = 0; i < mat.length; i++){
             mat[i] = new double[graphe.getNoeuds().size()];
         }
-        
-        for (int i = 0; i<graphe.getNoeuds().size(); i++){   
-            matrice += "     ";
-            matrice += graphe.getNoeuds().get(i).getLibelle();
-        }
-        matrice += "\n"; 
-        
+                
         for (int i = 0; i<graphe.getNoeuds().size(); i++){ 
-            matrice += graphe.getNoeuds().get(i).getLibelle();
-            matrice += "  ";
             for (int j = 0; j<graphe.getNoeuds().size(); j++){
                 if(graphe.getLienDuGraphe(graphe.getNoeuds().get(i), graphe.getNoeuds().get(j)) != null){
                     mat[i][j] = graphe.getLienDuGraphe(graphe.getNoeuds().get(i), graphe.getNoeuds().get(j)).getPonderation();
                 }else {
-                    mat[i][j] = 0.0;
-                    
+                    mat[i][j] = 0.0;  
                 }
+            }   
+        }
+
+        return mat;
+    }
+    
+    /**
+     * Affiche la matrice de transition ppour l'utilisateur
+     */
+    public void affichageMatrice() {
+        
+        double[][] mat = matriceTransition();
+        String matrice = "";
+        
+        //Calcul du nb espace pour affichage de la matrice
+        int nbEspace = 0;
+        for (int i = 0; i<graphe.getNoeuds().size(); i++){   
+            nbEspace = Math.max(nbEspace, graphe.getNoeuds().get(i).getLibelle().length());
+        }
+        
+        //Decalage premiere ligne
+        for(int cpt = 0; cpt < nbEspace; cpt++){
+                matrice += "  ";
+        }
+        
+        for (int i = 0; i<graphe.getNoeuds().size(); i++){
+            matrice += graphe.getNoeuds().get(i).getLibelle();
+            matrice += "     ";
+        }
+        
+        matrice += "\n"; 
+        
+        for (int i = 0; i<graphe.getNoeuds().size(); i++){ 
+            for(int cpt = 0; cpt < nbEspace - graphe.getNoeuds().get(i).getLibelle().length(); cpt++){
+                matrice += " ";
+            }
+            matrice += graphe.getNoeuds().get(i).getLibelle();
+            matrice += "  ";
+            for (int j = 0; j<graphe.getNoeuds().size(); j++){
+                for(int cpt = 0; cpt < nbEspace - 4; cpt++){
+                    matrice += " ";
+                }
+                
                 matrice += mat[i][j] + "  ";
             }
             matrice += "\n\n";
-            
-            
         }
+        
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Matrice de Transtion");
         alert.setHeaderText("Matrice de Transtion : ");
         alert.setContentText(matrice);
+        alert.setWidth(10000);
         alert.showAndWait();
     }
     
+
+    
+    
+    public void loiDeProbabiliteEnNTransitions(int n) {
+  
+        //Création de la matrice
+        double[][] mat = new double [graphe.getNoeuds().size()][graphe.getNoeuds().size()];
+        
+        for (int i = 0; i<graphe.getNoeuds().size(); i++){ 
+            for (int j = 0; j<graphe.getNoeuds().size(); j++){
+                if(graphe.getLienDuGraphe(graphe.getNoeuds().get(i), graphe.getNoeuds().get(j)) != null){
+                    mat[i][j] = graphe.getLienDuGraphe(graphe.getNoeuds().get(i), graphe.getNoeuds().get(j)).getPonderation();
+                }else {
+                    mat[i][j] = 0.0;            
+                }
+            }  
+        }
+        
+        //multiplication de la matrice
+        double[][] Mat = new double [graphe.getNoeuds().size()][graphe.getNoeuds().size()];
+        Mat = mat;
+        double[][] nouvelleMat = new double [graphe.getNoeuds().size()][graphe.getNoeuds().size()];
+        nouvelleMat = mat;
+        double[][] matFinale = new double [graphe.getNoeuds().size()][graphe.getNoeuds().size()];
+        for (int t = 1 ; t < n ; t++) {
+            for (int i = 0; i < Mat.length; i++) {
+                for (int j = 0 ; j < Mat.length ; j++) {
+                    matFinale[i][j] = 0.0;
+                    for (int x = 0 ; x < Mat.length ; x++) {
+                        matFinale[i][j] += nouvelleMat[i][x]*Mat[x][j];
+                    }
+                }
+            }
+            nouvelleMat = matFinale;
+        }
+        
+        double[] loiEssai = new double [4];
+        loiEssai[0] = 1.0;
+        loiEssai[1] = 1.0;
+        loiEssai[2] = 1.0;
+        loiEssai[3] = 1.0;
+
+        
+        //définition de la loi de probabilité initiale
+        double[] loiDeProba = new double[graphe.getNoeuds().size()];
+        for (int index = 0 ; index < graphe.getNoeuds().size() ; index++) {
+            loiDeProba[index] = loiEssai[index];
+        }
+        
+        //multiplication de la matrice avec loi de proba
+        double[] loiDeProbaFinale = new double[graphe.getNoeuds().size()];
+        double valeur;
+        if (n == 0) {
+            loiDeProbaFinale = loiDeProba;
+        } else {
+            for (int j = 0 ; j < loiDeProba.length ; j++) {
+                valeur = 0;
+                for (int i = 0 ; i < matFinale.length ; i++) {
+                    valeur += loiDeProba[j] *matFinale[i][j];
+                }
+                loiDeProbaFinale[j] = valeur;
+            }
+        }
+        
+        //passage en string pour fenetre
+        String affichageLoiProba = " ";
+        for (int i = 0 ; i < loiDeProbaFinale.length ; i++) {
+            affichageLoiProba += loiDeProbaFinale[i] + "  ";
+        }
+        
+        //affichage resultat
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("loi de probabilité en n transitions");
+        alert.setHeaderText("loi de probabilité : ");
+        alert.setContentText(affichageLoiProba);
+        alert.showAndWait();
+        
+    }
+    
+    
+    /**
+     *
+     * @param zonePropriete
+     */
+
     public void affichageChemin(AnchorPane zonePropriete){  
         
         List<Lien> chemin = new ArrayList<>();
@@ -123,11 +252,6 @@ public class TraitementProbabiliste extends Traitement {
         zonePropriete.getChildren().addAll(validationModif);
         
         
-        
-        
-        
-        
-        
         // Si validation des changements
         validationModif.setOnAction(new EventHandler<ActionEvent>() {  
             @Override
@@ -144,7 +268,6 @@ public class TraitementProbabiliste extends Traitement {
                         noeudCFinal = graphe.getNoeuds().get(i);
                     }
                 }
-                
                 if (existenceChemin(noeudSFinal, noeudCFinal)){
                     cheminExistant = "Chemin Existant";
                 }else{
@@ -168,15 +291,15 @@ public class TraitementProbabiliste extends Traitement {
             indice = 0;
             chemin.add(noeudS);
         }
-        for (int i = indice ; i < graphe.liens.size() ; i++) {  
-            if (graphe.liens.get(i).getSource() == noeudS) {
-                if(graphe.liens.get(i).getCible() == noeudC){
+        for (int i = indice ; i < graphe.getLiens().size() ; i++) {  
+            if (graphe.getLiens().get(i).getSource() == noeudS) {
+                if(graphe.getLiens().get(i).getCible() == noeudC){
                     indice = 0;
                     return true;
                 }
-                if(!chemin.contains(graphe.liens.get(i).getCible())) {
-                    chemin.add(graphe.liens.get(i).getCible());
-                    noeudS = graphe.liens.get(i).getCible();
+                if(!chemin.contains(graphe.getLiens().get(i).getCible())) {
+                    chemin.add(graphe.getLiens().get(i).getCible());
+                    noeudS = graphe.getLiens().get(i).getCible();
                     indice =0;
                     return existenceChemin(noeudS,noeudC);
                 } 
@@ -216,6 +339,7 @@ public class TraitementProbabiliste extends Traitement {
         indice = 0;
         
     }
+    /*
     public void classificationSommet(){
         
         for(int i = 0; i < graphe.getNoeuds().size(); i++){
@@ -224,17 +348,17 @@ public class TraitementProbabiliste extends Traitement {
             
                 noeudSFinal = graphe.getNoeuds().get(i);
                 
-                /* Cercle extérieur */
+                
                 Circle cercleExterieur = new Circle(graphe.getNoeuds().get(i).getCoordX(), graphe.getNoeuds().get(i).getCoordY(), NoeudSimple.getRadius() * 2.5);
                 cercleExterieur.setFill(Color.TRANSPARENT);
                 cercleExterieur.setStroke(Color.TRANSPARENT);
 
-                /* label */
+                
                 Label libelle = new Label(graphe.getNoeuds().get(i).getLibelle());
                 libelle.setLayoutX(graphe.getNoeuds().get(i).getCoordX() - 3);
                 libelle.setLayoutY(graphe.getNoeuds().get(i).getCoordY() - 8);
 
-                /* cercle */
+                
                 Circle cercle = new Circle(graphe.getNoeuds().get(i).getCoordX(), graphe.getNoeuds().get(i).getCoordY(), NoeudSimple.getRadius());
                 cercle.setFill(Color.TRANSPARENT);
                 
@@ -260,4 +384,5 @@ public class TraitementProbabiliste extends Traitement {
             }       
         }
     }
+    */
 }

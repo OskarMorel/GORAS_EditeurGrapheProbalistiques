@@ -7,6 +7,9 @@ import javafx.scene.layout.AnchorPane;
 
 public abstract class Noeud {
     
+    /** Compteur du nombre de noeud que contient un graphe */
+    public static int cpt = 0;
+    
     /* Libelle du noeud */
     String libelle;
     
@@ -17,9 +20,6 @@ public abstract class Noeud {
     /** id de ce noeud utiliser pour l'ouverture d'un graphe */
     int id;
     
-    /** groupe du lien */
-    Group groupe;
-    
     /* Rayon des cercle représentant un noeud */
     private static double radius = 30.0;
     
@@ -28,6 +28,16 @@ public abstract class Noeud {
     public Noeud() {
         
     }
+
+    public static int getCpt() {
+        return cpt;
+    }
+
+    public static void setCpt(int cpt) {
+        Noeud.cpt = cpt;
+    }
+
+    
     
     public Noeud(String libelle, double coordX, double coordY) {
        this.libelle = libelle;
@@ -51,10 +61,6 @@ public abstract class Noeud {
         return id;
     }
 
-    public Group getGroupe() {
-        return groupe;
-    }
-
     public static double getRadius() {
         return radius;
     }
@@ -75,23 +81,20 @@ public abstract class Noeud {
         this.id = id;
     }
 
-    public void setGroupe(Group groupe) {
-        this.groupe = groupe;
-    }
-
     public static void setRadius(double radius) {
         Noeud.radius = radius;
     }
     
     public Group dessinerNoeud(AnchorPane zoneDessin) {
        return null;
-   }
+    }
+    
+    public void selectionGroupe(AnchorPane main, Group groupe, Graphe graphe, AnchorPane zoneDessin) { }
     
     @Override
     public String toString() {
         String noeud = libelle + " X: " + coordX + " Y :" + coordY;
         return noeud;
-        
     }
 
     

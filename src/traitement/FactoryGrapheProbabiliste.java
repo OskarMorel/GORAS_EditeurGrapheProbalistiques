@@ -17,8 +17,8 @@ public class FactoryGrapheProbabiliste implements FactoryGraphe{
     }
 
     @Override
-    public Noeud creerNoeud(double coordX, double coordY) {
-        return new NoeudSimple(coordX, coordY);
+    public NoeudProbabiliste creerNoeud(double coordX, double coordY) {
+        return new NoeudProbabiliste(coordX, coordY);
     }
 
     @Override

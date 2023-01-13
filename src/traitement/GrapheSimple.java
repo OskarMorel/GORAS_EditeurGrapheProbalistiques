@@ -14,10 +14,10 @@ public class GrapheSimple extends Graphe {
     public String libelle;
 
     /** Liste des noeuds du graphe */
-    public List<Noeud> noeuds;
+    public ArrayList<NoeudSimple> noeuds;
 
     /** Liste des liens du graphe */
-    public List<Arete> liens;
+    public ArrayList<Arete> liens;
     
     public GrapheSimple() {
         
@@ -97,6 +97,15 @@ public class GrapheSimple extends Graphe {
     }
     
     /**
+     * Ajoute un noeud au graphe
+     * @param noeud noeud a ajouter au graphe
+     */
+    @Override
+    public void ajouterNoeud(Noeud noeud) {
+        noeuds.add((NoeudSimple) noeud);
+    }
+    
+    /**
      * Ajoute un lien au graphe
      * @param lien lien a ajouter au graphe
      */
@@ -124,8 +133,14 @@ public class GrapheSimple extends Graphe {
     
     /** @return la liste des liens de ce graphe */
     @Override
-    public List<Arete> getLiens() {
+    public ArrayList<Arete> getLiens() {
         return liens;
+    }
+    
+    /** @return la liste des noeuds de ce graphe */
+    @Override
+    public ArrayList<NoeudSimple> getNoeuds() {
+        return noeuds;
     }
     
     @Override
@@ -135,17 +150,48 @@ public class GrapheSimple extends Graphe {
         while(liensASuppr.hasNext()) {
             Arete lien = (Arete) liensASuppr.next();
             if (lien.getSource().getId() == noeud.getId() || lien.getCible().getId() == noeud.getId()) {
-                lien.getGroupe().getChildren().clear();
-                zoneDessin.getChildren().remove(lien.getGroupe());
                 liensASuppr.remove();  
             }
         }
         getNoeuds().remove(noeud);
+        
+        zoneDessin.getChildren().clear();
+        for (NoeudSimple noeudADessiner : noeuds) {
+                noeudADessiner.dessinerNoeud(zoneDessin);
+        }
+        for (Arete lienADessiner : liens) {
+            lienADessiner.dessinerLien(zoneDessin);
+        }
     }
     
     @Override
     public String toString() {
         String tout = "nom : " + libelle + "   noeuds : " + getNoeuds().toString() + "   liens : " + getLiens().toString();
         return tout;
+    }
+    
+    
+    /**
+     * Determine si des coordonnées font partie d'un noeud du graphe
+     * @param xATester
+     * @param yATester
+     * @return true si les coordonnées en paramètre corresponde à un noeud, false sinon
+     */
+    @Override
+    public NoeudSimple estNoeudGraphe(double xATester ,double yATester) {
+        
+        for(NoeudSimple noeud : noeuds) {
+            
+            double minX = noeud.getCoordX() - Noeud.getRadius();
+            double maxX = noeud.getCoordX() + Noeud.getRadius();
+            double minY = noeud.getCoordY() - Noeud.getRadius();
+            double maxY = noeud.getCoordY() + Noeud.getRadius();
+            
+            if (minX < xATester && xATester < maxX && minY < yATester && yATester < maxY) {
+                return noeud;   
+            }
+        }
+        
+        return null;
     }
 }

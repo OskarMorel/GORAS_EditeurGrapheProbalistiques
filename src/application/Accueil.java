@@ -24,8 +24,7 @@ public class Accueil extends Application {
         primaryStage.setScene(scene);
         primaryStage.getIcons().add(new Image("/img/line-chart.png"));
         primaryStage.show();
-        mainStage = primaryStage;
-        
+        mainStage = primaryStage;        
     }
     
     

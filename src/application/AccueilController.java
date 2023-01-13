@@ -11,6 +11,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -20,6 +21,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.control.TextField;
@@ -34,10 +37,10 @@ import javafx.stage.Stage;
 
 
 import traitement.FactoryGraphe;
+import traitement.FactoryGrapheProbabiliste;
 import traitement.FactoryManager;
 import traitement.Graphe;
 import traitement.Noeud;
-import traitement.NoeudSimple;
 import traitement.Lien;
 import traitement.TraitementProbabiliste;
 
@@ -66,7 +69,8 @@ public class AccueilController implements Initializable {
     
     /* Pour le dessin d'un lien ainsi que pour sa modification */
     private Lien lienEnCours;
-    public static Group lienEnCoursGroup; 
+    public static Group lienEnCoursGroup;
+    public static Noeud noeudASelectionner;
     public static Group noeudEnCoursGroup;
     
     /* Chemin du graphe courant dans l'explorateur de fichier */
@@ -89,25 +93,32 @@ public class AccueilController implements Initializable {
     private TextField nomGraphe;
     @FXML
     private AnchorPane modificationContainer;
-    public static NoeudSimple noeudASelectionner;
     @FXML
     private Label labelNomGraphe;
     @FXML
     private Label labelTypeGraphe;
+    @FXML
+    private Menu traitementMenu;
+    
+    static Menu menuTraitement;
         
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         
         try {
+            
             ToggleGroup group = new ToggleGroup();
             noeudBtn.setToggleGroup(group);
             selectionBtn.setToggleGroup(group);
-            lienBtn.setToggleGroup(group); 
+            lienBtn.setToggleGroup(group);        
+            
+            menuTraitement = traitementMenu;
+            
         } catch (NullPointerException e) {
             /* Si nouvelle fenetre diff de accueil*/
         }
         
-        try{
+        try{ //Si fenetre de creation de graphe
             typesGraphe.getItems().addAll(factoryManager.getFactories().keySet());
         } catch (Exception e) {
             //TODO
@@ -116,12 +127,13 @@ public class AccueilController implements Initializable {
     }  
 
     @FXML
-    private void dessin(javafx.scene.input.MouseEvent evt) {  
+    private void dessin(javafx.scene.input.MouseEvent evt) {
+        
         try {
             if (selectionBtn.isSelected()) { //Cas si on selectionne l'option selections
                 
                 try {
-                    noeudASelectionner = (NoeudSimple)graphe.estNoeudGraphe(evt.getX(), evt.getY());
+                    noeudASelectionner = graphe.estNoeudGraphe(evt.getX(), evt.getY());
                     noeudASelectionner.selectionGroupe(modificationContainer, noeudEnCoursGroup, graphe, zoneDessin);
                     //noeudASelectionner = null;
                 } catch (NullPointerException e) {
@@ -138,16 +150,26 @@ public class AccueilController implements Initializable {
                     noeudSource = null;
                     noeudCible = null;
                 } catch (NullPointerException e) {
-
+                    
                 }
 
             } else if(noeudBtn.isSelected()) { //Cas si on selectione l'option noeud
                 
                 if (isDrawable == true) {
-                    NoeudSimple noeud = (NoeudSimple)factory.creerNoeud(evt.getX(), evt.getY());
+                    
+                    double x = evt.getX();
+                    double y = evt.getY();
+                    
+                    if(x < Noeud.getRadius()) {
+                        x = Noeud.getRadius();
+                    }
+                    if(y < Noeud.getRadius()) {
+                        y = Noeud.getRadius();
+                    } 
+
+                    Noeud noeud = factory.creerNoeud(x, y);
                     graphe.ajouterNoeud(noeud);
                     noeud.dessinerNoeud(zoneDessin);
-                        
                 }
                 isDrawable = true;
             }
@@ -171,6 +193,7 @@ public class AccueilController implements Initializable {
         nouveauGrapheStage.getIcons().add(new Image("/img/line-chart.png"));
         nouveauGrapheStage.setScene(new Scene(root));  
         nouveauGrapheStage.show();
+        
         zoneDessin.getChildren().clear();
         modificationContainer.getChildren().clear();
     }
@@ -231,21 +254,42 @@ public class AccueilController implements Initializable {
         
         String type = (String) typesGraphe.getValue();
         String nom = nomGraphe.getText();
-        NoeudSimple.cpt = 0;
+        Noeud.cpt = 0;
+        filePath = null;
         
         if (!nom.trim().isEmpty() && type != null) {
             fermeFenetre();
             try {
                 factory = factoryManager.getInstance().getFactoryGraphe(type);
                 graphe = factory.creerGraphe(nom);
-                System.out.println("Creation du nouveau graphe : " + nom);           
+                
+                
+                /* Affihage des traitements pour les graphes probabilistes */
+                if (factory instanceof FactoryGrapheProbabiliste) {
+                    
+                    menuTraitement.getItems().clear();
+
+                    TraitementProbabiliste traitement = new TraitementProbabiliste(graphe);
+                    
+                    MenuItem matrice = new MenuItem("Matrice de transition");
+                    MenuItem coloration = new MenuItem("Coloration du graphe");
+                    MenuItem loiProbTransition = new MenuItem("Loi de probabilité atteinte après n transition(s)");
+                    menuTraitement.getItems().addAll(matrice, coloration, loiProbTransition);
+
+                    matrice.setOnAction((ActionEvent e) -> {
+                        if (graphe.estGrapheProbabiliste()) {
+                            traitement.matriceTransition();
+                        }
+                        
+                    });
+                }
+                
             } catch (TypeGrapheFactoryException e) {
                 System.err.println("Erreur creation du graphe type imposssible");
             }      
         } else {
             labelNomGraphe.setTextFill(Color.RED);
             labelTypeGraphe.setTextFill(Color.RED);
-            System.err.println("Type ou nom incorrect");
         }
         
     }
@@ -255,7 +299,7 @@ public class AccueilController implements Initializable {
         
         if (lienBtn.isSelected()) {
             
-            int compteurNoeud = NoeudSimple.cpt;
+            int compteurNoeud = Noeud.cpt;
 
             double x = evt.getX();
             double y = evt.getY();            
@@ -263,16 +307,15 @@ public class AccueilController implements Initializable {
             if (graphe.estNoeudGraphe(x, y) != null && lienEnCours == null) {
                 noeudSource = graphe.estNoeudGraphe(x, y);
                 lienEnCours = factory.creerLien(noeudSource, noeudSource);
-                lienEnCours.dessinerLien(zoneDessin);
-                lienEnCoursGroup = lienEnCours.getGroupe();
+                lienEnCoursGroup = lienEnCours.dessinerLien(zoneDessin);
 
             } else if (noeudSource != null && lienEnCours != null) {
                 zoneDessin.getChildren().remove(lienEnCoursGroup);
                 Noeud noeudProvisoire = factory.creerNoeud(evt.getX(), evt.getY());
                 lienEnCours = factory.creerLien(noeudSource, noeudProvisoire);
-                lienEnCours.dessinerLien(zoneDessin);
-                lienEnCoursGroup = lienEnCours.getGroupe();
-                NoeudSimple.cpt = compteurNoeud;
+                
+                lienEnCoursGroup = lienEnCours.dessinerLien(zoneDessin);
+                Noeud.cpt = compteurNoeud;
             }
 
         }
@@ -298,7 +341,6 @@ public class AccueilController implements Initializable {
             lienEnCours = null;
             lienEnCoursGroup = null;
             noeudSource = null;
-
         }
     }
     
@@ -374,7 +416,7 @@ public class AccueilController implements Initializable {
             
             //Reinitialisation de la zone de dessin et des parametes de dessin
             zoneDessin.getChildren().clear();
-            NoeudSimple.cpt = 0;
+            Noeud.cpt = 0;
             
             FileChooser fileChooser = new FileChooser();
             fileChooser.setTitle("Ouvrir un graphe");
@@ -386,13 +428,12 @@ public class AccueilController implements Initializable {
         
             File file = fileChooser.showOpenDialog(mainStage);
             filePath =  file.getPath();
-            
-            
+
             // Déserialisation
             XMLDecoder decoder = new XMLDecoder(new FileInputStream(file));
             graphe = (Graphe) decoder.readObject();
             factory = (FactoryGraphe) decoder.readObject();
-            
+
             //Dessin du graphe choisi
             int idMax = 0;
             for (Noeud noeud : graphe.getNoeuds()) {
@@ -403,24 +444,15 @@ public class AccueilController implements Initializable {
                 lien.dessinerLien(zoneDessin);
             }
             
-            NoeudSimple.cpt = idMax;
+            Noeud.cpt = idMax;
+            
+            System.out.println(graphe.toString());
             
         } catch (IOException e) {
             System.err.println(e.getMessage());
-        } catch (NullPointerException e) {
-            System.err.println(e.getMessage());
-        }
+        } //catch (NullPointerException e) {
+//            System.err.println(e.getMessage());
+//        }
     }
     
-    @FXML
-    private void traitement() {  
-        
-        
-        TraitementProbabiliste traitement = new TraitementProbabiliste(graphe);
-        traitement.matriceTransition();
-        traitement.loiDeProbabiliteEnNTransitions(3);
-        traitement.affichageChemin(modificationContainer);
-
-     
-    }
 }    

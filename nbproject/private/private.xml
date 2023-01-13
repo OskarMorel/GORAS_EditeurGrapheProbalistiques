@@ -3,26 +3,7 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-<<<<<<< HEAD
-            <file>file:/Z:/GORAS/GORAS_EditeurGrapheProbalistiques/src/traitement/ArcProbabiliste.java</file>
-            <file>file:/Z:/GORAS/GORAS_EditeurGrapheProbalistiques/src/application/AccueilController.java</file>
-            <file>file:/Z:/GORAS/GORAS_EditeurGrapheProbalistiques/src/traitement/GrapheProbabiliste.java</file>
-            <file>file:/Z:/GORAS/GORAS_EditeurGrapheProbalistiques/src/traitement/TraitementProbabiliste.java</file>
-=======
-<<<<<<< HEAD
-            <file>file:/Z:/GORAS_EditeurGrapheProbalistiques/src/traitement/Graphe.java</file>
-            <file>file:/Z:/GORAS_EditeurGrapheProbalistiques/src/traitement/Arc.java</file>
-            <file>file:/Z:/GORAS_EditeurGrapheProbalistiques/src/application/AccueilController.java</file>
-            <file>file:/Z:/GORAS_EditeurGrapheProbalistiques/src/traitement/Lien.java</file>
-            <file>file:/Z:/GORAS_EditeurGrapheProbalistiques/src/traitement/TraitementProbabiliste.java</file>
-            <file>file:/Z:/GORAS_EditeurGrapheProbalistiques/src/traitement/ArcProbabiliste.java</file>
-=======
-            <file>file:/Z:/SAE/Graphe/GrapheProba/src/traitement/Arc.java</file>
-            <file>file:/Z:/SAE/Graphe/GrapheProba/src/traitement/Noeud.java</file>
-            <file>file:/Z:/SAE/Graphe/GrapheProba/src/application/AccueilController.java</file>
-            <file>file:/Z:/SAE/Graphe/GrapheProba/src/traitement/ArcProbabiliste.java</file>
->>>>>>> ee64fe0ff7a986140157470cf349e0924c0d29a6
->>>>>>> 2f1f36512a9904271020d53f9b152b7872d6207e
+ <file>file:/C:/Users/Gouzy/Documents/BUT%20Info/Semestre%203/SAE/GORAS_EditeurGrapheProbalistiques/src/traitement/Arc.java</file>
         </group>
     </open-files>
 </project-private>

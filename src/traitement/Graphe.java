@@ -12,16 +12,16 @@ public abstract class Graphe {
     public String libelle;
 
     /** Liste des noeuds du graphe */
-    public List<Noeud> noeuds;
+    public ArrayList<? extends Noeud> noeuds;
 
     /** Liste des liens du graphe */
-    public List<Lien> liens;
+    public ArrayList<? extends Lien> liens;
 
-    public List<Traitement> traitements;
+    public ArrayList<Traitement> traitements;
     
     public Graphe() {
         
-    }
+    }    
     
     public Graphe(String libelle) {
         //TODO tester le libellé
@@ -29,14 +29,8 @@ public abstract class Graphe {
         noeuds = new ArrayList<> ();
         liens = new ArrayList<> ();
     }
-   
-    /**
-     * Ajoute un noeud au graphe
-     * @param noeud noeud a ajouter au graphe
-     */
-    public void ajouterNoeud(Noeud noeud) {
-        noeuds.add(noeud);
-    }
+    
+    public void ajouterNoeud(Noeud noeud) { }
 
     public void ajouterLien(Lien lien) { }
     
@@ -45,23 +39,28 @@ public abstract class Graphe {
         traitements.add(traitement);
     }*/
     
-    /**
-     * @return la liste des noeuds du graphe
-     */
-    public List<Noeud> getNoeuds() {
-        return noeuds;
+    public ArrayList<? extends Noeud> getNoeuds() {
+        return null;
     }
-    
-    public void setNoeuds(List nouveauxNoeuds) {
-        noeuds = nouveauxNoeuds;
+
+    public void setNoeuds(ArrayList<? extends Noeud> noeuds) {
+        this.noeuds = noeuds;
     }
-    
-    public List<? extends Lien> getLiens() {
-        return liens;
+
+    public void setLiens(ArrayList<? extends Lien> liens) {
+        this.liens = liens;
     }
-    
-    public void setLiens(List nouveauxLiens) {
-        liens = nouveauxLiens;
+ 
+    public ArrayList<? extends Lien> getLiens() {
+        return null;
+    }
+
+    public ArrayList<Traitement> getTraitements() {
+        return traitements;
+    }
+
+    public void setTraitements(ArrayList<Traitement> traitements) {
+        this.traitements = traitements;
     }
     
     public String getLibelle() {
@@ -72,36 +71,9 @@ public abstract class Graphe {
         libelle = nouveauLibelle;
     }
     
-    public List<? extends Traitement> getTraitement() {
-        return traitements;
-    }
-    
-    public void setTraitement(List nouveauxTraitements) {
-        traitements = nouveauxTraitements;
-    }
     
     
-    
-    /**
-     * Determine si des coordonnées font partie d'un noeud du graphe
-     * @param xATester
-     * @param yATester
-     * @return true si les coordonnées en paramètre corresponde à un noeud, false sinon
-     */
-    public Noeud estNoeudGraphe(double xATester ,double yATester) {
-        
-        for(Noeud noeud : noeuds) {
-            
-            double minX = noeud.getCoordX() - Noeud.getRadius();
-            double maxX = noeud.getCoordX() + Noeud.getRadius();
-            double minY = noeud.getCoordY() - Noeud.getRadius();
-            double maxY = noeud.getCoordY() + Noeud.getRadius();
-            
-            if (minX < xATester && xATester < maxX && minY < yATester && yATester < maxY) {
-                return noeud;   
-            }
-        }
-        
+    public Noeud estNoeudGraphe(double xATester ,double yATester) {        
         return null;
     }
 
@@ -140,5 +112,9 @@ public abstract class Graphe {
         String tout = "nom : " + libelle + "   noeuds : " + noeuds.toString() + "   liens : " + liens.toString();
         return tout;
     }   
+
+    public boolean estGrapheProbabiliste() {
+        return false;
+    }
 
 }

@@ -191,8 +191,6 @@ public class ArcProbabiliste extends Lien{
             setSource(noeudSource);
             setCible(noeudCible);
             
-            System.err.println("Tu passe par là if");
-            
             supprimer(zoneDessin, groupe);
             //Dessin du nouveau lien
             dessinerLien(zoneDessin);
@@ -291,6 +289,7 @@ public class ArcProbabiliste extends Lien{
             public void handle(ActionEvent evt) {
                 
                 double nouvellePonderation = Double.parseDouble(ponderationText.getText());
+                boolean ponderationOk = true;
                 
                 String libelleNoeudSource = (String) noeudsSource.getValue();
                 Noeud noeudSource = null; //Init pour le compilateur
@@ -303,15 +302,29 @@ public class ArcProbabiliste extends Lien{
                     }
                 }
                 
-                if (((NoeudProbabiliste) noeudSource).getPonderation() + nouvellePonderation > 1) {
+
+                if (noeudSource == source) {
+                    ponderationOk = ((NoeudProbabiliste) noeudSource).getPonderation() + nouvellePonderation - ponderation <= 1.0;
+                } else {
+                    ponderationOk = ((NoeudProbabiliste) noeudSource).getPonderation() + nouvellePonderation <= 1;
+                }
+                
+                if (!ponderationOk) {
                     
                     Alert alert = new Alert(Alert.AlertType.ERROR);
                     alert.setTitle("Erreur Pondération");
                     alert.setHeaderText("Pondération totale supérieur à 1");
                     alert.showAndWait();
                     
-                } else {
-                    ((NoeudProbabiliste) noeudSource).setPonderation( ((NoeudProbabiliste) noeudSource).getPonderation() + nouvellePonderation );
+                } else {                    
+                    if (noeudSource == source) {
+                        ((NoeudProbabiliste) noeudSource).setPonderation( ((NoeudProbabiliste) noeudSource).getPonderation() + nouvellePonderation - ponderation);
+                    } else {
+                        ((NoeudProbabiliste) source).setPonderation( ((NoeudProbabiliste) source).getPonderation() - nouvellePonderation);
+                        ((NoeudProbabiliste) noeudSource).setPonderation( ((NoeudProbabiliste) noeudSource).getPonderation() + nouvellePonderation);
+                    }
+
+                    ponderation = nouvellePonderation;
                     setPropriete(noeudsSource, noeudsCible, graphe, zoneDessin, groupe, nouvellePonderation);
                 }
                 

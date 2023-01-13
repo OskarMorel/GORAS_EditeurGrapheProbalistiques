@@ -12,7 +12,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -128,7 +127,8 @@ public class AccueilController implements Initializable {
     }  
 
     @FXML
-    private void dessin(javafx.scene.input.MouseEvent evt) {  
+    private void dessin(javafx.scene.input.MouseEvent evt) {
+        
         try {
             if (selectionBtn.isSelected()) { //Cas si on selectionne l'option selections
                 
@@ -150,13 +150,24 @@ public class AccueilController implements Initializable {
                     noeudSource = null;
                     noeudCible = null;
                 } catch (NullPointerException e) {
-
+                    
                 }
 
             } else if(noeudBtn.isSelected()) { //Cas si on selectione l'option noeud
                 
                 if (isDrawable == true) {
-                    Noeud noeud = factory.creerNoeud(evt.getX(), evt.getY());
+                    
+                    double x = evt.getX();
+                    double y = evt.getY();
+                    
+                    if(x < Noeud.getRadius()) {
+                        x = Noeud.getRadius();
+                    }
+                    if(y < Noeud.getRadius()) {
+                        y = Noeud.getRadius();
+                    } 
+
+                    Noeud noeud = factory.creerNoeud(x, y);
                     graphe.ajouterNoeud(noeud);
                     noeud.dessinerNoeud(zoneDessin);
                 }
@@ -255,6 +266,8 @@ public class AccueilController implements Initializable {
                 
                 /* Affihage des traitements pour les graphes probabilistes */
                 if (factory instanceof FactoryGrapheProbabiliste) {
+
+                    menuTraitement.getItems().clear();
 
                     TraitementProbabiliste traitement = new TraitementProbabiliste(graphe);
                     

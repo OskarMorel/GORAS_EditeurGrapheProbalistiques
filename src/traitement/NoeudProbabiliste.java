@@ -157,8 +157,8 @@ public class NoeudProbabiliste extends Noeud{
                         double nouvelleCoordY = Double.parseDouble(coordY.getText());
                         
                         // gestion d'erreur de collision après modification des coordonnées de X et Y
+                        boolean positionOk = nouvelleCoordX > Noeud.getRadius() && nouvelleCoordY > Noeud.getRadius();
                         
-                        //TODO ça marche pas donc il faut trouver d'autres conditions
                         boolean noeudMemePosition = false;
                         
                         for (int i = 0; i < graphe.getNoeuds().size(); i++) {
@@ -169,10 +169,10 @@ public class NoeudProbabiliste extends Noeud{
                             }
                         }
                         // Si erreur alors on remets la coordonnées avant le changement
-                        if (noeudMemePosition) {
+                        if (noeudMemePosition || !positionOk) {
                             Alert alert = new Alert(Alert.AlertType.ERROR);
-                            alert.setTitle("Erreur Coord");
-                            alert.setHeaderText("Coordonnée trop proche d'un autre noeud");
+                            alert.setTitle("Erreur Coordonnées");
+                            alert.setHeaderText("Coordonnée trop proche d'un autre noeud ou invalide");
                             alert.showAndWait();
                             nouvelleCoordX = coordXBase;
                             coordX.setText(Double.toString(getterCoordonnees.getCenterX()));
@@ -182,8 +182,8 @@ public class NoeudProbabiliste extends Noeud{
                         
                         // Gestion des noms en double
                         boolean memeNomNoeud = false;
-                        for (int i = 0; i < graphe.noeuds.size(); i++) {
-                            if (nouveauNom.equals(graphe.noeuds.get(i).getLibelle())) {
+                        for (int i = 0; i < graphe.getNoeuds().size(); i++) {
+                            if (nouveauNom.equals(graphe.getNoeuds().get(i).getLibelle())) {
                                 memeNomNoeud = true;
                             } 
                             if (nomBase.equals(nouveauNom)) {
@@ -199,39 +199,42 @@ public class NoeudProbabiliste extends Noeud{
                             nouveauNom = nomBase;
                         }
                         
-                        /* Cercle extérieur */
-                        Circle nvCercleExterieur = new Circle(nouvelleCoordX, nouvelleCoordY, Noeud.getRadius() * 2.5);
-                        nvCercleExterieur.setFill(Color.TRANSPARENT);
-                        nvCercleExterieur.setStroke(Color.TRANSPARENT);
-
-                        /* cercle */
-                        Circle nvCercle = new Circle(nouvelleCoordX, nouvelleCoordY, Noeud.getRadius());
-                        nvCercle.setFill(Color.TRANSPARENT);  
-                        nvCercle.setStroke(Color.BLACK);
-
-                        /* label */    
-                        Label nvLibelle = new Label(nouveauNom);
-                        nvLibelle.setLayoutX(nouvelleCoordX - 3);
-                        nvLibelle.setLayoutY(nouvelleCoordY - 8); 
-  
-                        groupe.getChildren().clear();
-                        groupe.getChildren().addAll(nvCercle, nvLibelle, nvCercleExterieur);
                         
-                        AccueilController.noeudASelectionner.setLibelle(nouveauNom);
-                        AccueilController.noeudASelectionner.setCoordX(nouvelleCoordX);
-                        AccueilController.noeudASelectionner.setCoordY(nouvelleCoordY);
-                        
-                        graphe.modifLienNoeud(AccueilController.noeudASelectionner);
+                        if (positionOk && !memeNomNoeud && !noeudMemePosition) {
+                            /* Cercle extérieur */
+                            Circle nvCercleExterieur = new Circle(nouvelleCoordX, nouvelleCoordY, Noeud.getRadius() * 2.5);
+                            nvCercleExterieur.setFill(Color.TRANSPARENT);
+                            nvCercleExterieur.setStroke(Color.TRANSPARENT);
 
-                        // On efface tout le dessin pour le redessiner avec les nouvelles modifications
-                        zoneDessin.getChildren().clear();
-                        
-                        // On redessine les noeuds et les liens
-                        for (Noeud noeud : graphe.getNoeuds()) {
-                            noeud.dessinerNoeud(zoneDessin);
-                        }
-                        for (Lien lien : graphe.getLiens()) {
-                            lien.dessinerLien(zoneDessin);
+                            /* cercle */
+                            Circle nvCercle = new Circle(nouvelleCoordX, nouvelleCoordY, Noeud.getRadius());
+                            nvCercle.setFill(Color.TRANSPARENT);  
+                            nvCercle.setStroke(Color.BLACK);
+
+                            /* label */    
+                            Label nvLibelle = new Label(nouveauNom);
+                            nvLibelle.setLayoutX(nouvelleCoordX - 3);
+                            nvLibelle.setLayoutY(nouvelleCoordY - 8); 
+
+                            groupe.getChildren().clear();
+                            groupe.getChildren().addAll(nvCercle, nvLibelle, nvCercleExterieur);
+
+                            AccueilController.noeudASelectionner.setLibelle(nouveauNom);
+                            AccueilController.noeudASelectionner.setCoordX(nouvelleCoordX);
+                            AccueilController.noeudASelectionner.setCoordY(nouvelleCoordY);
+
+                            graphe.modifLienNoeud(AccueilController.noeudASelectionner);
+
+                            // On efface tout le dessin pour le redessiner avec les nouvelles modifications
+                            zoneDessin.getChildren().clear();
+
+                            // On redessine les noeuds et les liens
+                            for (Noeud noeud : graphe.getNoeuds()) {
+                                noeud.dessinerNoeud(zoneDessin);
+                            }
+                            for (Lien lien : graphe.getLiens()) {
+                                lien.dessinerLien(zoneDessin);
+                            }
                         }
                         main.getChildren().clear();
                     }
@@ -265,7 +268,7 @@ public class NoeudProbabiliste extends Noeud{
     
     @Override
     public String toString() {
-        String noeud = libelle + " X: " + coordX + " Y :" + coordY + " id : " + id;
+        String noeud = libelle + " X: " + coordX + " Y :" + coordY + " id : " + id + " ponderation " + ponderation;
         return noeud;
     }
 }

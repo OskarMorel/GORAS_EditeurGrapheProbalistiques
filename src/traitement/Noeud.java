@@ -88,9 +88,8 @@ public abstract class Noeud {
     public Group dessinerNoeud(AnchorPane zoneDessin) {
        return null;
     }
-    
-    public void selectionGroupe(AnchorPane main, Group groupe, Graphe graphe, AnchorPane zoneDessin) {
-    }
+
+    public void selectionGroupe(AnchorPane main, Group groupe, Graphe graphe, AnchorPane zoneDessin) { }
     
     @Override
     public String toString() {

@@ -278,7 +278,7 @@ public class AccueilController implements Initializable {
 
                     matrice.setOnAction((ActionEvent e) -> {
                         if (graphe.estGrapheProbabiliste()) {
-                            traitement.matriceTransition();
+                            traitement.affichageMatrice();
                         }
                         
                     });

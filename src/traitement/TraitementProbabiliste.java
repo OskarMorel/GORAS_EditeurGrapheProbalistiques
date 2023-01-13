@@ -5,6 +5,11 @@
  */
 package traitement;
 
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
+import java.text.FieldPosition;
+import java.text.NumberFormat;
+import java.text.ParsePosition;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -28,48 +33,87 @@ public class TraitementProbabiliste extends Traitement {
     Noeud noeudCFinal;
     String cheminExistant;
     
-    
+    /**
+     * Creer un instance de traitement probabiliste pour le graphe courant
+     * @param graphe graphe courant
+     */
     public TraitementProbabiliste(Graphe graphe) {
         super(graphe);
         this.graphe = (GrapheProbabiliste) graphe;
     }
     
-    public void matriceTransition(){
-        
-        String matrice = "";
-        
+    /**
+     * Determine la matrice de transition du graphe
+     * @return la matrice de transition
+     */
+    public double[][] matriceTransition(){
+
         //Création de la matrice
         double[][] mat = new double [graphe.getNoeuds().size()][graphe.getNoeuds().size()];
         for(int i = 0; i < mat.length; i++){
             mat[i] = new double[graphe.getNoeuds().size()];
         }
-        
-        for (int i = 0; i<graphe.getNoeuds().size(); i++){   
-            matrice += "     ";
-            matrice += graphe.getNoeuds().get(i).getLibelle();
-        }
-        matrice += "\n"; 
-        
+                
         for (int i = 0; i<graphe.getNoeuds().size(); i++){ 
-            matrice += graphe.getNoeuds().get(i).getLibelle();
-            matrice += "  ";
             for (int j = 0; j<graphe.getNoeuds().size(); j++){
                 if(graphe.getLienDuGraphe(graphe.getNoeuds().get(i), graphe.getNoeuds().get(j)) != null){
                     mat[i][j] = graphe.getLienDuGraphe(graphe.getNoeuds().get(i), graphe.getNoeuds().get(j)).getPonderation();
                 }else {
-                    mat[i][j] = 0.0;
-                    
+                    mat[i][j] = 0.0;  
                 }
+            }   
+        }
+
+        return mat;
+    }
+    
+    /**
+     * Affiche la matrice de transition ppour l'utilisateur
+     */
+    public void affichageMatrice() {
+        
+        double[][] mat = matriceTransition();
+        String matrice = "";
+        
+        //Calcul du nb espace pour affichage de la matrice
+        int nbEspace = 0;
+        for (int i = 0; i<graphe.getNoeuds().size(); i++){   
+            nbEspace = Math.max(nbEspace, graphe.getNoeuds().get(i).getLibelle().length());
+        }
+        
+        //Decalage premiere ligne
+        for(int cpt = 0; cpt < nbEspace; cpt++){
+                matrice += "  ";
+        }
+        
+        for (int i = 0; i<graphe.getNoeuds().size(); i++){
+            matrice += graphe.getNoeuds().get(i).getLibelle();
+            matrice += "     ";
+        }
+        
+        matrice += "\n"; 
+        
+        for (int i = 0; i<graphe.getNoeuds().size(); i++){ 
+            for(int cpt = 0; cpt < nbEspace - graphe.getNoeuds().get(i).getLibelle().length(); cpt++){
+                matrice += " ";
+            }
+            matrice += graphe.getNoeuds().get(i).getLibelle();
+            matrice += "  ";
+            for (int j = 0; j<graphe.getNoeuds().size(); j++){
+                for(int cpt = 0; cpt < nbEspace - 4; cpt++){
+                    matrice += " ";
+                }
+                
                 matrice += mat[i][j] + "  ";
             }
             matrice += "\n\n";
-            
-            
         }
+        
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Matrice de Transtion");
         alert.setHeaderText("Matrice de Transtion : ");
         alert.setContentText(matrice);
+        alert.setWidth(10000);
         alert.showAndWait();
     }
     

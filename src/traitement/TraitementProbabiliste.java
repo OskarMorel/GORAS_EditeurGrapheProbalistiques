@@ -5,13 +5,7 @@
  */
 package traitement;
 
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
-import java.text.FieldPosition;
-import java.text.NumberFormat;
-import java.text.ParsePosition;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -20,8 +14,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
 
 /**
  *
@@ -128,13 +120,7 @@ public class TraitementProbabiliste extends Traitement {
         alert.setWidth(10000);
         alert.showAndWait();
     }
-    
 
-    
-    
-    
-    
-    
     /**
      *
      * @param zonePropriete
@@ -362,7 +348,7 @@ public class TraitementProbabiliste extends Traitement {
         return result;
     }
     
-    public void loiDeProbabiliteEnNTransitions(int n) {
+    public void loiDeProbabiliteEnNTransitions(int n) throws Exception {
         
         double[] loiEssai = new double [4];
         loiEssai[0] = 1.0;
@@ -409,5 +395,17 @@ public class TraitementProbabiliste extends Traitement {
         alert.setContentText(affichageLoiProba);
         alert.showAndWait();
         
+    }
+    
+    /**
+     * 
+     * @param noeud1
+     * @param noeud2
+     * @param n
+     * @return 
+     */
+    public double sommetASommetNTransition(NoeudProbabiliste noeud1, NoeudProbabiliste noeud2,int n) throws Exception {        
+        double[][] matriceTransitionN = puissanceMatricielle(matriceTransition(), n);
+        return matriceTransitionN[noeud1.getId()-1][noeud2.getId()-1];
     }
 }

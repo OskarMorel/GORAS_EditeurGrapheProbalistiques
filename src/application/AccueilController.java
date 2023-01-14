@@ -273,14 +273,32 @@ public class AccueilController implements Initializable {
                     
                     MenuItem matrice = new MenuItem("Matrice de transition");
                     MenuItem coloration = new MenuItem("Coloration du graphe");
+                    MenuItem sommetASommet = new MenuItem("Loi de probabilité sommet a sommet en n transition(s)"); 
                     MenuItem loiProbTransition = new MenuItem("Loi de probabilité atteinte après n transition(s)");
-                    menuTraitement.getItems().addAll(matrice, coloration, loiProbTransition);
+                    menuTraitement.getItems().addAll(matrice, coloration, sommetASommet, loiProbTransition);
 
                     matrice.setOnAction((ActionEvent e) -> {
                         if (graphe.estGrapheProbabiliste()) {
                             traitement.affichageMatrice();
                         }
-                        
+                    });
+                    
+                    matrice.setOnAction((ActionEvent e) -> {
+                        if (graphe.estGrapheProbabiliste()) {
+                            traitement.affichageMatrice();
+                        }
+                    });
+                    
+                    matrice.setOnAction((ActionEvent e) -> {
+                        if (graphe.estGrapheProbabiliste()) {
+                            traitement.affichageMatrice();
+                        }
+                    });
+                    
+                    matrice.setOnAction((ActionEvent e) -> {
+                        if (graphe.estGrapheProbabiliste()) {
+                            traitement.affichageMatrice();
+                        }
                     });
                 }
                 

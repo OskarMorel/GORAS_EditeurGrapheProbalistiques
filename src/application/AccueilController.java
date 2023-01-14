@@ -464,6 +464,7 @@ public class AccueilController implements Initializable {
         traitement.affichageChemin(modificationContainer);
         //traitement.classificationSommet();
         traitement.regroupementParClasse();
+        traitement.loiDeProbabiliteEnNTransitions(4);
      
     }
 }    

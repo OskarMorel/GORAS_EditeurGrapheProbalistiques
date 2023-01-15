@@ -11,6 +11,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -30,6 +32,7 @@ import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Modality;
@@ -42,6 +45,8 @@ import traitement.FactoryManager;
 import traitement.Graphe;
 import traitement.Noeud;
 import traitement.Lien;
+import traitement.NoeudProbabiliste;
+import traitement.Traitement;
 import traitement.TraitementProbabiliste;
 
 /**
@@ -57,17 +62,20 @@ public class AccueilController implements Initializable {
     /* Instance du graphe en cours de traitement */
     public static Graphe graphe;
     
+    public static TraitementProbabiliste traitement;
+    
     /* Pour le dessin d'un lien */
     public static Noeud noeudCible;
     public static Noeud noeudSource;
     
-    /* Boolean permettant la transmission d'information entre AccueilController
-     *  et les actions des elements de l'interface graphique
+    /* 
+     * Boolean permettant la transmission d'information entre AccueilController
+     * et les actions des elements de l'interface graphique
      */
     public static boolean isDrawable = true;
     public static boolean estLien = false;
     
-    /* Pour le dessin d'un lien ainsi que pour sa modification */
+    /* Pour le dessin d'un lien ou d'un noeud ainsi que pour sa modification */
     private Lien lienEnCours;
     public static Group lienEnCoursGroup;
     public static Noeud noeudASelectionner;
@@ -88,15 +96,31 @@ public class AccueilController implements Initializable {
     @FXML
     private Button annulerBtn;
     @FXML
+    private Button probaBtn;
+    @FXML
     private ComboBox typesGraphe;
     @FXML
+    private ComboBox noeud1Txt;
+    @FXML
+    private ComboBox noeud2Txt;
+    @FXML
     private TextField nomGraphe;
+    @FXML
+    private TextField transitionTxt;
     @FXML
     private AnchorPane modificationContainer;
     @FXML
     private Label labelNomGraphe;
     @FXML
     private Label labelTypeGraphe;
+    @FXML
+    private Label noeud1Label;
+    @FXML
+    private Label noeud2Label;
+    @FXML
+    private Label transitionLabel;
+    @FXML
+    private Text reponseTxt;
     @FXML
     private Menu traitementMenu;
     
@@ -122,6 +146,15 @@ public class AccueilController implements Initializable {
             typesGraphe.getItems().addAll(factoryManager.getFactories().keySet());
         } catch (Exception e) {
             //TODO
+        }
+        
+        try { //Si fenetre de traitement sommet a sommet en n transition(s)
+            for (Noeud noeud : graphe.getNoeuds()) {
+                noeud1Txt.getItems().add(noeud.getLibelle());
+                noeud2Txt.getItems().add(noeud.getLibelle());
+            } 
+        } catch (NullPointerException e) {
+            
         }
         
     }  
@@ -269,18 +302,48 @@ public class AccueilController implements Initializable {
 
                     menuTraitement.getItems().clear();
 
-                    TraitementProbabiliste traitement = new TraitementProbabiliste(graphe);
+                    traitement = new TraitementProbabiliste(graphe);
                     
                     MenuItem matrice = new MenuItem("Matrice de transition");
                     MenuItem coloration = new MenuItem("Coloration du graphe");
+                    MenuItem sommetASommet = new MenuItem("Probabilité sommet a sommet en n transition(s)"); 
                     MenuItem loiProbTransition = new MenuItem("Loi de probabilité atteinte après n transition(s)");
-                    menuTraitement.getItems().addAll(matrice, coloration, loiProbTransition);
+                    menuTraitement.getItems().addAll(matrice, coloration, sommetASommet, loiProbTransition);
 
                     matrice.setOnAction((ActionEvent e) -> {
                         if (graphe.estGrapheProbabiliste()) {
                             traitement.affichageMatrice();
                         }
-                        
+                    });
+                    
+                    coloration.setOnAction((ActionEvent e) -> {
+                        if (graphe.estGrapheProbabiliste()) {
+                            traitement.affichageMatrice();
+                        }
+                    });
+                    
+                    sommetASommet.setOnAction((ActionEvent e) -> {
+                        if (graphe.estGrapheProbabiliste()) {
+                            
+                            try {
+                                Parent root = FXMLLoader.load(getClass().getResource("FXMLProbaSommetSommetNTransition.fxml"));
+                                Stage sommetSommetStage = new Stage();
+                                sommetSommetStage.initModality(Modality.APPLICATION_MODAL);
+                                sommetSommetStage.setTitle("Probabilité sommet à sommet en n transition(s)");
+                                sommetSommetStage.getIcons().add(new Image("/img/line-chart.png"));
+                                sommetSommetStage.setScene(new Scene(root));  
+                                sommetSommetStage.show();
+                                
+                            } catch (IOException ex) {
+                                Logger.getLogger(AccueilController.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                        }
+                    });
+                    
+                    loiProbTransition.setOnAction((ActionEvent e) -> {
+                        if (graphe.estGrapheProbabiliste()) {
+                            traitement.affichageMatrice();
+                        }
                     });
                 }
                 
@@ -345,7 +408,7 @@ public class AccueilController implements Initializable {
     }
     
     /*
-     * Enregistre le graphe courant avec un chemin et un nom spécifiés
+     * Enregistre le graphe courant avec un chemin et un nom spécifié
      */
     @FXML
     private void enregistrerSous() {
@@ -416,6 +479,7 @@ public class AccueilController implements Initializable {
             
             //Reinitialisation de la zone de dessin et des parametes de dessin
             zoneDessin.getChildren().clear();
+            graphe = null;
             Noeud.cpt = 0;
             
             FileChooser fileChooser = new FileChooser();
@@ -450,9 +514,52 @@ public class AccueilController implements Initializable {
             
         } catch (IOException e) {
             System.err.println(e.getMessage());
-        } //catch (NullPointerException e) {
-//            System.err.println(e.getMessage());
-//        }
+        } catch (NullPointerException e) {
+            System.err.println(e.getMessage());
+        }
+    }
+    
+    @FXML
+    private void afficheSommetASommetNTransition() throws Exception {
+        
+        //Recuperation des noeuds source et cible en fonction des libelles
+        NoeudProbabiliste noeud1 = null;
+        NoeudProbabiliste noeud2 = null;
+        
+        int nbT = 0;
+        boolean noeud1Ok = false;
+        boolean noeud2Ok = false;
+        
+        for (Noeud noeud : graphe.getNoeuds()) {
+            
+            if (noeud.getLibelle().equals(noeud1Txt.getValue())) {
+                noeud1 = (NoeudProbabiliste) noeud;
+                noeud1Label.setTextFill(Color.BLACK);
+                noeud1Ok = true;
+            }
+            if (noeud.getLibelle().equals(noeud2Txt.getValue())) {
+                noeud2 = (NoeudProbabiliste) noeud;
+                noeud2Label.setTextFill(Color.BLACK);
+                noeud2Ok = true;
+            }
+        }
+        
+        if (!noeud1Ok) noeud1Label.setTextFill(Color.RED);
+        if (!noeud2Ok) noeud2Label.setTextFill(Color.RED);
+        
+        if (transitionTxt.getText().matches("\\d+") && Integer.parseInt(transitionTxt.getText()) > 0) {
+            nbT = Integer.parseInt(transitionTxt.getText());
+            transitionLabel.setTextFill(Color.BLACK);
+        } else {
+            transitionLabel.setTextFill(Color.RED);
+        }
+        
+        if (nbT != 0 && noeud1Ok && noeud2Ok) {
+            double coeff = traitement.sommetASommetNTransition(noeud1, noeud2, nbT);
+        reponseTxt.setText("Loi de probabilité de passer du sommet " + noeud1Txt.getValue() 
+                           + " au sommet " + noeud2Txt.getValue() + " en " 
+                           + nbT + " transition(s) : " + coeff);
+        }       
     }
     
     @FXML
@@ -464,7 +571,7 @@ public class AccueilController implements Initializable {
         traitement.affichageChemin(modificationContainer);
         //traitement.classificationSommet();
         traitement.regroupementParClasse();
-        traitement.loiDeProbabiliteEnNTransitions(4);
+        //traitement.loiDeProbabiliteEnNTransitions(4);
      
     }
 }    

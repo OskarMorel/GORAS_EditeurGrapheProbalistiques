@@ -456,7 +456,7 @@ public class AccueilController implements Initializable {
     }
     
     @FXML
-    private void traitement() {  
+    private void traitement() throws Exception {  
         
         
         TraitementProbabiliste traitement = new TraitementProbabiliste(graphe);

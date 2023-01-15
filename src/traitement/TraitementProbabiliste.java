@@ -13,6 +13,8 @@ import java.text.ParsePosition;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Alert;
@@ -362,52 +364,45 @@ public class TraitementProbabiliste extends Traitement {
         return result;
     }
     
-    public void loiDeProbabiliteEnNTransitions(int n) {
-        
-        double[] loiEssai = new double [4];
-        loiEssai[0] = 1.0;
-        loiEssai[1] = 1.0;
-        loiEssai[2] = 1.0;
-        loiEssai[3] = 1.0;
-
-        
-        //définition de la loi de probabilité initiale
-        double[] loiDeProba = new double[graphe.getNoeuds().size()];
-        for (int index = 0 ; index < graphe.getNoeuds().size() ; index++) {
-            loiDeProba[index] = loiEssai[index];
-        }
-        
-        double[][] matrice = matriceTransition();
-        
-        double[][] matFinale = puissanceMatricielle(matrice, n);
-        
-        //multiplication de la matrice avec loi de proba
-        double[] loiDeProbaFinale = new double[graphe.getNoeuds().size()];
-        double valeur;
-        if (n == 0) {
-            loiDeProbaFinale = loiDeProba;
-        } else {
-            for (int j = 0 ; j < loiDeProba.length ; j++) {
-                valeur = 0;
-                for (int i = 0 ; i < matFinale.length ; i++) {
-                    valeur += loiDeProba[j] *matFinale[i][j];
-                }
-                loiDeProbaFinale[j] = valeur;
+    public void loiDeProbabiliteEnNTransitions(int n) throws Exception {            
+            
+            //définition de la loi de probabilité initiale
+            double[] loiDeProba = new double[graphe.getNoeuds().size()];
+            for (int index = 0 ; index < graphe.getNoeuds().size() ; index++) {
+                loiDeProba[index] = graphe.getNoeuds().get(index).getPonderation();
             }
-        }
-        
-        //passage en string pour fenetre
-        String affichageLoiProba = " ";
-        for (int i = 0 ; i < loiDeProbaFinale.length ; i++) {
-            affichageLoiProba += loiDeProbaFinale[i] + "  ";
-        }
-        
-        //affichage resultat
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("loi de probabilité en n transitions");
-        alert.setHeaderText("loi de probabilité : ");
-        alert.setContentText(affichageLoiProba);
-        alert.showAndWait();
+            
+            double[][] matrice = matriceTransition();
+            
+            double[][] matFinale = puissanceMatricielle(matrice, n);
+            
+            //multiplication de la matrice avec loi de proba
+            double[] loiDeProbaFinale = new double[graphe.getNoeuds().size()];
+            double valeur;
+            if (n == 0 || n < 0) {
+                loiDeProbaFinale = loiDeProba;
+            } else {
+                for (int j = 0 ; j < loiDeProba.length ; j++) {
+                    valeur = 0;
+                    for (int i = 0 ; i < matFinale.length ; i++) {
+                        valeur += loiDeProba[j] *matFinale[i][j];
+                    }
+                    loiDeProbaFinale[j] = valeur;
+                }
+            }
+            
+            //passage en string pour fenetre
+            String affichageLoiProba = " ";
+            for (int i = 0 ; i < loiDeProbaFinale.length ; i++) {
+                affichageLoiProba += loiDeProbaFinale[i] + "  ";
+            }
+            
+            //affichage resultat
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("loi de probabilité en n transitions");
+            alert.setHeaderText("loi de probabilité : ");
+            alert.setContentText(affichageLoiProba);
+            alert.showAndWait();
         
     }
 }

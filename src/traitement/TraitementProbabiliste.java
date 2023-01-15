@@ -350,7 +350,7 @@ public class TraitementProbabiliste extends Traitement {
         return result;
     }
     
-    public void loiDeProbabiliteEnNTransitions(int n) throws Exception {            
+    public double[] loiDeProbabiliteEnNTransitions(int n) throws Exception {            
             
             //définition de la loi de probabilité initiale
             double[] loiDeProba = new double[graphe.getNoeuds().size()];
@@ -377,19 +377,8 @@ public class TraitementProbabiliste extends Traitement {
                     loiDeProbaFinale[j] = valeur;
                 }
             }
+            return loiDeProbaFinale;
             
-            //passage en string pour fenetre
-            String affichageLoiProba = " ";
-            for (int i = 0 ; i < loiDeProbaFinale.length ; i++) {
-                affichageLoiProba += loiDeProbaFinale[i] + "  ";
-            }
-            
-            //affichage resultat
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("loi de probabilité en n transitions");
-            alert.setHeaderText("loi de probabilité : ");
-            alert.setContentText(affichageLoiProba);
-            alert.showAndWait();
         
     }
     

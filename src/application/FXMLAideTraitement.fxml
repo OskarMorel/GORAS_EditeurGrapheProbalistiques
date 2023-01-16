@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.*?>
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" prefHeight="335.0" prefWidth="540.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.AccueilController">
+   <children>
+      <ScrollPane hbarPolicy="NEVER" layoutY="1.0" prefHeight="334.0" prefWidth="590.0">
+        <content>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="533.0" prefWidth="596.0">
+               <children>
+                  <TextFlow layoutX="39.0" layoutY="226.0" prefHeight="50.0" prefWidth="440.0">
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Lorsque l’utilisateur clique sur “proba passage entre 2 sommets”, une fenêtre s’ouvre où il devra choisir les 2 points dont il veut tester la probabilité et le nombre de transitions qu’il veut utiliser pour passer de l’un à l’autre. Puis lorsqu'il clique sur “Obtenir la probabilité”, le résultat est affiché.">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </TextFlow>
+                  <Label layoutX="14.0" layoutY="189.0" prefHeight="27.0" prefWidth="553.0" text="Probabilité sommet à sommet en n transition(s) " underline="true">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="259.0" layoutY="10.0" text="Aide">
+                     <font>
+                        <Font size="24.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="14.0" layoutY="84.0" prefHeight="27.0" prefWidth="283.0" text="Matrice de transition" underline="true">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+                  <TextFlow layoutX="39.0" layoutY="119.0" prefHeight="50.0" prefWidth="440.0">
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Lorsque l'utilisateur clique sur &quot;matrice de transition&quot;, une fenêtre s'ouvre affichant la matrice de transition du graphe">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </TextFlow>
+                  <Label layoutX="14.0" layoutY="321.0" prefHeight="27.0" prefWidth="283.0" text="Coloration" underline="true">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+                  <TextFlow layoutX="39.0" layoutY="349.0" prefHeight="50.0" prefWidth="440.0">
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Les sommets sont classés selon trois types : transitoire (Vert) , ergodique (Bleu) ou éventuellement absorbants (Rouge). Lorsque l’utilisateur clique sur “coloration”, le graphe en cours est coloré">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </TextFlow>
+                  <Label layoutX="14.0" layoutY="418.0" prefHeight="27.0" prefWidth="499.0" text="Loi de probabilité atteinte après n transition(s)" underline="true">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+                  <TextFlow layoutX="39.0" layoutY="453.0" prefHeight="50.0" prefWidth="440.0">
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Lorsque l’utilisateur clique sur “Loi de probabilité atteinte après n transition(s)”, une fenêtre s’ouvre, demandant à l’utilisateur d’entrer le nombre de transition(s) qu’il veut effectué ainsi que la loi initiale. Puis lorsqu’il clique sur ”obtenir la loi de probabilité”, le résultat est affiché.">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </TextFlow>
+               </children>
+            </AnchorPane>
+        </content>
+      </ScrollPane>
+   </children>
+</AnchorPane>

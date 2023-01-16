@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.*?>
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" prefHeight="258.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.AccueilController">
+   <children>
+      <Label layoutX="276.0" layoutY="14.0" text="Aide">
+         <font>
+            <Font size="24.0" />
+         </font>
+      </Label>
+      <Label layoutX="14.0" layoutY="49.0" prefHeight="27.0" prefWidth="283.0" text="Création d'un graphe" underline="true">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <Text layoutX="14.0" layoutY="101.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Lorsque l’utilisateur clique sur “Créer”, une fenêtre nommée “Créer graphe” s’ouvre :">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Text>
+      <TextFlow layoutX="28.0" layoutY="120.0" prefHeight="50.0" prefWidth="440.0">
+         <children>
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Sur cette fenêtre, l’éditeur demande à l’utilisateur de rentrer le nom à donner au graphe ainsi que de choisir entre plusieurs options pour choisir le type de graphe qu’il souhaite traiter.">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Text>
+         </children>
+      </TextFlow>
+      <TextFlow layoutX="28.0" layoutY="200.0" prefHeight="50.0" prefWidth="440.0">
+         <children>
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Après ça, il suffit de cliquer sur “Créer” pour ouvrir un nouveau graphe.">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Text>
+         </children>
+      </TextFlow>
+   </children>
+</AnchorPane>

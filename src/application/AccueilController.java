@@ -342,7 +342,17 @@ public class AccueilController implements Initializable {
                     
                     loiProbTransition.setOnAction((ActionEvent e) -> {
                         if (graphe.estGrapheProbabiliste()) {
-                            traitement.affichageMatrice();
+                            try {
+                                Parent root = FXMLLoader.load(getClass().getResource("FXMLloiDeProbaNTranstion.fxml"));
+                                Stage loiProba = new Stage();
+                                loiProba.initModality(Modality.APPLICATION_MODAL);
+                                loiProba.setTitle("loi de probabilité après n transition(s)");
+                                loiProba.setScene(new Scene(root));  
+                                loiProba.show();
+                                
+                            } catch (IOException ex) {
+                                Logger.getLogger(AccueilController.class.getName()).log(Level.SEVERE, null, ex);
+                            }
                         }
                     });
                 }
@@ -562,8 +572,24 @@ public class AccueilController implements Initializable {
         }       
     }
     
+    private void afficheLoiProbaApresTransition() throws Exception {
+        
+        int exposant = 0;
+        if (transitionTxt.getText().matches("\\d+") && Integer.parseInt(transitionTxt.getText()) > 0) {
+            exposant = Integer.parseInt(transitionTxt.getText());
+            transitionLabel.setTextFill(Color.BLACK);
+        } else {
+            transitionLabel.setTextFill(Color.RED);
+        }
+        
+        if (exposant != 0) {
+            double[] matrice = traitement.loiDeProbabiliteEnNTransitions(exposant);
+        reponseTxt.setText("Loi de probabilité après n transitions : " + matrice);
+        }     
+    }
+    
     @FXML
-    private void traitement() {  
+    private void traitement() throws Exception {  
         
         
         TraitementProbabiliste traitement = new TraitementProbabiliste(graphe);
@@ -571,7 +597,7 @@ public class AccueilController implements Initializable {
         traitement.affichageChemin(modificationContainer);
         //traitement.classificationSommet();
         traitement.regroupementParClasse();
-        //traitement.loiDeProbabiliteEnNTransitions(4);
+        traitement.loiDeProbabiliteEnNTransitions(4);
      
     }
 }    

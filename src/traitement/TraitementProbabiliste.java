@@ -33,15 +33,20 @@ public class TraitementProbabiliste extends Traitement {
     /** le graphe utiliser pour les traitements */
     private GrapheProbabiliste graphe;
 
+    /** Permet de determiner la couleur selon la classe*/
     int coloration;
     
-    /** */
+    /** Permet de determiner si un chemin existe */
     ArrayList<Noeud> chemin = new ArrayList<>();
     
-    /** */
+    /** Recupere la liste de noeuds afin de determiner les classes */
     ArrayList<Noeud> listeNoeud;
 
+    /** Liste pour mettre les noeuds d'une classe*/
     ArrayList<NoeudProbabiliste> classe = new ArrayList<>();
+    
+    /**Liste des classes du graphe*/
+    String listeClasse = "";
 
     
     /**
@@ -179,22 +184,22 @@ public class TraitementProbabiliste extends Traitement {
             
             if(listeNoeud.size()>0){
                 if(existenceChemin(classe.get(0), listeNoeud.get(0), 0)){
-                    System.out.println("Transitoire");
+                    listeClasse += "Classe Transitoire : ";
                     coloration = 1;
                 }else{
-                    System.out.println("Finale");
+                    listeClasse += "\nClasse Finale";
                     coloration = 2;
                 } 
             }else{
                 if(classe.size()==1){
-                    System.out.println("Absorbant");
+                    listeClasse += "\nClasse Finale";
                     coloration = 3;
                 }else{
-                    System.out.println("Finale");
+                    listeClasse += "\nClasse Finale";
                     coloration = 2;
                 }
             }
-            
+            listeClasse += " { ";
             for(int i = 0; i<classe.size(); i++ ){
                 
                 if(coloration == 1){
@@ -204,12 +209,22 @@ public class TraitementProbabiliste extends Traitement {
                 }else{
                     classe.get(i).dessinerNoeud(zoneDessin, Color.RED);
                 }
-                System.out.print(classe.get(i).getLibelle());
-                System.out.print(" , ");
+                listeClasse += classe.get(i).getLibelle();
+                if( i == classe.size()-1){
+                    listeClasse += " } ";
+                }else{
+                   listeClasse += " , "; 
+                }
             }
+            listeClasse += "\n"; 
             classe.clear();
         }
-        
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Classes");
+        alert.setHeaderText("Les Différentes classes : ");
+        alert.initOwner(mainStage);
+        alert.setContentText(listeClasse);
+        alert.showAndWait();
     }
     
     /**
@@ -266,19 +281,16 @@ public class TraitementProbabiliste extends Traitement {
      * Pour une loi de probabilité initiale sur l’ensemble des sommets du graphe, détermine la loi
      * de probabilité atteinte après un nombre de transition(s) donné.
      * @param n nombre de transition
+     * @param initiale loi de proba initiale
      * @return la matrice correspondante
      */
-    public double[] loiDeProbabiliteEnNTransitions(int n) throws Exception {            
-            
-            //définition de la loi de probabilité initiale
-            double[] loiDeProba = new double[graphe.getNoeuds().size()];
-            for (int index = 0 ; index < graphe.getNoeuds().size() ; index++) {
-                loiDeProba[index] = graphe.getNoeuds().get(index).getPonderation();
+    public double[] loiDeProbabiliteEnNTransitions(int n, double[] initiale) throws Exception {            
 
-            }
+            //définition de la loi de probabilité initiale
+            double[] loiDeProba = initiale; 
             
+            //récupération de la matrice carré
             double[][] matrice = matriceTransition();
-            
             double[][] matFinale = puissanceMatricielle(matrice, n);
             
             //multiplication de la matrice avec loi de proba
@@ -290,7 +302,7 @@ public class TraitementProbabiliste extends Traitement {
                 for (int j = 0 ; j < loiDeProba.length ; j++) {
                     valeur = 0;
                     for (int i = 0 ; i < matFinale.length ; i++) {
-                        valeur += loiDeProba[j] *matFinale[i][j];
+                        valeur += loiDeProba[j] * matFinale[i][j];
                     }
                     loiDeProbaFinale[j] = valeur;
                 }

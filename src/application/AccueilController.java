@@ -21,6 +21,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.regex.Pattern;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -138,6 +141,10 @@ public class AccueilController implements Initializable {
     private Text reponseTxt;
     @FXML
     private Menu traitementMenu;
+    @FXML
+    private TextField loiProbaInitialeTxt;
+    @FXML
+    private Text loiProbaInitiale;
     
     static Menu menuTraitement;
     static AnchorPane zoneDessinStatic;
@@ -369,7 +376,9 @@ public class AccueilController implements Initializable {
                     loiProbTransition.setOnAction((ActionEvent e) -> {
                         if (graphe.estGrapheProbabiliste()) {
                             try {
+
                                 Parent root = FXMLLoader.load(getClass().getResource("FXMLLoiDeProbaNTransition.fxml"));
+
                                 Stage loiProba = new Stage();
                                 loiProba.initModality(Modality.APPLICATION_MODAL);
                                 loiProba.setTitle("Loi de probabilité après n transition(s)");
@@ -605,20 +614,43 @@ public class AccueilController implements Initializable {
     
     @FXML
     private void afficheLoiProbaApresTransition() throws Exception {
+             
+        double[] loiInitiale = new double[graphe.getNoeuds().size()];
         
+        //sert à séparer les coefficient dans la chaine
+        Pattern separateur = Pattern.compile(",");
+        //[0-9]{1,3}(,[0-9]{1,3}){0," + graphe.getNoeuds().size() + "}
+        //récupération des coefficient dans la matrice 1xn "loiInitiale"
+        if (loiProbaInitialeTxt.getText().matches("\\d+\\.?\\d*(,\\d+\\.?\\d*){0," + graphe.getNoeuds().size() + "}")) {
+            String[] sousChaines = separateur.split(loiProbaInitialeTxt.getText());
+            System.out.print("hfh");
+            for (int i = 0 ; i <sousChaines.length ; i++) {
+                loiInitiale[i] = Double.parseDouble(sousChaines[i]);
+            }
+        }
+        
+        //vérification de l'exposant
         int exposant = 0;
         if (transitionTxt.getText().matches("\\d+") && Integer.parseInt(transitionTxt.getText()) > 0) {
             exposant = Integer.parseInt(transitionTxt.getText());
-            transitionLabel.setTextFill(Color.BLACK);
-        } else {
-            transitionLabel.setTextFill(Color.RED);
         }
         
-        if (exposant != 0) {
-            double[] matrice = traitement.loiDeProbabiliteEnNTransitions(exposant);
-            reponseTxt.setText("Loi de probabilité après n transitions : " + matrice);
+
+        //utilisation de la méthode
+        if (loiInitiale != null) {
+            double[] matrice = traitement.loiDeProbabiliteEnNTransitions(exposant, loiInitiale);
+            //passage en string pour fenetre
+            String affichageLoiProba = " ";
+            for (int i = 0 ; i < matrice.length ; i++) {
+                affichageLoiProba += matrice[i] + "  ";
+            }
+            reponseTxt.setText("Loi de probabilité après " + exposant + " transitions : " + affichageLoiProba);
+        } else {
+            reponseTxt.setText("loi incorrect !");
         }     
     }
+    
+    
 
     private void afficheErreurPonderation() {
         Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -628,5 +660,6 @@ public class AccueilController implements Initializable {
         alert.initOwner(mainStage);
         alert.showAndWait();
     }
+
     
 }    

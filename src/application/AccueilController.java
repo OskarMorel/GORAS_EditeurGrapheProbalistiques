@@ -461,7 +461,7 @@ public class AccueilController implements Initializable {
         
         TraitementProbabiliste traitement = new TraitementProbabiliste(graphe);
         traitement.matriceTransition();
-        traitement.affichageChemin(modificationContainer);
+        //traitement.affichageChemin(modificationContainer);
         //traitement.classificationSommet();
         traitement.regroupementParClasse();
      

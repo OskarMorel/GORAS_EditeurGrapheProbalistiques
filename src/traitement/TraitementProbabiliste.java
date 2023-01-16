@@ -14,6 +14,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 
 /**
  *
@@ -41,6 +43,7 @@ public class TraitementProbabiliste extends Traitement {
     
     /** */
     boolean cheminPossible = false;
+    int coloration;
     
     /** */
     ArrayList<Noeud> chemin = new ArrayList<>();
@@ -134,182 +137,102 @@ public class TraitementProbabiliste extends Traitement {
         alert.setContentText(matrice);
         alert.showAndWait();
     }
-
-    /**
-     *
-     * @param zonePropriete
-     */
-    public void affichageChemin(AnchorPane zonePropriete){  
-        
-        List<Lien> chemin = new ArrayList<>();
-        //Gestion propriete source
-        Label labelSource = new Label("Source : ");
-        labelSource.setLayoutX(10);
-        labelSource.setLayoutY(53);
-        
-        ComboBox noeudsSource = new ComboBox();
-        noeudsSource.setLayoutX(120);
-        noeudsSource.setLayoutY(50);
-        for (Noeud noeud : graphe.getNoeuds()) {
-            noeudsSource.getItems().add(noeud.getLibelle());
-        }
-        noeudsSource.setValue(graphe.getNoeuds().get(0).getLibelle());//Selected ComboBox
-        zonePropriete.getChildren().addAll(labelSource, noeudsSource);
-
-        //Gestion propriete cible
-        Label labelCible = new Label("Cible : ");
-        labelCible.setLayoutX(10);
-        labelCible.setLayoutY(103);
-        
-        ComboBox noeudsCible = new ComboBox();
-        noeudsCible.setLayoutX(120);
-        noeudsCible.setLayoutY(100);
-        for (Noeud noeud : graphe.getNoeuds()) {
-            noeudsCible.getItems().add(noeud.getLibelle()); 
-        }
-        noeudsCible.setValue(graphe.getNoeuds().get(0).getLibelle());//Selected ComboBox
-        zonePropriete.getChildren().addAll(labelCible, noeudsCible);
-        
-        // Bouton de validation
-        Button validationModif = new Button("Valider");
-        validationModif.setLayoutX(60);
-        validationModif.setLayoutY(203);
-        zonePropriete.getChildren().addAll(validationModif);
-        
-        
-        // Si validation des changements
-        validationModif.setOnAction(new EventHandler<ActionEvent>() {  
-            @Override
-            public void handle(ActionEvent event) {
-                
-                String libelleSource = (String) noeudsSource.getValue();
-                String libelleCible = (String) noeudsCible.getValue();
-        
-                for(int i = 0; i < graphe.getNoeuds().size(); i++){
-                    if(libelleSource.equals(graphe.getNoeuds().get(i).getLibelle())){
-                        noeudSFinal = graphe.getNoeuds().get(i);
-                    }
-                    if(libelleCible.equals(graphe.getNoeuds().get(i).getLibelle())){
-                        noeudCFinal = graphe.getNoeuds().get(i);
-                    }
-                }
-                if (existenceChemin(noeudSFinal, noeudCFinal)){
-                    cheminExistant = "Chemin Existant";
-                }else{
-                    cheminExistant = "Chemin Inexistant";
-                }
-        
-                zonePropriete.getChildren().clear();
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Chemin");
-                alert.setHeaderText("Chemin : ");
-                alert.setContentText(cheminExistant);
-                alert.showAndWait();
-            }
-            
-        });
-    } 
     
-    public boolean existenceChemin(Noeud noeudS, Noeud noeudC){ 
+    public boolean existenceChemin(Noeud noeudS, Noeud noeudC, int indiceParcours){ 
         
         if(chemin.isEmpty()){
-            indice = 0;
+            indiceParcours = 0;
             chemin.add(noeudS);
         }
-        for (int i = indice ; i < graphe.getLiens().size() ; i++) {  
+        for (int i = indiceParcours ; i < graphe.getLiens().size() ; i++) {  
             if (graphe.getLiens().get(i).getSource() == noeudS) {
                 if(graphe.getLiens().get(i).getCible() == noeudC){
-                    indice = 0;
+                    //indice = 0;
                     return true;
                 }
                 if(!chemin.contains(graphe.getLiens().get(i).getCible())) {
                     chemin.add(graphe.getLiens().get(i).getCible());
                     noeudS = graphe.getLiens().get(i).getCible();
-                    indice =0;
-                    return existenceChemin(noeudS,noeudC);
+                    return existenceChemin(noeudS,noeudC, 0 );
                 } 
             }  
         }
         if(chemin.size() == 1){
+            //indice = 0;
             return false;
         }
-        indice++;
-        if(indice < chemin.size()){
-            return existenceChemin(chemin.get(indice), noeudC);
+        indiceParcours++;
+        if(indiceParcours < chemin.size()){
+            return existenceChemin(chemin.get(indiceParcours), noeudC, indiceParcours);
         }
         return false;
     }
     
-    public void regroupementParClasse(){
-        //System.out.println(listeNoeud.get(0));
+    public void regroupementParClasse(AnchorPane zoneDessin){
+        listeNoeud = (ArrayList<Noeud>) graphe.getNoeuds().clone();
+        System.out.println(listeNoeud);
         while(listeNoeud.size()>0){
             classe.add(listeNoeud.get(0));
             listeNoeud.remove(0);
             
             for(int i = 0; i < listeNoeud.size(); i++){
-                noeudSFinal = classe.get(0);
-                if(existenceChemin(classe.get(0), listeNoeud.get(i))){
-                    indice = 0;
-                    noeudSFinal = listeNoeud.get(i);
-                    if(existenceChemin(listeNoeud.get(i), classe.get(0))){
+                chemin.clear();
+                if(existenceChemin(classe.get(0), listeNoeud.get(i), 0)){
+                    chemin.clear();
+                    if(existenceChemin(listeNoeud.get(i), classe.get(0), 0)){
                         classe.add(listeNoeud.get(i));
                         listeNoeud.remove(i);
                         i--;
                     }
                 }
             }
-            System.out.println(classe.size());
-            classe.clear();
-        }
-        indice = 0;
-        
-    }
-    /*
-    public void classificationSommet(){
-        
-        for(int i = 0; i < graphe.getNoeuds().size(); i++){
-
-            for(int j = 0; j < graphe.getNoeuds().size(); j++){    
             
-                noeudSFinal = graphe.getNoeuds().get(i);
-                
-                
-                Circle cercleExterieur = new Circle(graphe.getNoeuds().get(i).getCoordX(), graphe.getNoeuds().get(i).getCoordY(), NoeudSimple.getRadius() * 2.5);
+            if(listeNoeud.size()>0){
+                if(existenceChemin(classe.get(0), listeNoeud.get(0), 0)){
+                    System.out.println("Transitoire");
+                    coloration = 1;
+                }else{
+                    System.out.println("Finale");
+                    coloration = 2;
+                } 
+            }else{
+                if(classe.size()==1){
+                    System.out.println("Absorbant");
+                    coloration = 3;
+                }else{
+                    System.out.println("Finale");
+                    coloration = 2;
+                }
+            }
+            
+            for(int i = 0; i<classe.size(); i++ ){
+                Circle cercleExterieur = new Circle(classe.get(i).getCoordX(), classe.get(i).getCoordY(), NoeudSimple.getRadius() * 2.5);
                 cercleExterieur.setFill(Color.TRANSPARENT);
                 cercleExterieur.setStroke(Color.TRANSPARENT);
 
                 
-                Label libelle = new Label(graphe.getNoeuds().get(i).getLibelle());
-                libelle.setLayoutX(graphe.getNoeuds().get(i).getCoordX() - 3);
-                libelle.setLayoutY(graphe.getNoeuds().get(i).getCoordY() - 8);
+                Label libelle = new Label(classe.get(i).getLibelle());
+                libelle.setLayoutX(classe.get(i).getCoordX() - 3);
+                libelle.setLayoutY(classe.get(i).getCoordY() - 8);
 
                 
-                Circle cercle = new Circle(graphe.getNoeuds().get(i).getCoordX(), graphe.getNoeuds().get(i).getCoordY(), NoeudSimple.getRadius());
+                Circle cercle = new Circle(classe.get(i).getCoordX(), classe.get(i).getCoordY(), NoeudSimple.getRadius());
                 cercle.setFill(Color.TRANSPARENT);
-                
-                if(existenceChemin(graphe.getNoeuds().get(i), graphe.getNoeuds().get(j))){
-                    noeudSFinal = graphe.getNoeuds().get(j);
-                    if(existenceChemin(graphe.getNoeuds().get(j), graphe.getNoeuds().get(i))){
-                        cercle.setStroke(Color.GREEN);
-                        graphe.getNoeuds().get(i).groupe.getChildren().clear();
-                        graphe.getNoeuds().get(i).groupe.getChildren().addAll(cercle, libelle, cercleExterieur);
-                    }
-                    noeudSFinal = graphe.getNoeuds().get(i);
+                if(coloration == 1){
+                    cercle.setStroke(Color.GREEN);
+                }else if(coloration == 2){
+                    cercle.setStroke(Color.BLUE);
+                }else{
+                    cercle.setStroke(Color.RED);
                 }
-                noeudSFinal = graphe.getNoeuds().get(i);
-                if (existenceChemin(graphe.getNoeuds().get(i), graphe.getNoeuds().get(j)) == false){
-                    noeudSFinal = graphe.getNoeuds().get(j);
-                    if(existenceChemin(graphe.getNoeuds().get(j), graphe.getNoeuds().get(i)) == false){
-                        cercle.setStroke(Color.BLUE);
-                        graphe.getNoeuds().get(i).groupe.getChildren().clear();
-                        graphe.getNoeuds().get(i).groupe.getChildren().addAll(cercle, libelle, cercleExterieur);
-                    }
-                    noeudSFinal = graphe.getNoeuds().get(i);
-                }      
-            }       
+                zoneDessin.getChildren().addAll(cercle, libelle, cercleExterieur);
+                System.out.print(classe.get(i).getLibelle());
+                System.out.print(" , ");
+            }
+            classe.clear();
         }
+        
     }
-    */
     
     /**
      * Calcul le produit de deux matrices : matrice1 x matrice 2
@@ -395,7 +318,6 @@ public class TraitementProbabiliste extends Traitement {
                 }
             }
             return loiDeProbaFinale;
-            
         
     }
     

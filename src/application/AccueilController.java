@@ -141,6 +141,7 @@ public class AccueilController implements Initializable {
     private Menu traitementMenu;
     
     static Menu menuTraitement;
+    static AnchorPane zoneDessinStatic;
         
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -153,6 +154,7 @@ public class AccueilController implements Initializable {
             lienBtn.setToggleGroup(group);        
             
             menuTraitement = traitementMenu;
+            zoneDessinStatic = zoneDessin;
             
         } catch (NullPointerException e) {
             /* Si nouvelle fenetre diff de accueil*/
@@ -332,9 +334,9 @@ public class AccueilController implements Initializable {
                     });
                     
                     coloration.setOnAction((ActionEvent e) -> {
-                        if (graphe.estGrapheProbabiliste()) {
-                            traitement.affichageMatrice();
-                        }
+                        ///if (graphe.estGrapheProbabiliste()) {
+                            traitement.regroupementParClasse(zoneDessinStatic);
+                        //}
                     });
                     
                     sommetASommet.setOnAction((ActionEvent e) -> {

@@ -9,6 +9,10 @@
 
 package traitement;
 
+import graphe.Graphe;
+import graphe.Lien;
+import graphe.Noeud;
+
 /**
  * 
  * Factory permettant la creation d'éléments relatif à un graphe

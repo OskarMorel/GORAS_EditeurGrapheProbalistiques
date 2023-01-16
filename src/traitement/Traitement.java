@@ -9,6 +9,8 @@
 
 package traitement;
 
+import graphe.Graphe;
+
 /**
  * 
  * Gestion des traitements

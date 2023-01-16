@@ -9,6 +9,11 @@
 
 package traitement;
 
+import graphe.NoeudProbabiliste;
+import graphe.ArcProbabiliste;
+import graphe.Noeud;
+import graphe.GrapheProbabiliste;
+
 /**
  * 
  * Factory permettant la creation d'éléments relatif à un graphe probabiliste

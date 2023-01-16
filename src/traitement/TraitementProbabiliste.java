@@ -1,19 +1,32 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * PROJET : Editeur de graphe probabiliste
+ * -------------------------------------------------
+ *
+ * TraitementProbabiliste.java            16/01/2023
+ * Copyright 2022 GORAS to Present
+ * All Rights Reserved
  */
 package traitement;
 
 import static application.Accueil.mainStage;
+import graphe.Graphe;
+import graphe.NoeudProbabiliste;
+import graphe.Noeud;
+import graphe.GrapheProbabiliste;
 import java.util.ArrayList;
 import javafx.scene.control.Alert;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 
 /**
- *
- * @author remi.jauzion
+ * 
+ * Gestion des traitements sur un graphe probabiliste
+ * 
+ * @author Antoine Gouzy
+ * @author Remi Jauzion
+ * @author Gauthier Jalbaud
+ * @author Oskar Morel
+ * @author Simon Launay
  */
 public class TraitementProbabiliste extends Traitement {
     
@@ -117,6 +130,7 @@ public class TraitementProbabiliste extends Traitement {
         alert.setTitle("Matrice de Transtion");
         alert.setHeaderText("Matrice de Transtion : ");
         alert.setContentText(matrice);
+        alert.initOwner(mainStage);
         alert.showAndWait();
     }
     
@@ -267,19 +281,16 @@ public class TraitementProbabiliste extends Traitement {
      * Pour une loi de probabilité initiale sur l’ensemble des sommets du graphe, détermine la loi
      * de probabilité atteinte après un nombre de transition(s) donné.
      * @param n nombre de transition
+     * @param initiale loi de proba initiale
      * @return la matrice correspondante
      */
-    public double[] loiDeProbabiliteEnNTransitions(int n) throws Exception {            
-            
-            //définition de la loi de probabilité initiale
-            double[] loiDeProba = new double[graphe.getNoeuds().size()];
-            for (int index = 0 ; index < graphe.getNoeuds().size() ; index++) {
-                loiDeProba[index] = graphe.getNoeuds().get(index).getPonderation();
+    public double[] loiDeProbabiliteEnNTransitions(int n, double[] initiale) throws Exception {            
 
-            }
+            //définition de la loi de probabilité initiale
+            double[] loiDeProba = initiale; 
             
+            //récupération de la matrice carré
             double[][] matrice = matriceTransition();
-            
             double[][] matFinale = puissanceMatricielle(matrice, n);
             
             //multiplication de la matrice avec loi de proba
@@ -291,7 +302,7 @@ public class TraitementProbabiliste extends Traitement {
                 for (int j = 0 ; j < loiDeProba.length ; j++) {
                     valeur = 0;
                     for (int i = 0 ; i < matFinale.length ; i++) {
-                        valeur += loiDeProba[j] *matFinale[i][j];
+                        valeur += loiDeProba[j] * matFinale[i][j];
                     }
                     loiDeProbaFinale[j] = valeur;
                 }

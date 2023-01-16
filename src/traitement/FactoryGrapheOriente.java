@@ -9,6 +9,11 @@
 
 package traitement;
 
+import graphe.GrapheOriente;
+import graphe.Arc;
+import graphe.NoeudSimple;
+import graphe.Noeud;
+
 /**
  * 
  * Factory permettant la creation d'éléments relatif à un graphe oriente

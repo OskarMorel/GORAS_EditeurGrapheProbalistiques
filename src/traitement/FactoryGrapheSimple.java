@@ -9,6 +9,11 @@
 
 package traitement;
 
+import graphe.Arete;
+import graphe.GrapheSimple;
+import graphe.NoeudSimple;
+import graphe.Noeud;
+
 /**
  * 
  * Factory permettant la creation d'éléments relatif à un graphe simple

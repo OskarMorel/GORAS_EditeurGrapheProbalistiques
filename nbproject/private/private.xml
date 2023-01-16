@@ -4,16 +4,22 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
 <<<<<<< HEAD
+=======
+<<<<<<< HEAD
             <file>file:/Z:/GORAS_EditeurGrapheProbalistiques/src/traitement/Noeud.java</file>
 =======
 <<<<<<< HEAD
             <file>file:/Z:/SAE/Graphe/GrapheProba/src/traitement/Noeud.java</file>
             <file>file:/Z:/SAE/Graphe/GrapheProba/src/traitement/Arc.java</file>
+>>>>>>> bf26f2084353b2cd64d1743bf375b453da2bb7e3
             <file>file:/Z:/SAE/Graphe/GrapheProba/src/traitement/TraitementProbabiliste.java</file>
+            <file>file:/Z:/SAE/Graphe/GrapheProba/src/traitement/Noeud.java</file>
             <file>file:/Z:/SAE/Graphe/GrapheProba/src/traitement/NoeudSimple.java</file>
-            <file>file:/Z:/SAE/Graphe/GrapheProba/src/traitement/GrapheSimple.java</file>
             <file>file:/Z:/SAE/Graphe/GrapheProba/src/traitement/Traitement.java</file>
             <file>file:/Z:/SAE/Graphe/GrapheProba/src/application/AccueilController.java</file>
+<<<<<<< HEAD
+            <file>file:/Z:/SAE/Graphe/GrapheProba/src/application/Accueil.java</file>
+=======
             <file>file:/Z:/SAE/Graphe/GrapheProba/src/traitement/NoeudProbabiliste.java</file>
             <file>file:/Z:/SAE/Graphe/GrapheProba/src/traitement/ArcProbabiliste.java</file>
             <file>file:/Z:/SAE/Graphe/GrapheProba/src/traitement/GrapheProbabiliste.java</file>
@@ -26,6 +32,7 @@
             <file>file:/Z:/GORAS_EditeurGrapheProbalistiques/src/traitement/NoeudSimple.java</file>
             <file>file:/Z:/GORAS_EditeurGrapheProbalistiques/src/traitement/TraitementProbabiliste.java</file>
 >>>>>>> d9f4076481d5f34e0c634f1a429c1fc8038fe319
+>>>>>>> bf26f2084353b2cd64d1743bf375b453da2bb7e3
         </group>
     </open-files>
 </project-private>

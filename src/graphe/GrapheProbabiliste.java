@@ -2,12 +2,11 @@
  * PROJET : Editeur de graphe probabiliste
  * -------------------------------------------------
  *
- * GrapheSimple.java                      16/01/2023
+ * GrapheProbabiliste.java                16/01/2023
  * Copyright 2022 GORAS to Present
  * All Rights Reserved
  */
-
-package traitement;
+package graphe;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -16,33 +15,33 @@ import javafx.scene.layout.AnchorPane;
 
 /**
  * 
- * Gestion d'un graphe simple
+ * Gestion d'un graphe probabiliste
  * @author Antoine Gouzy
  * @author Remi Jauzion
  * @author Gauthier Jalbaud
  * @author Oskar Morel
  * @author Simon Launay
  */
-public class GrapheSimple extends Graphe {
-    
+public class GrapheProbabiliste extends Graphe{
+
     /** Libelle du graphe */
-    public String libelle;
+    private String libelle;
 
     /** Liste des noeuds du graphe */
-    public ArrayList<NoeudSimple> noeuds;
+    private ArrayList<NoeudProbabiliste> noeuds;
 
     /** Liste des liens du graphe */
-    public ArrayList<Arete> liens;
+    private ArrayList<ArcProbabiliste> liens;
     
-    public GrapheSimple() {
+    public GrapheProbabiliste() {
         
     }
     
     /**
-     * Creer une instance de graphe simple
+     * Creer une instance de graphe probabiliste
      * @param libelle libelle de ce graphe
      */
-    public GrapheSimple(String libelle) {
+    public GrapheProbabiliste(String libelle) {
         super(libelle);
         this.libelle = libelle;
         noeuds = new ArrayList<> ();
@@ -51,27 +50,25 @@ public class GrapheSimple extends Graphe {
     
     @Override
     public boolean estLienDuGraphe(Noeud noeudATester, Noeud noeudATester2) {
-        
-        for (Lien lien : liens) {
-            if (lien.getSource() == noeudATester && lien.getCible() == noeudATester2 
-                || lien.getSource() == noeudATester2 && lien.getCible() == noeudATester) {
+        for (ArcProbabiliste lien : liens) {
+            if (lien.getSource() == noeudATester && lien.getCible() == noeudATester2) {
                 return true;
             }
         }
         return false;
     }
-
+    
     @Override
-    public Arete getLienDuGraphe(Noeud sourceATester, Noeud cibleATester) {
-        for (Arete lien : liens) {
-            if ((lien.getSource() == sourceATester && lien.getCible() == cibleATester )
-                || (lien.getSource() == cibleATester && lien.getCible() == sourceATester)) {
+    public ArcProbabiliste getLienDuGraphe(Noeud sourceATester, Noeud cibleATester) {
+        
+        for (ArcProbabiliste lien : liens) {
+            if (lien.getSource() == sourceATester && lien.getCible() == cibleATester) {
                 return lien;
             }
         }
         return null;
     }
-    
+
     @Override
     public void supprimerLien(ComboBox noeudsSource, ComboBox noeudsCible) {
     
@@ -90,38 +87,43 @@ public class GrapheSimple extends Graphe {
                 noeudCible = noeud;               
             }
         }
-        Arete lienAsuppr = getLienDuGraphe(noeudSource, noeudCible);
+        ArcProbabiliste lienAsuppr = getLienDuGraphe(noeudSource, noeudCible);
         liens.remove(lienAsuppr);
+
     }
     
     @Override
     public void ajouterNoeud(Noeud noeud) {
-        noeuds.add((NoeudSimple) noeud);
+        noeuds.add((NoeudProbabiliste) noeud);
     }
     
     @Override
-    public void ajouterLien(Lien lien) {
-        if (!lien.getSource().equals(lien.getCible())) {
-            liens.add((Arete) lien);
-        }
+    public void ajouterLien(Lien lien) {  
+        liens.add((ArcProbabiliste) lien);
     }
     
     @Override
-    public ArrayList<Arete> getLiens() {
+    public ArrayList<ArcProbabiliste> getLiens() {
         return liens;
     }
     
     @Override
-    public ArrayList<NoeudSimple> getNoeuds() {
+    public ArrayList<NoeudProbabiliste> getNoeuds() {
         return noeuds;
     }
+    
+    @Override
+    public String toString() {
+        String tout = "nom : " + libelle + " noeuds : " + noeuds.toString() + " liens : " + liens.toString();
+        return tout;
+    }   
     
     @Override
     public void supprimerNoeud(Noeud noeud, AnchorPane zoneDessin) {
         
         Iterator liensASuppr = liens.iterator();
         while(liensASuppr.hasNext()) {
-            Arete lien = (Arete) liensASuppr.next();
+            ArcProbabiliste lien = (ArcProbabiliste) liensASuppr.next();
             if (lien.getSource().getId() == noeud.getId() || lien.getCible().getId() == noeud.getId()) {
                 liensASuppr.remove();  
             }
@@ -129,25 +131,39 @@ public class GrapheSimple extends Graphe {
         getNoeuds().remove(noeud);
         
         zoneDessin.getChildren().clear();
-        for (NoeudSimple noeudADessiner : noeuds) {
+        for (NoeudProbabiliste noeudADessiner : noeuds) {
                 noeudADessiner.dessinerNoeud(zoneDessin);
         }
-        for (Arete lienADessiner : liens) {
+        for (ArcProbabiliste lienADessiner : liens) {
             lienADessiner.dessinerLien(zoneDessin);
         }
     }
     
-    @Override
-    public String toString() {
-        String tout = "nom : " + libelle + "   noeuds : " + getNoeuds().toString() + "   liens : " + getLiens().toString();
-        return tout;
+    /**
+     * Determine si la ponderation d'un noeud est inferieur ou egale a  1
+     * @param noeudATester noeud qu'on souhaite tester
+     * @return true si la ponderation du noeud est inferieur ou egale a 1, sinon false
+     */
+    public boolean getPondeNoeud(Noeud noeudATester) {
+        
+        double sommePonderation = 0;
+        
+        for (ArcProbabiliste arc : getLiens()) {
+            if (arc.getSource() == noeudATester) {
+                sommePonderation += arc.getPonderation();
+            }
+            
+            if (sommePonderation > 1.0) {
+                return false;
+            }
+        }    
+        return true;
     }
     
     @Override
-    public NoeudSimple estNoeudGraphe(double xATester ,double yATester) {
+    public NoeudProbabiliste estNoeudGraphe(double xATester ,double yATester) {
         
-        for(NoeudSimple noeud : noeuds) {
-            
+        for(NoeudProbabiliste noeud : noeuds) {
             double minX = noeud.getCoordX() - Noeud.getRadius();
             double maxX = noeud.getCoordX() + Noeud.getRadius();
             double minY = noeud.getCoordY() - Noeud.getRadius();
@@ -160,4 +176,19 @@ public class GrapheSimple extends Graphe {
         
         return null;
     }
+    
+    @Override
+    public boolean estGrapheProbabiliste() {
+        
+        if (noeuds.isEmpty()) {
+            return false;
+        }
+        for (NoeudProbabiliste noeud : noeuds) {
+            if (noeud.getPonderation() != 1) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
 }

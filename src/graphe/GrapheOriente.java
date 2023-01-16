@@ -6,7 +6,7 @@
  * Copyright 2022 GORAS to Present
  * All Rights Reserved
  */
-package traitement;
+package graphe;
 
 import java.util.ArrayList;
 import java.util.Iterator;

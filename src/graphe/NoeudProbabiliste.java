@@ -1,10 +1,14 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * PROJET : Editeur de graphe probabiliste
+ * -------------------------------------------------
+ *
+ * NoeudProbabiliste.java                 16/01/2023
+ * Copyright 2022 GORAS to Present
+ * All Rights Reserved
  */
-package traitement;
+package graphe;
 
+import static application.Accueil.mainStage;
 import application.AccueilController;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -19,15 +23,20 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
 /**
- *
- * @author antoine.gouzy
+ * 
+ * Gestion d'un noeud probabiliste
+ * @author Antoine Gouzy
+ * @author Remi Jauzion
+ * @author Gauthier Jalbaud
+ * @author Oskar Morel
+ * @author Simon Launay
  */
 public class NoeudProbabiliste extends Noeud{
     
+    /** ponderation du noeud (somme des ponderations des arcs sortant de celui ci */
     private double ponderation;
     
-    public NoeudProbabiliste() {
-    }
+    public NoeudProbabiliste() { }
     
     /**
      * Creer un noeud simple
@@ -40,19 +49,19 @@ public class NoeudProbabiliste extends Noeud{
         ponderation = 0.0;
     }
 
+    /** @return la ponderation du noeud */
     public double getPonderation() {
         return ponderation;
     }
 
+    /**
+     * Modifie la ponderation du noeud
+     * @param ponderation la nouvelle ponderation du noeud
+     */
     public void setPonderation(double ponderation) {
         this.ponderation = ponderation;
     }
 
-    /**
-     * Dessine un noeudSimple sur la zone de dessin
-     * @param zoneDessin zone de dessin de l'application
-     * @return Group le groupe crée
-     */
     @Override
     public Group dessinerNoeud(AnchorPane zoneDessin) {
         
@@ -86,7 +95,41 @@ public class NoeudProbabiliste extends Noeud{
         zoneDessin.getChildren().addAll(groupe);
         return groupe;
     }
+    
+    public Group dessinerNoeud(AnchorPane zoneDessin, Color couleur) {
+        
+        /* Cercle extérieur */
+        Circle cercleExterieur = new Circle(getCoordX(), getCoordY(), Noeud.getRadius() * 2.5);
+        cercleExterieur.setFill(Color.TRANSPARENT);
+        cercleExterieur.setStroke(Color.TRANSPARENT);
+        
+        /* cercle */
+        Circle cercle = new Circle(getCoordX(), getCoordY(), Noeud.getRadius());
+        cercle.setFill(Color.TRANSPARENT);  
+        cercle.setStroke(couleur);
 
+
+        /* label */
+        Label libelle = new Label(this.getLibelle());
+        libelle.setLayoutX(this.getCoordX() - 3);
+        libelle.setLayoutY(this.getCoordY() - 8);
+
+        /* Groupe cercle + label */
+        Group groupe = new Group();
+        groupe.getChildren().addAll(cercle, libelle, cercleExterieur);
+
+        groupe.setOnMousePressed((new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent evt) {
+                AccueilController.isDrawable = false;
+                AccueilController.noeudEnCoursGroup = groupe;
+            }
+        }));
+        zoneDessin.getChildren().addAll(groupe);
+        return groupe;
+    }
+
+    @Override
     public void selectionGroupe(AnchorPane main, Group groupe, Graphe graphe, AnchorPane zoneDessin) {
         groupe.setOnMouseClicked((new EventHandler<MouseEvent>() {
             @Override
@@ -153,8 +196,14 @@ public class NoeudProbabiliste extends Noeud{
                     public void handle(ActionEvent evt) {
                         
                         String nouveauNom = libelleModif.getText();
-                        double nouvelleCoordX = Double.parseDouble(coordX.getText());
-                        double nouvelleCoordY = Double.parseDouble(coordY.getText());
+                        
+                        double nouvelleCoordX;
+                        double nouvelleCoordY;
+                        
+                        nouvelleCoordX = Double.parseDouble(coordX.getText());
+                        nouvelleCoordY = Double.parseDouble(coordY.getText());
+                        
+                        
                         
                         // gestion d'erreur de collision après modification des coordonnées de X et Y
                         boolean positionOk = nouvelleCoordX > Noeud.getRadius() && nouvelleCoordY > Noeud.getRadius();
@@ -173,6 +222,7 @@ public class NoeudProbabiliste extends Noeud{
                             Alert alert = new Alert(Alert.AlertType.ERROR);
                             alert.setTitle("Erreur Coordonnées");
                             alert.setHeaderText("Coordonnée trop proche d'un autre noeud ou invalide");
+                            alert.initOwner(mainStage);
                             alert.showAndWait();
                             nouvelleCoordX = coordXBase;
                             coordX.setText(Double.toString(getterCoordonnees.getCenterX()));
@@ -195,6 +245,7 @@ public class NoeudProbabiliste extends Noeud{
                             Alert alert = new Alert(Alert.AlertType.ERROR);
                             alert.setTitle("Erreur Nom");
                             alert.setHeaderText("Nom déjà existant sur un autre noeud");
+                            alert.initOwner(mainStage);
                             alert.showAndWait();
                             nouveauNom = nomBase;
                         }
@@ -260,7 +311,6 @@ public class NoeudProbabiliste extends Noeud{
         }));
     }
 
-    /** @return l'id de ce noeud */
     @Override
     public int getId() {
         return id;

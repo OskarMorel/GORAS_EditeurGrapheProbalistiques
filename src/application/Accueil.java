@@ -1,3 +1,12 @@
+/*
+ * PROJET : Editeur de graphe probabiliste
+ * -------------------------------------------------
+ *
+ * Accueil.java                           16/01/2023
+ * Copyright 2022 GORAS to Present
+ * All Rights Reserved
+ */
+
 package application;
 
 import javafx.application.Application;
@@ -8,8 +17,14 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 /**
- *
- * @author antoine.gouzy
+ * 
+ * Lancement de l'editeur
+ * 
+ * @author Antoine Gouzy
+ * @author Remi Jauzion
+ * @author Gauthier Jalbaud
+ * @author Oskar Morel
+ * @author Simon Launay
  */
 public class Accueil extends Application {
     
@@ -19,7 +34,7 @@ public class Accueil extends Application {
     public void start(Stage primaryStage) throws Exception {
         Parent root;
         root = FXMLLoader.load(getClass().getResource("FXMLAccueil.fxml"));
-        primaryStage.setTitle("Editeur de graphes (Graphio)");
+        primaryStage.setTitle("Editeur de graphes");
         Scene scene = new Scene(root);
         primaryStage.setScene(scene);
         primaryStage.getIcons().add(new Image("/img/line-chart.png"));
@@ -28,7 +43,6 @@ public class Accueil extends Application {
     }
     
     
-
     public static void main(String[] args) {
         launch(args);
     }

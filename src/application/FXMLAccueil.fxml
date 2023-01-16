@@ -5,6 +5,7 @@
 <?import java.lang.*?>
 <?import java.util.*?>
 <?import javafx.scene.*?>
+<?import javafx.scene.text.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.image.ImageView?>
@@ -39,7 +40,7 @@
                   </ImageView>
               </fx:define>
                 
-              <MenuItem fx:id="newGrapheBtn" graphic="$graphe" mnemonicParsing="false" onAction="#nouveauGraphe" text="Nouveau Graphe">
+              <MenuItem fx:id="newGrapheBtn" graphic="$graphe" mnemonicParsing="false" onAction="#afficheNouveauGraphe" text="Nouveau Graphe">
                      <accelerator>
                         <KeyCodeCombination alt="UP" code="N" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                      </accelerator>
@@ -81,9 +82,10 @@
           </Menu>
             <Menu mnemonicParsing="false" text="Aide">
                <items>
-                  <MenuItem mnemonicParsing="false" onAction="#aficheAideMenu" text="Aide sur les menus" />
+                  <MenuItem mnemonicParsing="false" onAction="#afficheAideMenu" text="Aide sur les menus" />
                   <MenuItem fx:id="AideManipGraphe" mnemonicParsing="false" onAction="#afficheAideManipGraphe" text="Manipulation d'un graphe" />
                   <MenuItem mnemonicParsing="false" onAction="#aficheAideCreaGraphe" text="Créer un graphe" />
+                  <MenuItem mnemonicParsing="false" onAction="#afficheAideTraitement" text="Traitements probabilistes" />
                </items>
             </Menu>
         </menus>
@@ -95,7 +97,8 @@
             <ToggleButton fx:id="lienBtn" layoutX="33.0" layoutY="184.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="185.0" text="Lien" />
          </children>
       </AnchorPane>
-      <AnchorPane fx:id="modificationContainer" layoutX="14.0" layoutY="326.0" prefHeight="381.0" prefWidth="252.0" style="-fx-background-color: grey; -fx-background-radius: 30;" />
+      <AnchorPane fx:id="modificationContainer" layoutX="14.0" layoutY="326.0" prefHeight="381.0" prefWidth="252.0" style="-fx-background-color: grey; -fx-background-radius: 30;">
+      </AnchorPane>
       <ScrollPane fx:id="zoneDessinContainer" layoutX="293.0" layoutY="37.0" prefHeight="663.0" prefWidth="970.0">
         <content>
           <AnchorPane fx:id="zoneDessin" minHeight="661.0" minWidth="968.0" onMouseClicked="#dessin" onMouseDragged="#zoneDessinMouseDragged" onMouseReleased="#zoneDessinMouseReleased" prefHeight="5000.0" prefWidth="5000.0" />

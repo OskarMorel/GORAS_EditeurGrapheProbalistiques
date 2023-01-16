@@ -1,4 +1,13 @@
-package traitement;
+/*
+ * PROJET : Editeur de graphe probabiliste
+ * -------------------------------------------------
+ *
+ * ArcProbabiliste.java                   16/01/2023
+ * Copyright 2022 GORAS to Present
+ * All Rights Reserved
+ */
+
+package graphe;
 
 import application.AccueilController;
 import javafx.event.ActionEvent;
@@ -16,27 +25,39 @@ import javafx.scene.shape.Line;
 import javafx.scene.shape.QuadCurve;
 
 /**
- *
- * @author Gouzy
+ * 
+ * Definition d'un arc probabiliste pour les graphes probabilistes
+ * @author Antoine Gouzy
+ * @author Remi Jauzion
+ * @author Gauthier Jalbaud
+ * @author Oskar Morel
+ * @author Simon Launay
  */
 public class ArcProbabiliste extends Lien{
     
-
+    /** La ponderation de l'arc */
     private double ponderation = 0.0;
     
-    public ArcProbabiliste() {
-        
-    }
+    public ArcProbabiliste() { }
     
+    /**
+     * Creer un instance d'un arc probabiliste
+     * @param source la source de l'arc
+     * @param cible la cible de l'arc
+     */
     public ArcProbabiliste(Noeud source, Noeud cible) {
         super(source, cible);
     }
 
-   
+    /**
+     * Modifie la ponderation de l'arc
+     * @param nouvellePonderation  la nouvelle ponderation de l'arc
+     */
     public void setPonderation(double nouvellePonderation) {
        ponderation = nouvellePonderation;
     }
-  
+   
+    /** @return la ponderation de l'arc */
     public double getPonderation() {
         return ponderation;
     }
@@ -155,16 +176,7 @@ public class ArcProbabiliste extends Lien{
         
         return groupe;
     }
-
-    /**
-     * Actualise les propriétés de l'arc en fonction des paramètres des combobox
-     * @param noeudsSource ComboBox contenant tous les noeuds du graphe
-     * @param noeudsCible ComboBox contenant tous les noeuds du graphe
-     * @param graphe graphe en cours de traitement
-     * @param zoneDessin zone de dessin du graphe
-     * @param groupe
-     * @param nouvellePonderation
-     */
+    
     @Override
     public void setPropriete(ComboBox noeudsSource, ComboBox noeudsCible, Graphe graphe, AnchorPane zoneDessin, Group groupe, double nouvellePonderation) {
         
@@ -210,13 +222,6 @@ public class ArcProbabiliste extends Lien{
         }
     }
     
-    /**
-     * Affiche sur la zone de propriété les zones de saisie des propriétés d'un lien
-     * @param zonePropriete zone ou les propriete s'afficher sur l'interface graphique
-     * @param graphe graphe en cours de traitement
-     * @param zoneDessin zone de dessin du graphe
-     * @param groupe dessin du lien
-     */
     @Override
     public void proprieteLien(AnchorPane zonePropriete, Graphe graphe, AnchorPane zoneDessin, Group groupe) {
         
@@ -350,7 +355,6 @@ public class ArcProbabiliste extends Lien{
             }
         });
     }
-    
     
     @Override
     public String toString() {

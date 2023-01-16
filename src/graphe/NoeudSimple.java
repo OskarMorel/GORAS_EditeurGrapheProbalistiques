@@ -1,5 +1,15 @@
-package traitement;
+/*
+ * PROJET : Editeur de graphe probabiliste
+ * -------------------------------------------------
+ *
+ * NoeudSimple.java                       16/01/2023
+ * Copyright 2022 GORAS to Present
+ * All Rights Reserved
+ */
 
+package graphe;
+
+import static application.Accueil.mainStage;
 import application.AccueilController;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -9,12 +19,20 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
+/**
+ * 
+ * Gestion d'un noeud simpl
+ * @author Antoine Gouzy
+ * @author Remi Jauzion
+ * @author Gauthier Jalbaud
+ * @author Oskar Morel
+ * @author Simon Launay
+ */
 public class NoeudSimple extends Noeud {
         
     public NoeudSimple() {
@@ -30,12 +48,6 @@ public class NoeudSimple extends Noeud {
         id = cpt;
     }
     
-
-    /**
-     * Dessine un noeudSimple sur la zone de dessin
-     * @param zoneDessin zone de dessin de l'application
-     * @return Group le groupe crée
-     */
     @Override
     public Group dessinerNoeud(AnchorPane zoneDessin) {
         
@@ -70,6 +82,7 @@ public class NoeudSimple extends Noeud {
         return groupe;
     }
 
+    @Override
     public void selectionGroupe(AnchorPane main, Group groupe, Graphe graphe, AnchorPane zoneDessin) {
         groupe.setOnMouseClicked((new EventHandler<MouseEvent>() {
             @Override
@@ -136,8 +149,12 @@ public class NoeudSimple extends Noeud {
                     public void handle(ActionEvent evt) {
                         
                         String nouveauNom = libelleModif.getText();
-                        double nouvelleCoordX = Double.parseDouble(coordX.getText());
-                        double nouvelleCoordY = Double.parseDouble(coordY.getText());
+                        double nouvelleCoordX;
+                        double nouvelleCoordY;
+                        
+                        nouvelleCoordX = Double.parseDouble(coordX.getText());
+                        nouvelleCoordY = Double.parseDouble(coordY.getText());
+
                         
                         boolean positionOk = nouvelleCoordX > Noeud.getRadius() && nouvelleCoordY > Noeud.getRadius();
                          
@@ -157,6 +174,7 @@ public class NoeudSimple extends Noeud {
                             Alert alert = new Alert(AlertType.ERROR);
                             alert.setTitle("Erreur coordonnées");
                             alert.setHeaderText("Coordonnées trop proche d'un autre noeud ou invalide");
+                            alert.initOwner(mainStage);
                             alert.showAndWait();
                             nouvelleCoordX = coordXBase;
                             coordX.setText(Double.toString(getterCoordonnees.getCenterX()));
@@ -179,6 +197,7 @@ public class NoeudSimple extends Noeud {
                             Alert alert = new Alert(AlertType.ERROR);
                             alert.setTitle("Erreur nom");
                             alert.setHeaderText("Nom déjà existant sur un autre noeud");
+                            alert.initOwner(mainStage);
                             alert.showAndWait();
                             nouveauNom = nomBase;
                         }
@@ -242,7 +261,6 @@ public class NoeudSimple extends Noeud {
         }));
     }
 
-    /** @return l'id de ce noeud */
     @Override
     public int getId() {
         return id;

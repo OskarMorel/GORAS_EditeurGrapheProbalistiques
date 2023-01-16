@@ -1,42 +1,53 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * PROJET : Editeur de graphe probabiliste
+ * -------------------------------------------------
+ *
+ * TraitementProbabiliste.java            16/01/2023
+ * Copyright 2022 GORAS to Present
+ * All Rights Reserved
  */
 package traitement;
 
+import static application.Accueil.mainStage;
+import graphe.Graphe;
+import graphe.NoeudProbabiliste;
+import graphe.Noeud;
+import graphe.GrapheProbabiliste;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.paint.Color;
 
 /**
- *
- * @author remi.jauzion
+ * 
+ * Gestion des traitements sur un graphe probabiliste
+ * 
+ * @author Antoine Gouzy
+ * @author Remi Jauzion
+ * @author Gauthier Jalbaud
+ * @author Oskar Morel
+ * @author Simon Launay
  */
 public class TraitementProbabiliste extends Traitement {
     
-    public GrapheProbabiliste graphe;
+    /** le graphe utiliser pour les traitements */
+    private GrapheProbabiliste graphe;
+
+    /** Permet de determiner la couleur selon la classe*/
+    int coloration;
     
-    Noeud noeudSFinal;
-    Noeud noeudCFinal;
-    String cheminExistant;
-    int indice = 0;
-    boolean tour = false;
-    boolean cheminPossible = false;
-    
+    /** Permet de determiner si un chemin existe */
     ArrayList<Noeud> chemin = new ArrayList<>();
     
-    
+    /** Recupere la liste de noeuds afin de determiner les classes */
     ArrayList<Noeud> listeNoeud;
-    ArrayList<Noeud> classe = new ArrayList<>();
+
+    /** Liste pour mettre les noeuds d'une classe*/
+    ArrayList<NoeudProbabiliste> classe = new ArrayList<>();
+    
+    /**Liste des classes du graphe*/
+    String listeClasse = "";
+
     
     /**
      * Creer un instance de traitement probabiliste pour le graphe courant
@@ -74,7 +85,7 @@ public class TraitementProbabiliste extends Traitement {
     }
     
     /**
-     * Affiche la matrice de transition ppour l'utilisateur
+     * Affiche la matrice de transition sur la fenetre graphique
      */
     public void affichageMatrice() {
         
@@ -119,186 +130,102 @@ public class TraitementProbabiliste extends Traitement {
         alert.setTitle("Matrice de Transtion");
         alert.setHeaderText("Matrice de Transtion : ");
         alert.setContentText(matrice);
-        alert.setWidth(10000);
+        alert.initOwner(mainStage);
         alert.showAndWait();
     }
-
-    /**
-     *
-     * @param zonePropriete
-     */
-
-    public void affichageChemin(AnchorPane zonePropriete){  
-        
-        List<Lien> chemin = new ArrayList<>();
-        //Gestion propriete source
-        Label labelSource = new Label("Source : ");
-        labelSource.setLayoutX(10);
-        labelSource.setLayoutY(53);
-        
-        ComboBox noeudsSource = new ComboBox();
-        noeudsSource.setLayoutX(120);
-        noeudsSource.setLayoutY(50);
-        for (Noeud noeud : graphe.getNoeuds()) {
-            noeudsSource.getItems().add(noeud.getLibelle());
-        }
-        noeudsSource.setValue(graphe.getNoeuds().get(0).getLibelle());//Selected ComboBox
-        zonePropriete.getChildren().addAll(labelSource, noeudsSource);
-
-        //Gestion propriete cible
-        Label labelCible = new Label("Cible : ");
-        labelCible.setLayoutX(10);
-        labelCible.setLayoutY(103);
-        
-        ComboBox noeudsCible = new ComboBox();
-        noeudsCible.setLayoutX(120);
-        noeudsCible.setLayoutY(100);
-        for (Noeud noeud : graphe.getNoeuds()) {
-            noeudsCible.getItems().add(noeud.getLibelle()); 
-        }
-        noeudsCible.setValue(graphe.getNoeuds().get(0).getLibelle());//Selected ComboBox
-        zonePropriete.getChildren().addAll(labelCible, noeudsCible);
-        
-        // Bouton de validation
-        Button validationModif = new Button("Valider");
-        validationModif.setLayoutX(60);
-        validationModif.setLayoutY(203);
-        zonePropriete.getChildren().addAll(validationModif);
-        
-        
-        // Si validation des changements
-        validationModif.setOnAction(new EventHandler<ActionEvent>() {  
-            @Override
-            public void handle(ActionEvent event) {
-                
-                String libelleSource = (String) noeudsSource.getValue();
-                String libelleCible = (String) noeudsCible.getValue();
-        
-                for(int i = 0; i < graphe.getNoeuds().size(); i++){
-                    if(libelleSource.equals(graphe.getNoeuds().get(i).getLibelle())){
-                        noeudSFinal = graphe.getNoeuds().get(i);
-                    }
-                    if(libelleCible.equals(graphe.getNoeuds().get(i).getLibelle())){
-                        noeudCFinal = graphe.getNoeuds().get(i);
-                    }
-                }
-                if (existenceChemin(noeudSFinal, noeudCFinal)){
-                    cheminExistant = "Chemin Existant";
-                }else{
-                    cheminExistant = "Chemin Inexistant";
-                }
-        
-                zonePropriete.getChildren().clear();
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Chemin");
-                alert.setHeaderText("Chemin : ");
-                alert.setContentText(cheminExistant);
-                alert.showAndWait();
-            }
-            
-        });
-    } 
     
-    public boolean existenceChemin(Noeud noeudS, Noeud noeudC){ 
+    public boolean existenceChemin(Noeud noeudS, Noeud noeudC, int indiceParcours){ 
         
         if(chemin.isEmpty()){
-            indice = 0;
+            indiceParcours = 0;
             chemin.add(noeudS);
         }
-        for (int i = indice ; i < graphe.getLiens().size() ; i++) {  
+        for (int i = indiceParcours ; i < graphe.getLiens().size() ; i++) {  
             if (graphe.getLiens().get(i).getSource() == noeudS) {
                 if(graphe.getLiens().get(i).getCible() == noeudC){
-                    indice = 0;
+                    //indice = 0;
                     return true;
                 }
                 if(!chemin.contains(graphe.getLiens().get(i).getCible())) {
                     chemin.add(graphe.getLiens().get(i).getCible());
                     noeudS = graphe.getLiens().get(i).getCible();
-                    indice =0;
-                    return existenceChemin(noeudS,noeudC);
+                    return existenceChemin(noeudS,noeudC, 0 );
                 } 
             }  
         }
         if(chemin.size() == 1){
+            //indice = 0;
             return false;
         }
-        indice++;
-        if(indice < chemin.size()){
-            return existenceChemin(chemin.get(indice), noeudC);
+        indiceParcours++;
+        if(indiceParcours < chemin.size()){
+            return existenceChemin(chemin.get(indiceParcours), noeudC, indiceParcours);
         }
         return false;
     }
     
-    public void regroupementParClasse(){
-        //System.out.println(listeNoeud.get(0));
+    public void regroupementParClasse(AnchorPane zoneDessin){
+        listeNoeud = (ArrayList<Noeud>) graphe.getNoeuds().clone();
         while(listeNoeud.size()>0){
-            classe.add(listeNoeud.get(0));
+            classe.add((NoeudProbabiliste) listeNoeud.get(0));
             listeNoeud.remove(0);
             
             for(int i = 0; i < listeNoeud.size(); i++){
-                noeudSFinal = classe.get(0);
-                if(existenceChemin(classe.get(0), listeNoeud.get(i))){
-                    indice = 0;
-                    noeudSFinal = listeNoeud.get(i);
-                    if(existenceChemin(listeNoeud.get(i), classe.get(0))){
-                        classe.add(listeNoeud.get(i));
+                chemin.clear();
+                if(existenceChemin(classe.get(0), listeNoeud.get(i), 0)){
+                    chemin.clear();
+                    if(existenceChemin(listeNoeud.get(i), classe.get(0), 0)){
+                        classe.add((NoeudProbabiliste) listeNoeud.get(i));
                         listeNoeud.remove(i);
                         i--;
                     }
                 }
             }
-            System.out.println(classe.size());
+            
+            if(listeNoeud.size()>0){
+                if(existenceChemin(classe.get(0), listeNoeud.get(0), 0)){
+                    listeClasse += "Classe Transitoire : ";
+                    coloration = 1;
+                }else{
+                    listeClasse += "\nClasse Finale";
+                    coloration = 2;
+                } 
+            }else{
+                if(classe.size()==1){
+                    listeClasse += "\nClasse Finale";
+                    coloration = 3;
+                }else{
+                    listeClasse += "\nClasse Finale";
+                    coloration = 2;
+                }
+            }
+            listeClasse += " { ";
+            for(int i = 0; i<classe.size(); i++ ){
+                
+                if(coloration == 1){
+                    classe.get(i).dessinerNoeud(zoneDessin, Color.GREEN);
+                }else if(coloration == 2){
+                    classe.get(i).dessinerNoeud(zoneDessin, Color.BLUE);
+                }else{
+                    classe.get(i).dessinerNoeud(zoneDessin, Color.RED);
+                }
+                listeClasse += classe.get(i).getLibelle();
+                if( i == classe.size()-1){
+                    listeClasse += " } ";
+                }else{
+                   listeClasse += " , "; 
+                }
+            }
+            listeClasse += "\n"; 
             classe.clear();
         }
-        indice = 0;
-        
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Classes");
+        alert.setHeaderText("Les Différentes classes : ");
+        alert.initOwner(mainStage);
+        alert.setContentText(listeClasse);
+        alert.showAndWait();
     }
-    /*
-    public void classificationSommet(){
-        
-        for(int i = 0; i < graphe.getNoeuds().size(); i++){
-
-            for(int j = 0; j < graphe.getNoeuds().size(); j++){    
-            
-                noeudSFinal = graphe.getNoeuds().get(i);
-                
-                
-                Circle cercleExterieur = new Circle(graphe.getNoeuds().get(i).getCoordX(), graphe.getNoeuds().get(i).getCoordY(), NoeudSimple.getRadius() * 2.5);
-                cercleExterieur.setFill(Color.TRANSPARENT);
-                cercleExterieur.setStroke(Color.TRANSPARENT);
-
-                
-                Label libelle = new Label(graphe.getNoeuds().get(i).getLibelle());
-                libelle.setLayoutX(graphe.getNoeuds().get(i).getCoordX() - 3);
-                libelle.setLayoutY(graphe.getNoeuds().get(i).getCoordY() - 8);
-
-                
-                Circle cercle = new Circle(graphe.getNoeuds().get(i).getCoordX(), graphe.getNoeuds().get(i).getCoordY(), NoeudSimple.getRadius());
-                cercle.setFill(Color.TRANSPARENT);
-                
-                if(existenceChemin(graphe.getNoeuds().get(i), graphe.getNoeuds().get(j))){
-                    noeudSFinal = graphe.getNoeuds().get(j);
-                    if(existenceChemin(graphe.getNoeuds().get(j), graphe.getNoeuds().get(i))){
-                        cercle.setStroke(Color.GREEN);
-                        graphe.getNoeuds().get(i).groupe.getChildren().clear();
-                        graphe.getNoeuds().get(i).groupe.getChildren().addAll(cercle, libelle, cercleExterieur);
-                    }
-                    noeudSFinal = graphe.getNoeuds().get(i);
-                }
-                noeudSFinal = graphe.getNoeuds().get(i);
-                if (existenceChemin(graphe.getNoeuds().get(i), graphe.getNoeuds().get(j)) == false){
-                    noeudSFinal = graphe.getNoeuds().get(j);
-                    if(existenceChemin(graphe.getNoeuds().get(j), graphe.getNoeuds().get(i)) == false){
-                        cercle.setStroke(Color.BLUE);
-                        graphe.getNoeuds().get(i).groupe.getChildren().clear();
-                        graphe.getNoeuds().get(i).groupe.getChildren().addAll(cercle, libelle, cercleExterieur);
-                    }
-                    noeudSFinal = graphe.getNoeuds().get(i);
-                }      
-            }       
-        }
-    }
-    */
     
     /**
      * Calcul le produit de deux matrices : matrice1 x matrice 2
@@ -350,17 +277,20 @@ public class TraitementProbabiliste extends Traitement {
         return result;
     }
     
-    public double[] loiDeProbabiliteEnNTransitions(int n) throws Exception {            
-            
-            //définition de la loi de probabilité initiale
-            double[] loiDeProba = new double[graphe.getNoeuds().size()];
-            for (int index = 0 ; index < graphe.getNoeuds().size() ; index++) {
-                loiDeProba[index] = graphe.getNoeuds().get(index).getPonderation();
+    /**
+     * Pour une loi de probabilité initiale sur l’ensemble des sommets du graphe, détermine la loi
+     * de probabilité atteinte après un nombre de transition(s) donné.
+     * @param n nombre de transition
+     * @param initiale loi de proba initiale
+     * @return la matrice correspondante
+     */
+    public double[] loiDeProbabiliteEnNTransitions(int n, double[] initiale) throws Exception {            
 
-            }
+            //définition de la loi de probabilité initiale
+            double[] loiDeProba = initiale; 
             
+            //récupération de la matrice carré
             double[][] matrice = matriceTransition();
-            
             double[][] matFinale = puissanceMatricielle(matrice, n);
             
             //multiplication de la matrice avec loi de proba
@@ -372,22 +302,22 @@ public class TraitementProbabiliste extends Traitement {
                 for (int j = 0 ; j < loiDeProba.length ; j++) {
                     valeur = 0;
                     for (int i = 0 ; i < matFinale.length ; i++) {
-                        valeur += loiDeProba[j] *matFinale[i][j];
+                        valeur += loiDeProba[j] * matFinale[i][j];
                     }
                     loiDeProbaFinale[j] = valeur;
                 }
             }
             return loiDeProbaFinale;
-            
         
     }
     
     /**
-     * 
-     * @param noeud1
-     * @param noeud2
-     * @param n
-     * @return 
+     * Determine la probabilité de passer d'un sommet initial à un sommet final en
+     * un nombre de transition(s) données
+     * @param noeud1 sommet initial
+     * @param noeud2 sommet final 
+     * @param n nombre de transition
+     * @return le coefficient de la matrice correspondant à la probabilité
      */
     public double sommetASommetNTransition(NoeudProbabiliste noeud1, NoeudProbabiliste noeud2,int n) throws Exception {        
         double[][] matriceTransitionN = puissanceMatricielle(matriceTransition(), n);

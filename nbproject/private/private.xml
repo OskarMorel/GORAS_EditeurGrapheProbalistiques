@@ -1,29 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
-<<<<<<< HEAD
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-<<<<<<< HEAD
-            <file>file:/Z:/SAE/Graphe/GrapheProba/src/traitement/Noeud.java</file>
-            <file>file:/Z:/SAE/Graphe/GrapheProba/src/traitement/Arc.java</file>
             <file>file:/Z:/SAE/Graphe/GrapheProba/src/traitement/TraitementProbabiliste.java</file>
+            <file>file:/Z:/SAE/Graphe/GrapheProba/src/traitement/Noeud.java</file>
             <file>file:/Z:/SAE/Graphe/GrapheProba/src/traitement/NoeudSimple.java</file>
-            <file>file:/Z:/SAE/Graphe/GrapheProba/src/traitement/GrapheSimple.java</file>
             <file>file:/Z:/SAE/Graphe/GrapheProba/src/traitement/Traitement.java</file>
             <file>file:/Z:/SAE/Graphe/GrapheProba/src/application/AccueilController.java</file>
-            <file>file:/Z:/SAE/Graphe/GrapheProba/src/traitement/NoeudProbabiliste.java</file>
-            <file>file:/Z:/SAE/Graphe/GrapheProba/src/traitement/ArcProbabiliste.java</file>
-            <file>file:/Z:/SAE/Graphe/GrapheProba/src/traitement/GrapheProbabiliste.java</file>
-            <file>file:/Z:/SAE/Graphe/GrapheProba/src/traitement/GrapheOriente.java</file>
-            <file>file:/Z:/SAE/Graphe/GrapheProba/src/traitement/Graphe.java</file>
-=======
-            <file>file:/Z:/GORAS_EditeurGrapheProbalistiques/src/traitement/Graphe.java</file>
-            <file>file:/Z:/GORAS_EditeurGrapheProbalistiques/src/application/AccueilController.java</file>
-            <file>file:/Z:/GORAS_EditeurGrapheProbalistiques/src/traitement/TraitementProbabiliste.java</file>
->>>>>>> d9f4076481d5f34e0c634f1a429c1fc8038fe319
+            <file>file:/Z:/SAE/Graphe/GrapheProba/src/application/Accueil.java</file>
         </group>
     </open-files>
-=======
->>>>>>> e9d3bc2fb0e69effa40e0f0de1d72eba2ee26030
 </project-private>

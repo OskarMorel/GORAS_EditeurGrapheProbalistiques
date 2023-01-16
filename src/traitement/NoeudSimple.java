@@ -254,7 +254,6 @@ public class NoeudSimple extends Noeud {
         }));
     }
 
-    /** @return l'id de ce noeud */
     @Override
     public int getId() {
         return id;

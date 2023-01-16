@@ -3,7 +3,6 @@ package traitement;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import javafx.scene.Group;
 import javafx.scene.control.ComboBox;
 import javafx.scene.layout.AnchorPane;
 
@@ -11,13 +10,13 @@ import javafx.scene.layout.AnchorPane;
 public class GrapheSimple extends Graphe {
     
     /** Libelle du graphe */
-    public String libelle;
+    private String libelle;
 
     /** Liste des noeuds du graphe */
-    public ArrayList<NoeudSimple> noeuds;
+    private ArrayList<NoeudSimple> noeuds;
 
     /** Liste des liens du graphe */
-    public ArrayList<Arete> liens;
+    private ArrayList<Arete> liens;
     
     public GrapheSimple() {
         

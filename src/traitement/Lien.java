@@ -11,10 +11,10 @@ import javafx.scene.layout.AnchorPane;
 public abstract class Lien {
 
     /** Source du lien*/ 
-    Noeud source;
+    private Noeud source;
 
     /** Cible du lien*/
-    Noeud cible;
+    private Noeud cible;
     
     public Lien () {
         

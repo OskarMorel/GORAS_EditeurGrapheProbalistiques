@@ -43,7 +43,7 @@ public class TraitementProbabiliste extends Traitement {
     public TraitementProbabiliste(Graphe graphe) {
         super(graphe);
         this.graphe = (GrapheProbabiliste) graphe;
-        listeNoeud = (ArrayList<Noeud>) graphe.noeuds.clone();
+        listeNoeud = (ArrayList<Noeud>) graphe.getNoeuds().clone();
     }
     
     /**

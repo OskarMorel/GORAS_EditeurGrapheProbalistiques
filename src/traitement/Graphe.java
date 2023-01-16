@@ -2,22 +2,21 @@ package traitement;
 
 import java.util.ArrayList;
 import java.util.List;
-import javafx.scene.Group;
 import javafx.scene.control.ComboBox;
 import javafx.scene.layout.AnchorPane;
 
 public abstract class Graphe {
     
     /** Libelle du graphe */
-    public String libelle;
+    private String libelle;
 
     /** Liste des noeuds du graphe */
-    public ArrayList<? extends Noeud> noeuds;
+    private ArrayList<? extends Noeud> noeuds;
 
     /** Liste des liens du graphe */
-    public ArrayList<? extends Lien> liens;
+    private ArrayList<? extends Lien> liens;
 
-    public ArrayList<Traitement> traitements;
+    private ArrayList<Traitement> traitements;
     
     public Graphe() {
         

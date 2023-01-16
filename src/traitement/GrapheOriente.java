@@ -19,13 +19,13 @@ import javafx.scene.layout.AnchorPane;
 public class GrapheOriente extends Graphe{
     
     /** Libelle du graphe */
-    public String libelle;
+    private String libelle;
 
     /** Liste des noeuds du graphe */
-    public ArrayList<NoeudSimple> noeuds;
+    private ArrayList<NoeudSimple> noeuds;
 
     /** Liste des liens du graphe */
-    public ArrayList<Arc> liens;
+    private ArrayList<Arc> liens;
     
     public GrapheOriente() {
         

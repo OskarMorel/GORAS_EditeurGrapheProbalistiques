@@ -303,7 +303,7 @@ public class ArcProbabiliste extends Lien{
                 }
                 
 
-                if (noeudSource == source) {
+                if (noeudSource == getSource()) {
                     ponderationOk = ((NoeudProbabiliste) noeudSource).getPonderation() + nouvellePonderation - ponderation <= 1.0;
                 } else {
                     ponderationOk = ((NoeudProbabiliste) noeudSource).getPonderation() + nouvellePonderation <= 1;
@@ -317,10 +317,10 @@ public class ArcProbabiliste extends Lien{
                     alert.showAndWait();
                     
                 } else {                    
-                    if (noeudSource == source) {
+                    if (noeudSource == getSource()) {
                         ((NoeudProbabiliste) noeudSource).setPonderation( ((NoeudProbabiliste) noeudSource).getPonderation() + nouvellePonderation - ponderation);
                     } else {
-                        ((NoeudProbabiliste) source).setPonderation( ((NoeudProbabiliste) source).getPonderation() - nouvellePonderation);
+                        ((NoeudProbabiliste) getSource()).setPonderation( ((NoeudProbabiliste) getSource()).getPonderation() - nouvellePonderation);
                         ((NoeudProbabiliste) noeudSource).setPonderation( ((NoeudProbabiliste) noeudSource).getPonderation() + nouvellePonderation);
                     }
 
@@ -354,7 +354,7 @@ public class ArcProbabiliste extends Lien{
     
     @Override
     public String toString() {
-        String arc = "pond: " + ponderation + "\n source: " + source + " cible: " + cible;
+        String arc = "pond: " + ponderation + "\n source: " + getSource() + " cible: " + getCible();
         return arc;
     }
 }

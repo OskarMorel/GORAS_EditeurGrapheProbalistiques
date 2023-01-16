@@ -5,17 +5,11 @@
  */
 package traitement;
 
+import static application.Accueil.mainStage;
 import java.util.ArrayList;
-import java.util.List;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
 
 /**
  *
@@ -25,33 +19,21 @@ public class TraitementProbabiliste extends Traitement {
     
     /** le graphe utiliser pour les traitements */
     private GrapheProbabiliste graphe;
-    
-    /** */
-    Noeud noeudSFinal;
-    
-    /** */
-    Noeud noeudCFinal;
-    
-    /** */
-    String cheminExistant;
-    
-    /** */
-    int indice = 0;
-    
-    /** */
-    boolean tour = false;
-    
-    /** */
-    boolean cheminPossible = false;
+
+    /** Permet de determiner la couleur selon la classe*/
     int coloration;
     
-    /** */
+    /** Permet de determiner si un chemin existe */
     ArrayList<Noeud> chemin = new ArrayList<>();
     
-    /** */
+    /** Recupere la liste de noeuds afin de determiner les classes */
     ArrayList<Noeud> listeNoeud;
 
+    /** Liste pour mettre les noeuds d'une classe*/
     ArrayList<NoeudProbabiliste> classe = new ArrayList<>();
+    
+    /**Liste des classes du graphe*/
+    String listeClasse = "";
 
     
     /**
@@ -188,22 +170,22 @@ public class TraitementProbabiliste extends Traitement {
             
             if(listeNoeud.size()>0){
                 if(existenceChemin(classe.get(0), listeNoeud.get(0), 0)){
-                    System.out.println("Transitoire");
+                    listeClasse += "Classe Transitoire : ";
                     coloration = 1;
                 }else{
-                    System.out.println("Finale");
+                    listeClasse += "\nClasse Finale";
                     coloration = 2;
                 } 
             }else{
                 if(classe.size()==1){
-                    System.out.println("Absorbant");
+                    listeClasse += "\nClasse Finale";
                     coloration = 3;
                 }else{
-                    System.out.println("Finale");
+                    listeClasse += "\nClasse Finale";
                     coloration = 2;
                 }
             }
-            
+            listeClasse += " { ";
             for(int i = 0; i<classe.size(); i++ ){
                 
                 if(coloration == 1){
@@ -213,12 +195,22 @@ public class TraitementProbabiliste extends Traitement {
                 }else{
                     classe.get(i).dessinerNoeud(zoneDessin, Color.RED);
                 }
-                System.out.print(classe.get(i).getLibelle());
-                System.out.print(" , ");
+                listeClasse += classe.get(i).getLibelle();
+                if( i == classe.size()-1){
+                    listeClasse += " } ";
+                }else{
+                   listeClasse += " , "; 
+                }
             }
+            listeClasse += "\n"; 
             classe.clear();
         }
-        
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Classes");
+        alert.setHeaderText("Les Différentes classes : ");
+        alert.initOwner(mainStage);
+        alert.setContentText(listeClasse);
+        alert.showAndWait();
     }
     
     /**

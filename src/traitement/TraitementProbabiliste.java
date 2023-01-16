@@ -5,13 +5,7 @@
  */
 package traitement;
 
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
-import java.text.FieldPosition;
-import java.text.NumberFormat;
-import java.text.ParsePosition;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -20,8 +14,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
 
 /**
  *
@@ -51,7 +43,7 @@ public class TraitementProbabiliste extends Traitement {
     public TraitementProbabiliste(Graphe graphe) {
         super(graphe);
         this.graphe = (GrapheProbabiliste) graphe;
-        listeNoeud = (ArrayList<Noeud>) graphe.noeuds.clone();
+        listeNoeud = (ArrayList<Noeud>) graphe.getNoeuds().clone();
     }
     
     /**
@@ -128,92 +120,12 @@ public class TraitementProbabiliste extends Traitement {
         alert.setWidth(10000);
         alert.showAndWait();
     }
-    
 
-    
-    
-    public void loiDeProbabiliteEnNTransitions(int n) {
-  
-        //Création de la matrice
-        double[][] mat = new double [graphe.getNoeuds().size()][graphe.getNoeuds().size()];
-        
-        for (int i = 0; i<graphe.getNoeuds().size(); i++){ 
-            for (int j = 0; j<graphe.getNoeuds().size(); j++){
-                if(graphe.getLienDuGraphe(graphe.getNoeuds().get(i), graphe.getNoeuds().get(j)) != null){
-                    mat[i][j] = graphe.getLienDuGraphe(graphe.getNoeuds().get(i), graphe.getNoeuds().get(j)).getPonderation();
-                }else {
-                    mat[i][j] = 0.0;            
-                }
-            }  
-        }
-        
-        //multiplication de la matrice
-        double[][] Mat = new double [graphe.getNoeuds().size()][graphe.getNoeuds().size()];
-        Mat = mat;
-        double[][] nouvelleMat = new double [graphe.getNoeuds().size()][graphe.getNoeuds().size()];
-        nouvelleMat = mat;
-        double[][] matFinale = new double [graphe.getNoeuds().size()][graphe.getNoeuds().size()];
-        for (int t = 1 ; t < n ; t++) {
-            for (int i = 0; i < Mat.length; i++) {
-                for (int j = 0 ; j < Mat.length ; j++) {
-                    matFinale[i][j] = 0.0;
-                    for (int x = 0 ; x < Mat.length ; x++) {
-                        matFinale[i][j] += nouvelleMat[i][x]*Mat[x][j];
-                    }
-                }
-            }
-            nouvelleMat = matFinale;
-        }
-        
-        double[] loiEssai = new double [4];
-        loiEssai[0] = 1.0;
-        loiEssai[1] = 1.0;
-        loiEssai[2] = 1.0;
-        loiEssai[3] = 1.0;
-
-        
-        //définition de la loi de probabilité initiale
-        double[] loiDeProba = new double[graphe.getNoeuds().size()];
-        for (int index = 0 ; index < graphe.getNoeuds().size() ; index++) {
-            loiDeProba[index] = loiEssai[index];
-        }
-        
-        //multiplication de la matrice avec loi de proba
-        double[] loiDeProbaFinale = new double[graphe.getNoeuds().size()];
-        double valeur;
-        if (n == 0) {
-            loiDeProbaFinale = loiDeProba;
-        } else {
-            for (int j = 0 ; j < loiDeProba.length ; j++) {
-                valeur = 0;
-                for (int i = 0 ; i < matFinale.length ; i++) {
-                    valeur += loiDeProba[j] *matFinale[i][j];
-                }
-                loiDeProbaFinale[j] = valeur;
-            }
-        }
-        
-        //passage en string pour fenetre
-        String affichageLoiProba = " ";
-        for (int i = 0 ; i < loiDeProbaFinale.length ; i++) {
-            affichageLoiProba += loiDeProbaFinale[i] + "  ";
-        }
-        
-        //affichage resultat
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("loi de probabilité en n transitions");
-        alert.setHeaderText("loi de probabilité : ");
-        alert.setContentText(affichageLoiProba);
-        alert.showAndWait();
-        
-    }
-    
-    
     /**
      *
      * @param zonePropriete
      */
-
+    /*
     public void affichageChemin(AnchorPane zonePropriete){  
         
         List<Lien> chemin = new ArrayList<>();
@@ -284,7 +196,7 @@ public class TraitementProbabiliste extends Traitement {
             
         });
     } 
-    
+    */
     public boolean existenceChemin(Noeud noeudS, Noeud noeudC){ 
         
         if(chemin.isEmpty()){
@@ -316,7 +228,8 @@ public class TraitementProbabiliste extends Traitement {
     }
     
     public void regroupementParClasse(){
-        //System.out.println(listeNoeud.get(0));
+        listeNoeud = (ArrayList<Noeud>) graphe.getNoeuds().clone();
+        System.out.println(listeNoeud);
         while(listeNoeud.size()>0){
             classe.add(listeNoeud.get(0));
             listeNoeud.remove(0);
@@ -332,6 +245,18 @@ public class TraitementProbabiliste extends Traitement {
                         i--;
                     }
                 }
+            }
+            
+            noeudSFinal = classe.get(0);
+            if(classe.size()==1){
+                System.out.println("absorbant");
+            }else{
+                System.out.println("ergotique");
+            }
+            if(listeNoeud.size()>0){
+                if(existenceChemin(classe.get(0), listeNoeud.get(0))){
+                    System.out.println("transitoire");
+                }  
             }
             System.out.println(classe.size());
             classe.clear();
@@ -385,4 +310,115 @@ public class TraitementProbabiliste extends Traitement {
         }
     }
     */
+    
+    /**
+     * Calcul le produit de deux matrices : matrice1 x matrice 2
+     * Les deux matrices doivent contenir des valeurs et le nombre de colonnes de matrice1
+     * doit être égal au nombre de lignes de matrice2.Lève une exception sinon.
+     * @param matrice1
+     * @param matrice2
+     * @return result
+     */
+    public static double[][] produitMatriciel(double[][] matrice1, double[][] matrice2) 
+                throws Exception {
+        if(matrice1==null || matrice2==null) 
+            throw new Exception("Les matrices doivent avoir des valeurs. ");
+        int n = matrice1.length; // nombre de lignes de matrice1
+        int m = matrice1[0].length; // nombre de colonnes de matrice1
+        if (matrice2.length != m)
+            throw new Exception("Le nombre de lignes de la 2ème matrice doit être égal"
+                    + "au nombre de colonnes de la 1ère matrice.");
+        int p = matrice2[0].length; // Nombre de colonnes de matrice2
+        double[][] result = new double[n][p];
+        for(int i=0;i<n;i++) {
+            for(int j=0;j<p;j++) {
+                // Mattre dans result[i][j] le produit de la i_ème ligne da matrice1
+                // par la j-ème colonne de matrice2 (parcourues à l'aide de la variable k).
+                result[i][j] = 0;
+                for(int k=0;k<n;k++) {
+                    result[i][j] += matrice1[i][k] * matrice2[k][j];
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Calcul de la puissance d'une matrice carré, avec un exposant >= 1.
+     * Lève une exception si l'exposant n'est un entier >= 1.
+     * @param matrice
+     * @param exposant
+     * @return result
+     */
+    public static double[][] puissanceMatricielle(double[][] matrice, int exposant) 
+            throws Exception {
+        if (!(exposant >= 1)) throw new Exception("L'exposant doit être supérieur à 0");
+        double[][] result;
+        result = matrice;
+        for(int i=0;i<exposant-1;i++) {
+            result = produitMatriciel(result,matrice);
+        }
+        return result;
+    }
+    
+    public void loiDeProbabiliteEnNTransitions(int n) throws Exception {
+        
+        double[] loiEssai = new double [4];
+        loiEssai[0] = 1.0;
+        loiEssai[1] = 1.0;
+        loiEssai[2] = 1.0;
+        loiEssai[3] = 1.0;
+
+        
+        //définition de la loi de probabilité initiale
+        double[] loiDeProba = new double[graphe.getNoeuds().size()];
+        for (int index = 0 ; index < graphe.getNoeuds().size() ; index++) {
+            loiDeProba[index] = loiEssai[index];
+        }
+        
+        double[][] matrice = matriceTransition();
+        
+        double[][] matFinale = puissanceMatricielle(matrice, n);
+        
+        //multiplication de la matrice avec loi de proba
+        double[] loiDeProbaFinale = new double[graphe.getNoeuds().size()];
+        double valeur;
+        if (n == 0) {
+            loiDeProbaFinale = loiDeProba;
+        } else {
+            for (int j = 0 ; j < loiDeProba.length ; j++) {
+                valeur = 0;
+                for (int i = 0 ; i < matFinale.length ; i++) {
+                    valeur += loiDeProba[j] *matFinale[i][j];
+                }
+                loiDeProbaFinale[j] = valeur;
+            }
+        }
+        
+        //passage en string pour fenetre
+        String affichageLoiProba = " ";
+        for (int i = 0 ; i < loiDeProbaFinale.length ; i++) {
+            affichageLoiProba += loiDeProbaFinale[i] + "  ";
+        }
+        
+        //affichage resultat
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("loi de probabilité en n transitions");
+        alert.setHeaderText("loi de probabilité : ");
+        alert.setContentText(affichageLoiProba);
+        alert.showAndWait();
+        
+    }
+    
+    /**
+     * 
+     * @param noeud1
+     * @param noeud2
+     * @param n
+     * @return 
+     */
+    public double sommetASommetNTransition(NoeudProbabiliste noeud1, NoeudProbabiliste noeud2,int n) throws Exception {        
+        double[][] matriceTransitionN = puissanceMatricielle(matriceTransition(), n);
+        return matriceTransitionN[noeud1.getId()-1][noeud2.getId()-1];
+    }
 }

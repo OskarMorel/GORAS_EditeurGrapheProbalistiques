@@ -350,17 +350,13 @@ public class TraitementProbabiliste extends Traitement {
         return result;
     }
     
-    public double[] loiDeProbabiliteEnNTransitions(int n) throws Exception {            
+    public double[] loiDeProbabiliteEnNTransitions(int n, double[] initiale) throws Exception {            
             
             //définition de la loi de probabilité initiale
-            double[] loiDeProba = new double[graphe.getNoeuds().size()];
-            for (int index = 0 ; index < graphe.getNoeuds().size() ; index++) {
-                loiDeProba[index] = graphe.getNoeuds().get(index).getPonderation();
-
-            }
+            double[] loiDeProba = initiale; 
             
+            //récupération de la matrice carré
             double[][] matrice = matriceTransition();
-            
             double[][] matFinale = puissanceMatricielle(matrice, n);
             
             //multiplication de la matrice avec loi de proba
@@ -372,7 +368,7 @@ public class TraitementProbabiliste extends Traitement {
                 for (int j = 0 ; j < loiDeProba.length ; j++) {
                     valeur = 0;
                     for (int i = 0 ; i < matFinale.length ; i++) {
-                        valeur += loiDeProba[j] *matFinale[i][j];
+                        valeur += loiDeProba[j] * matFinale[i][j];
                     }
                     loiDeProbaFinale[j] = valeur;
                 }

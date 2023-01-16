@@ -2,7 +2,7 @@
  * PROJET : Editeur de graphe probabiliste
  * -------------------------------------------------
  *
- * NoeudSimple.java                 16/01/2023
+ * NoeudSimple.java                       16/01/2023
  * Copyright 2022 GORAS to Present
  * All Rights Reserved
  */
@@ -152,14 +152,9 @@ public class NoeudSimple extends Noeud {
                         double nouvelleCoordX;
                         double nouvelleCoordY;
                         
-                        //Verification coord double et pas des caractères
-                        if (coordX.getText().matches("\\d+") && coordY.getText().matches("\\d+")) {
-                            nouvelleCoordX = Double.parseDouble(coordX.getText());
-                            nouvelleCoordY = Double.parseDouble(coordY.getText());
-                        } else {
-                            nouvelleCoordX = Noeud.getRadius()/2;
-                            nouvelleCoordY = Noeud.getRadius()/2;
-                        }
+                        nouvelleCoordX = Double.parseDouble(coordX.getText());
+                        nouvelleCoordY = Double.parseDouble(coordY.getText());
+
                         
                         boolean positionOk = nouvelleCoordX > Noeud.getRadius() && nouvelleCoordY > Noeud.getRadius();
                          

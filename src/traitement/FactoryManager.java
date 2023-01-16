@@ -36,6 +36,7 @@ public class FactoryManager {
         factories = new HashMap<> ();
         factories.put("Graphe simple", new FactoryGrapheSimple() );
         factories.put("Graphe oriente", new FactoryGrapheOriente() );
+        factories.put("Graphe pondere", new FactoryGraphePondere());
         factories.put("Graphe probabiliste", new FactoryGrapheProbabiliste());
     }
     

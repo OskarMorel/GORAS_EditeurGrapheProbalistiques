@@ -200,14 +200,9 @@ public class NoeudProbabiliste extends Noeud{
                         double nouvelleCoordX;
                         double nouvelleCoordY;
                         
-                        //Verification coord double et pas des caractères
-                        if (coordX.getText().matches("\\d+") && coordY.getText().matches("\\d+")) {
-                            nouvelleCoordX = Double.parseDouble(coordX.getText());
-                            nouvelleCoordY = Double.parseDouble(coordY.getText());
-                        } else {
-                            nouvelleCoordX = Noeud.getRadius()/2;
-                            nouvelleCoordY = Noeud.getRadius()/2;
-                        }
+                        nouvelleCoordX = Double.parseDouble(coordX.getText());
+                        nouvelleCoordY = Double.parseDouble(coordY.getText());
+                        
                         
                         
                         // gestion d'erreur de collision après modification des coordonnées de X et Y

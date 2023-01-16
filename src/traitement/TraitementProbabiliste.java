@@ -7,8 +7,6 @@ package traitement;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Alert;
@@ -25,18 +23,36 @@ import javafx.scene.shape.Circle;
  */
 public class TraitementProbabiliste extends Traitement {
     
-    public GrapheProbabiliste graphe;
+    /** le graphe utiliser pour les traitements */
+    private GrapheProbabiliste graphe;
     
+    /** */
     Noeud noeudSFinal;
+    
+    /** */
     Noeud noeudCFinal;
+    
+    /** */
     String cheminExistant;
+    
+    /** */
+    int indice = 0;
+    
+    /** */
+    boolean tour = false;
+    
+    /** */
+    boolean cheminPossible = false;
     int coloration;
     
+    /** */
     ArrayList<Noeud> chemin = new ArrayList<>();
     
-    
+    /** */
     ArrayList<Noeud> listeNoeud;
+
     ArrayList<NoeudProbabiliste> classe = new ArrayList<>();
+
     
     /**
      * Creer un instance de traitement probabiliste pour le graphe courant
@@ -74,7 +90,7 @@ public class TraitementProbabiliste extends Traitement {
     }
     
     /**
-     * Affiche la matrice de transition ppour l'utilisateur
+     * Affiche la matrice de transition sur la fenetre graphique
      */
     public void affichageMatrice() {
         
@@ -119,7 +135,6 @@ public class TraitementProbabiliste extends Traitement {
         alert.setTitle("Matrice de Transtion");
         alert.setHeaderText("Matrice de Transtion : ");
         alert.setContentText(matrice);
-        alert.setWidth(10000);
         alert.showAndWait();
     }
     
@@ -256,6 +271,12 @@ public class TraitementProbabiliste extends Traitement {
         return result;
     }
     
+    /**
+     * Pour une loi de probabilité initiale sur l’ensemble des sommets du graphe, détermine la loi
+     * de probabilité atteinte après un nombre de transition(s) donné.
+     * @param n nombre de transition
+     * @return la matrice correspondante
+     */
     public double[] loiDeProbabiliteEnNTransitions(int n) throws Exception {            
             
             //définition de la loi de probabilité initiale
@@ -288,11 +309,12 @@ public class TraitementProbabiliste extends Traitement {
     }
     
     /**
-     * 
-     * @param noeud1
-     * @param noeud2
-     * @param n
-     * @return 
+     * Determine la probabilité de passer d'un sommet initial à un sommet final en
+     * un nombre de transition(s) données
+     * @param noeud1 sommet initial
+     * @param noeud2 sommet final 
+     * @param n nombre de transition
+     * @return le coefficient de la matrice correspondant à la probabilité
      */
     public double sommetASommetNTransition(NoeudProbabiliste noeud1, NoeudProbabiliste noeud2,int n) throws Exception {        
         double[][] matriceTransitionN = puissanceMatricielle(matriceTransition(), n);

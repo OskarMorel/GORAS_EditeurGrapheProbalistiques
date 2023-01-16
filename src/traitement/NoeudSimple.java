@@ -1,3 +1,12 @@
+/*
+ * PROJET : Editeur de graphe probabiliste
+ * -------------------------------------------------
+ *
+ * NoeudSimple.java                 16/01/2023
+ * Copyright 2022 GORAS to Present
+ * All Rights Reserved
+ */
+
 package traitement;
 
 import application.AccueilController;
@@ -9,12 +18,20 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
+/**
+ * 
+ * Gestion d'un noeud simpl
+ * @author Antoine Gouzy
+ * @author Remi Jauzion
+ * @author Gauthier Jalbaud
+ * @author Oskar Morel
+ * @author Simon Launay
+ */
 public class NoeudSimple extends Noeud {
         
     public NoeudSimple() {
@@ -30,13 +47,6 @@ public class NoeudSimple extends Noeud {
         id = cpt;
     }
     
-
-    /**
-     * Dessine un noeudSimple sur la zone de dessin
-     * @param zoneDessin zone de dessin de l'application
-     * @param couleur
-     * @return Group le groupe crée
-     */
     @Override
     public Group dessinerNoeud(AnchorPane zoneDessin) {
         
@@ -71,6 +81,7 @@ public class NoeudSimple extends Noeud {
         return groupe;
     }
 
+    @Override
     public void selectionGroupe(AnchorPane main, Group groupe, Graphe graphe, AnchorPane zoneDessin) {
         groupe.setOnMouseClicked((new EventHandler<MouseEvent>() {
             @Override

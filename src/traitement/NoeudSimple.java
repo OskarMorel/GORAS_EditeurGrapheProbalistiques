@@ -34,6 +34,7 @@ public class NoeudSimple extends Noeud {
     /**
      * Dessine un noeudSimple sur la zone de dessin
      * @param zoneDessin zone de dessin de l'application
+     * @param couleur
      * @return Group le groupe crée
      */
     @Override

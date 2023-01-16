@@ -3,6 +3,7 @@ package traitement;
 //import java.util.ArrayList;
 import javafx.scene.Group;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.paint.Color;
 //import java.util.List;
 
 public abstract class Noeud {

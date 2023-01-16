@@ -218,6 +218,10 @@ public class GrapheProbabiliste extends Graphe{
     
     @Override
     public boolean estGrapheProbabiliste() {
+        
+        if (noeuds.isEmpty()) {
+            return false;
+        }
         for (NoeudProbabiliste noeud : noeuds) {
             if (noeud.getPonderation() != 1) {
                 return false;

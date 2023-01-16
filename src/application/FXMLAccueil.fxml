@@ -77,7 +77,6 @@
           </Menu>
           <Menu mnemonicParsing="false" text="Traitements" fx:id="traitementMenu">
             <items>
-              
             </items>
           </Menu>
             <Menu mnemonicParsing="false" text="Aide">

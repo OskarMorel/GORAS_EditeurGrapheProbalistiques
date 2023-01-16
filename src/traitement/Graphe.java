@@ -39,6 +39,7 @@ public abstract class Graphe {
         traitements.add(traitement);
     }*/
     
+
     public ArrayList<? extends Noeud> getNoeuds() {
         return null;
     }

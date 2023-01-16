@@ -5,14 +5,10 @@
  */
 package traitement;
 
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
-import java.text.FieldPosition;
-import java.text.NumberFormat;
-import java.text.ParsePosition;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Alert;
@@ -32,6 +28,15 @@ public class TraitementProbabiliste extends Traitement {
     Noeud noeudSFinal;
     Noeud noeudCFinal;
     String cheminExistant;
+    int indice = 0;
+    boolean tour = false;
+    boolean cheminPossible = false;
+    
+    ArrayList<Noeud> chemin = new ArrayList<>();
+    
+    
+    ArrayList<Noeud> listeNoeud;
+    ArrayList<Noeud> classe = new ArrayList<>();
     
     /**
      * Creer un instance de traitement probabiliste pour le graphe courant
@@ -40,6 +45,7 @@ public class TraitementProbabiliste extends Traitement {
     public TraitementProbabiliste(Graphe graphe) {
         super(graphe);
         this.graphe = (GrapheProbabiliste) graphe;
+        listeNoeud = (ArrayList<Noeud>) graphe.noeuds.clone();
     }
     
     /**
@@ -116,87 +122,7 @@ public class TraitementProbabiliste extends Traitement {
         alert.setWidth(10000);
         alert.showAndWait();
     }
-    
 
-    
-    
-    public void loiDeProbabiliteEnNTransitions(int n) {
-  
-        //Création de la matrice
-        double[][] mat = new double [graphe.getNoeuds().size()][graphe.getNoeuds().size()];
-        
-        for (int i = 0; i<graphe.getNoeuds().size(); i++){ 
-            for (int j = 0; j<graphe.getNoeuds().size(); j++){
-                if(graphe.getLienDuGraphe(graphe.getNoeuds().get(i), graphe.getNoeuds().get(j)) != null){
-                    mat[i][j] = graphe.getLienDuGraphe(graphe.getNoeuds().get(i), graphe.getNoeuds().get(j)).getPonderation();
-                }else {
-                    mat[i][j] = 0.0;            
-                }
-            }  
-        }
-        
-        //multiplication de la matrice
-        double[][] Mat = new double [graphe.getNoeuds().size()][graphe.getNoeuds().size()];
-        Mat = mat;
-        double[][] nouvelleMat = new double [graphe.getNoeuds().size()][graphe.getNoeuds().size()];
-        nouvelleMat = mat;
-        double[][] matFinale = new double [graphe.getNoeuds().size()][graphe.getNoeuds().size()];
-        for (int t = 1 ; t < n ; t++) {
-            for (int i = 0; i < Mat.length; i++) {
-                for (int j = 0 ; j < Mat.length ; j++) {
-                    matFinale[i][j] = 0.0;
-                    for (int x = 0 ; x < Mat.length ; x++) {
-                        matFinale[i][j] += nouvelleMat[i][x]*Mat[x][j];
-                    }
-                }
-            }
-            nouvelleMat = matFinale;
-        }
-        
-        double[] loiEssai = new double [4];
-        loiEssai[0] = 1.0;
-        loiEssai[1] = 1.0;
-        loiEssai[2] = 1.0;
-        loiEssai[3] = 1.0;
-
-        
-        //définition de la loi de probabilité initiale
-        double[] loiDeProba = new double[graphe.getNoeuds().size()];
-        for (int index = 0 ; index < graphe.getNoeuds().size() ; index++) {
-            loiDeProba[index] = loiEssai[index];
-        }
-        
-        //multiplication de la matrice avec loi de proba
-        double[] loiDeProbaFinale = new double[graphe.getNoeuds().size()];
-        double valeur;
-        if (n == 0) {
-            loiDeProbaFinale = loiDeProba;
-        } else {
-            for (int j = 0 ; j < loiDeProba.length ; j++) {
-                valeur = 0;
-                for (int i = 0 ; i < matFinale.length ; i++) {
-                    valeur += loiDeProba[j] *matFinale[i][j];
-                }
-                loiDeProbaFinale[j] = valeur;
-            }
-        }
-        
-        //passage en string pour fenetre
-        String affichageLoiProba = " ";
-        for (int i = 0 ; i < loiDeProbaFinale.length ; i++) {
-            affichageLoiProba += loiDeProbaFinale[i] + "  ";
-        }
-        
-        //affichage resultat
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("loi de probabilité en n transitions");
-        alert.setHeaderText("loi de probabilité : ");
-        alert.setContentText(affichageLoiProba);
-        alert.showAndWait();
-        
-    }
-    
-    
     /**
      *
      * @param zonePropriete
@@ -256,13 +182,11 @@ public class TraitementProbabiliste extends Traitement {
                         noeudCFinal = graphe.getNoeuds().get(i);
                     }
                 }
-                
-//                if (existenceChemin(noeudSFinal)){
-//                    cheminExistant = "Chemin Existant";
-//                }else{
-//                    cheminExistant = "Chemin Inexistant";
-//                }
-                
+                if (existenceChemin(noeudSFinal, noeudCFinal)){
+                    cheminExistant = "Chemin Existant";
+                }else{
+                    cheminExistant = "Chemin Inexistant";
+                }
         
                 zonePropriete.getChildren().clear();
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -275,29 +199,198 @@ public class TraitementProbabiliste extends Traitement {
         });
     } 
     
-//    public boolean existenceChemin(Noeud noeudSourceFinal){
-//        
-//        Noeud noeudS = noeudSourceFinal;
-//        List<String> chemin = new ArrayList<>();
-//        int indice = 0;
-//        for (int i = indice ; i < graphe.liens.size() ; i++) {
-//            if (graphe.liens.get(i).getSource() == noeudSFinal) {
-//                chemin.add(noeudSFinal.getLibelle());
-//                noeudS = graphe.liens.get(i).getCible();
-//            }
-//            if (graphe.liens.get(i).getSource() == noeudS && graphe.liens.get(i).getSource() != noeudSFinal) {
-//                chemin.add(noeudS.getLibelle());
-//                noeudS = graphe.liens.get(i).getCible();
-//            }
-//            if(graphe.liens.get(i).getCible() == noeudCFinal){
-//                return true;
-//            }
-//            if(graphe.liens.get(i).getCible() != noeudCFinal && graphe.liens.get(i).getCible() == null){
-//                indice++;
-//                chemin.clear();
-//                existenceChemin(noeudSFinal);
-//            }
-//        }
-//        return false;
-//    }
+    public boolean existenceChemin(Noeud noeudS, Noeud noeudC){ 
+        
+        if(chemin.isEmpty()){
+            indice = 0;
+            chemin.add(noeudS);
+        }
+        for (int i = indice ; i < graphe.getLiens().size() ; i++) {  
+            if (graphe.getLiens().get(i).getSource() == noeudS) {
+                if(graphe.getLiens().get(i).getCible() == noeudC){
+                    indice = 0;
+                    return true;
+                }
+                if(!chemin.contains(graphe.getLiens().get(i).getCible())) {
+                    chemin.add(graphe.getLiens().get(i).getCible());
+                    noeudS = graphe.getLiens().get(i).getCible();
+                    indice =0;
+                    return existenceChemin(noeudS,noeudC);
+                } 
+            }  
+        }
+        if(chemin.size() == 1){
+            return false;
+        }
+        indice++;
+        if(indice < chemin.size()){
+            return existenceChemin(chemin.get(indice), noeudC);
+        }
+        return false;
+    }
+    
+    public void regroupementParClasse(){
+        //System.out.println(listeNoeud.get(0));
+        while(listeNoeud.size()>0){
+            classe.add(listeNoeud.get(0));
+            listeNoeud.remove(0);
+            
+            for(int i = 0; i < listeNoeud.size(); i++){
+                noeudSFinal = classe.get(0);
+                if(existenceChemin(classe.get(0), listeNoeud.get(i))){
+                    indice = 0;
+                    noeudSFinal = listeNoeud.get(i);
+                    if(existenceChemin(listeNoeud.get(i), classe.get(0))){
+                        classe.add(listeNoeud.get(i));
+                        listeNoeud.remove(i);
+                        i--;
+                    }
+                }
+            }
+            System.out.println(classe.size());
+            classe.clear();
+        }
+        indice = 0;
+        
+    }
+    /*
+    public void classificationSommet(){
+        
+        for(int i = 0; i < graphe.getNoeuds().size(); i++){
+
+            for(int j = 0; j < graphe.getNoeuds().size(); j++){    
+            
+                noeudSFinal = graphe.getNoeuds().get(i);
+                
+                
+                Circle cercleExterieur = new Circle(graphe.getNoeuds().get(i).getCoordX(), graphe.getNoeuds().get(i).getCoordY(), NoeudSimple.getRadius() * 2.5);
+                cercleExterieur.setFill(Color.TRANSPARENT);
+                cercleExterieur.setStroke(Color.TRANSPARENT);
+
+                
+                Label libelle = new Label(graphe.getNoeuds().get(i).getLibelle());
+                libelle.setLayoutX(graphe.getNoeuds().get(i).getCoordX() - 3);
+                libelle.setLayoutY(graphe.getNoeuds().get(i).getCoordY() - 8);
+
+                
+                Circle cercle = new Circle(graphe.getNoeuds().get(i).getCoordX(), graphe.getNoeuds().get(i).getCoordY(), NoeudSimple.getRadius());
+                cercle.setFill(Color.TRANSPARENT);
+                
+                if(existenceChemin(graphe.getNoeuds().get(i), graphe.getNoeuds().get(j))){
+                    noeudSFinal = graphe.getNoeuds().get(j);
+                    if(existenceChemin(graphe.getNoeuds().get(j), graphe.getNoeuds().get(i))){
+                        cercle.setStroke(Color.GREEN);
+                        graphe.getNoeuds().get(i).groupe.getChildren().clear();
+                        graphe.getNoeuds().get(i).groupe.getChildren().addAll(cercle, libelle, cercleExterieur);
+                    }
+                    noeudSFinal = graphe.getNoeuds().get(i);
+                }
+                noeudSFinal = graphe.getNoeuds().get(i);
+                if (existenceChemin(graphe.getNoeuds().get(i), graphe.getNoeuds().get(j)) == false){
+                    noeudSFinal = graphe.getNoeuds().get(j);
+                    if(existenceChemin(graphe.getNoeuds().get(j), graphe.getNoeuds().get(i)) == false){
+                        cercle.setStroke(Color.BLUE);
+                        graphe.getNoeuds().get(i).groupe.getChildren().clear();
+                        graphe.getNoeuds().get(i).groupe.getChildren().addAll(cercle, libelle, cercleExterieur);
+                    }
+                    noeudSFinal = graphe.getNoeuds().get(i);
+                }      
+            }       
+        }
+    }
+    */
+    
+    /**
+     * Calcul le produit de deux matrices : matrice1 x matrice 2
+     * Les deux matrices doivent contenir des valeurs et le nombre de colonnes de matrice1
+     * doit être égal au nombre de lignes de matrice2.Lève une exception sinon.
+     * @param matrice1
+     * @param matrice2
+     * @return result
+     */
+    public static double[][] produitMatriciel(double[][] matrice1, double[][] matrice2) 
+                throws Exception {
+        if(matrice1==null || matrice2==null) 
+            throw new Exception("Les matrices doivent avoir des valeurs. ");
+        int n = matrice1.length; // nombre de lignes de matrice1
+        int m = matrice1[0].length; // nombre de colonnes de matrice1
+        if (matrice2.length != m)
+            throw new Exception("Le nombre de lignes de la 2ème matrice doit être égal"
+                    + "au nombre de colonnes de la 1ère matrice.");
+        int p = matrice2[0].length; // Nombre de colonnes de matrice2
+        double[][] result = new double[n][p];
+        for(int i=0;i<n;i++) {
+            for(int j=0;j<p;j++) {
+                // Mattre dans result[i][j] le produit de la i_ème ligne da matrice1
+                // par la j-ème colonne de matrice2 (parcourues à l'aide de la variable k).
+                result[i][j] = 0;
+                for(int k=0;k<n;k++) {
+                    result[i][j] += matrice1[i][k] * matrice2[k][j];
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Calcul de la puissance d'une matrice carré, avec un exposant >= 1.
+     * Lève une exception si l'exposant n'est un entier >= 1.
+     * @param matrice
+     * @param exposant
+     * @return result
+     */
+    public static double[][] puissanceMatricielle(double[][] matrice, int exposant) 
+            throws Exception {
+        if (!(exposant >= 1)) throw new Exception("L'exposant doit être supérieur à 0");
+        double[][] result;
+        result = matrice;
+        for(int i=0;i<exposant-1;i++) {
+            result = produitMatriciel(result,matrice);
+        }
+        return result;
+    }
+    
+    public double[] loiDeProbabiliteEnNTransitions(int n) throws Exception {            
+            
+            //définition de la loi de probabilité initiale
+            double[] loiDeProba = new double[graphe.getNoeuds().size()];
+            for (int index = 0 ; index < graphe.getNoeuds().size() ; index++) {
+                loiDeProba[index] = graphe.getNoeuds().get(index).getPonderation();
+
+            }
+            
+            double[][] matrice = matriceTransition();
+            
+            double[][] matFinale = puissanceMatricielle(matrice, n);
+            
+            //multiplication de la matrice avec loi de proba
+            double[] loiDeProbaFinale = new double[graphe.getNoeuds().size()];
+            double valeur;
+            if (n == 0 || n < 0) {
+                loiDeProbaFinale = loiDeProba;
+            } else {
+                for (int j = 0 ; j < loiDeProba.length ; j++) {
+                    valeur = 0;
+                    for (int i = 0 ; i < matFinale.length ; i++) {
+                        valeur += loiDeProba[j] *matFinale[i][j];
+                    }
+                    loiDeProbaFinale[j] = valeur;
+                }
+            }
+            return loiDeProbaFinale;
+            
+        
+    }
+    
+    /**
+     * 
+     * @param noeud1
+     * @param noeud2
+     * @param n
+     * @return 
+     */
+    public double sommetASommetNTransition(NoeudProbabiliste noeud1, NoeudProbabiliste noeud2,int n) throws Exception {        
+        double[][] matriceTransitionN = puissanceMatricielle(matriceTransition(), n);
+        return matriceTransitionN[noeud1.getId()-1][noeud2.getId()-1];
+    }
 }

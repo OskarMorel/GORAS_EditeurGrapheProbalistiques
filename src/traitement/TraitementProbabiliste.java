@@ -50,9 +50,9 @@ public class TraitementProbabiliste extends Traitement {
     
     /** */
     ArrayList<Noeud> listeNoeud;
-    
-    /** */
-    ArrayList<Noeud> classe = new ArrayList<>();
+
+    ArrayList<NoeudProbabiliste> classe = new ArrayList<>();
+
     
     /**
      * Creer un instance de traitement probabiliste pour le graphe courant
@@ -170,9 +170,8 @@ public class TraitementProbabiliste extends Traitement {
     
     public void regroupementParClasse(AnchorPane zoneDessin){
         listeNoeud = (ArrayList<Noeud>) graphe.getNoeuds().clone();
-        System.out.println(listeNoeud);
         while(listeNoeud.size()>0){
-            classe.add(listeNoeud.get(0));
+            classe.add((NoeudProbabiliste) listeNoeud.get(0));
             listeNoeud.remove(0);
             
             for(int i = 0; i < listeNoeud.size(); i++){
@@ -180,7 +179,7 @@ public class TraitementProbabiliste extends Traitement {
                 if(existenceChemin(classe.get(0), listeNoeud.get(i), 0)){
                     chemin.clear();
                     if(existenceChemin(listeNoeud.get(i), classe.get(0), 0)){
-                        classe.add(listeNoeud.get(i));
+                        classe.add((NoeudProbabiliste) listeNoeud.get(i));
                         listeNoeud.remove(i);
                         i--;
                     }
@@ -206,26 +205,14 @@ public class TraitementProbabiliste extends Traitement {
             }
             
             for(int i = 0; i<classe.size(); i++ ){
-                Circle cercleExterieur = new Circle(classe.get(i).getCoordX(), classe.get(i).getCoordY(), NoeudSimple.getRadius() * 2.5);
-                cercleExterieur.setFill(Color.TRANSPARENT);
-                cercleExterieur.setStroke(Color.TRANSPARENT);
-
                 
-                Label libelle = new Label(classe.get(i).getLibelle());
-                libelle.setLayoutX(classe.get(i).getCoordX() - 3);
-                libelle.setLayoutY(classe.get(i).getCoordY() - 8);
-
-                
-                Circle cercle = new Circle(classe.get(i).getCoordX(), classe.get(i).getCoordY(), NoeudSimple.getRadius());
-                cercle.setFill(Color.TRANSPARENT);
                 if(coloration == 1){
-                    cercle.setStroke(Color.GREEN);
+                    classe.get(i).dessinerNoeud(zoneDessin, Color.GREEN);
                 }else if(coloration == 2){
-                    cercle.setStroke(Color.BLUE);
+                    classe.get(i).dessinerNoeud(zoneDessin, Color.BLUE);
                 }else{
-                    cercle.setStroke(Color.RED);
+                    classe.get(i).dessinerNoeud(zoneDessin, Color.RED);
                 }
-                zoneDessin.getChildren().addAll(cercle, libelle, cercleExterieur);
                 System.out.print(classe.get(i).getLibelle());
                 System.out.print(" , ");
             }

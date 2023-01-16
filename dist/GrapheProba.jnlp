@@ -9,10 +9,14 @@
   <resources>
     <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
 <<<<<<< HEAD
+    <jar href="GrapheProba.jar" size="79560" download="eager" />
+=======
+<<<<<<< HEAD
     <jar href="GrapheProba.jar" size="81497" download="eager" />
 =======
     <jar href="GrapheProba.jar" size="80729" download="eager" />
 >>>>>>> d9f4076481d5f34e0c634f1a429c1fc8038fe319
+>>>>>>> f2c53a9b4361d57d6d9ffba32e37fc6c0b3c0de1
   </resources>
   <applet-desc  width="800" height="600" main-class="com.javafx.main.NoJavaFXFallback"  name="GrapheProba" >
     <param name="requiredFXVersion" value="8.0+"/>

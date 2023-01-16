@@ -94,6 +94,39 @@ public class NoeudProbabiliste extends Noeud{
         zoneDessin.getChildren().addAll(groupe);
         return groupe;
     }
+    
+    public Group dessinerNoeud(AnchorPane zoneDessin, Color couleur) {
+        
+        /* Cercle extérieur */
+        Circle cercleExterieur = new Circle(getCoordX(), getCoordY(), Noeud.getRadius() * 2.5);
+        cercleExterieur.setFill(Color.TRANSPARENT);
+        cercleExterieur.setStroke(Color.TRANSPARENT);
+        
+        /* cercle */
+        Circle cercle = new Circle(getCoordX(), getCoordY(), Noeud.getRadius());
+        cercle.setFill(Color.TRANSPARENT);  
+        cercle.setStroke(couleur);
+
+
+        /* label */
+        Label libelle = new Label(this.getLibelle());
+        libelle.setLayoutX(this.getCoordX() - 3);
+        libelle.setLayoutY(this.getCoordY() - 8);
+
+        /* Groupe cercle + label */
+        Group groupe = new Group();
+        groupe.getChildren().addAll(cercle, libelle, cercleExterieur);
+
+        groupe.setOnMousePressed((new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent evt) {
+                AccueilController.isDrawable = false;
+                AccueilController.noeudEnCoursGroup = groupe;
+            }
+        }));
+        zoneDessin.getChildren().addAll(groupe);
+        return groupe;
+    }
 
     @Override
     public void selectionGroupe(AnchorPane main, Group groupe, Graphe graphe, AnchorPane zoneDessin) {

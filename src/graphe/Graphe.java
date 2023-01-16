@@ -7,7 +7,7 @@
  * All Rights Reserved
  */
 
-package traitement;
+package graphe;
 
 import java.util.ArrayList;
 import java.util.List;

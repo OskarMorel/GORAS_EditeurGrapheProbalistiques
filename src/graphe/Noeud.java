@@ -7,7 +7,7 @@
  * All Rights Reserved
  */
 
-package traitement;
+package graphe;
 
 import javafx.scene.Group;
 import javafx.scene.layout.AnchorPane;

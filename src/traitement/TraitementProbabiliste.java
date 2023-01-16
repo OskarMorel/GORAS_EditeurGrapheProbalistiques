@@ -1,48 +1,38 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * PROJET : Editeur de graphe probabiliste
+ * -------------------------------------------------
+ *
+ * TraitementProbabiliste.java            16/01/2023
+ * Copyright 2022 GORAS to Present
+ * All Rights Reserved
  */
 package traitement;
 
+import static application.Accueil.mainStage;
+import graphe.Graphe;
+import graphe.NoeudProbabiliste;
+import graphe.Noeud;
+import graphe.GrapheProbabiliste;
 import java.util.ArrayList;
-import java.util.List;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
 
 /**
- *
- * @author remi.jauzion
+ * 
+ * Gestion des traitements sur un graphe probabiliste
+ * 
+ * @author Antoine Gouzy
+ * @author Remi Jauzion
+ * @author Gauthier Jalbaud
+ * @author Oskar Morel
+ * @author Simon Launay
  */
 public class TraitementProbabiliste extends Traitement {
     
     /** le graphe utiliser pour les traitements */
     private GrapheProbabiliste graphe;
-    
-    /** */
-    Noeud noeudSFinal;
-    
-    /** */
-    Noeud noeudCFinal;
-    
-    /** */
-    String cheminExistant;
-    
-    /** */
-    int indice = 0;
-    
-    /** */
-    boolean tour = false;
-    
-    /** */
-    boolean cheminPossible = false;
+
     int coloration;
     
     /** */
@@ -135,6 +125,7 @@ public class TraitementProbabiliste extends Traitement {
         alert.setTitle("Matrice de Transtion");
         alert.setHeaderText("Matrice de Transtion : ");
         alert.setContentText(matrice);
+        alert.initOwner(mainStage);
         alert.showAndWait();
     }
     

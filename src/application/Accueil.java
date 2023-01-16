@@ -34,7 +34,7 @@ public class Accueil extends Application {
     public void start(Stage primaryStage) throws Exception {
         Parent root;
         root = FXMLLoader.load(getClass().getResource("FXMLAccueil.fxml"));
-        primaryStage.setTitle("Editeur de graphes (Graphio)");
+        primaryStage.setTitle("Editeur de graphes");
         Scene scene = new Scene(root);
         primaryStage.setScene(scene);
         primaryStage.getIcons().add(new Image("/img/line-chart.png"));

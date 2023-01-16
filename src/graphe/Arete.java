@@ -7,7 +7,7 @@
  * All Rights Reserved
  */
 
-package traitement;
+package graphe;
 
 import application.AccueilController;
 import javafx.event.EventHandler;

@@ -1,23 +1,30 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * PROJET : Editeur de graphe probabiliste
+ * -------------------------------------------------
+ *
+ * GrapheProbabiliste.java                16/01/2023
+ * Copyright 2022 GORAS to Present
+ * All Rights Reserved
  */
 package traitement;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 import javafx.scene.control.ComboBox;
 import javafx.scene.layout.AnchorPane;
 
 /**
- *
- * @author Gouzy
+ * 
+ * Gestion d'un graphe probabiliste
+ * @author Antoine Gouzy
+ * @author Remi Jauzion
+ * @author Gauthier Jalbaud
+ * @author Oskar Morel
+ * @author Simon Launay
  */
 public class GrapheProbabiliste extends Graphe{
 
-     /** Libelle du graphe */
+    /** Libelle du graphe */
     private String libelle;
 
     /** Liste des noeuds du graphe */
@@ -31,7 +38,7 @@ public class GrapheProbabiliste extends Graphe{
     }
     
     /**
-     * Creer une instance de graphe oriente
+     * Creer une instance de graphe probabiliste
      * @param libelle libelle de ce graphe
      */
     public GrapheProbabiliste(String libelle) {
@@ -41,12 +48,6 @@ public class GrapheProbabiliste extends Graphe{
         liens = new ArrayList<> ();
     }
     
-    /**
-     * Determine si deux noeuds forment un arc du graphe
-     * @param noeudATester
-     * @param noeudATester2
-     * @return true si les deux noeuds forment un arc, false sinon
-     */
     @Override
     public boolean estLienDuGraphe(Noeud noeudATester, Noeud noeudATester2) {
         for (ArcProbabiliste lien : liens) {
@@ -57,12 +58,6 @@ public class GrapheProbabiliste extends Graphe{
         return false;
     }
     
-    /**
-     * Determine si un arc existe entre deux noeuds 
-     * @param sourceATester source potentielle de l'arc
-     * @param cibleATester  cible potentielle de l'arc
-     * @return un arc du graphe a partir de deux noeuds si il existe, sinon null
-     */
     @Override
     public ArcProbabiliste getLienDuGraphe(Noeud sourceATester, Noeud cibleATester) {
         
@@ -73,13 +68,7 @@ public class GrapheProbabiliste extends Graphe{
         }
         return null;
     }
-    
-    
-    /**
-     * Supprime un lien du graphe en fonction de 2 libelles de noeuds
-     * @param noeudsSource combobox contenant le libelle de la source du lien a supprimer
-     * @param noeudsCible ombobox contenant le libelle de la cible du lien a supprimer
-     */
+
     @Override
     public void supprimerLien(ComboBox noeudsSource, ComboBox noeudsCible) {
     
@@ -104,47 +93,20 @@ public class GrapheProbabiliste extends Graphe{
     }
     
     @Override
-    public List<NoeudProbabiliste> getLiensNoeud(Noeud noeudCourant) {
-        
-        List<NoeudProbabiliste> noeudLien = new ArrayList<>();
-        for (Lien lien : liens) {
-            if (lien.getCible() == noeudCourant) {
-                noeudLien.add((NoeudProbabiliste) lien.getSource());
-                noeudLien.add((NoeudProbabiliste) noeudCourant);
-            } else if (lien.getSource() == noeudCourant) {
-                noeudLien.add((NoeudProbabiliste) noeudCourant);
-                noeudLien.add((NoeudProbabiliste) lien.getCible());
-            }
-        }        
-        return noeudLien;
-    }
-    
-    /**
-     * Ajoute un noeud au graphe
-     * @param noeud noeud a ajouter au graphe
-     */
-    @Override
     public void ajouterNoeud(Noeud noeud) {
         noeuds.add((NoeudProbabiliste) noeud);
     }
     
-    
-    /**
-     * Ajoute un lien au graphe
-     * @param lien lien a ajouter au graphe
-     */
     @Override
     public void ajouterLien(Lien lien) {  
         liens.add((ArcProbabiliste) lien);
     }
     
-    /** @return la liste des liens de ce graphe */
     @Override
     public ArrayList<ArcProbabiliste> getLiens() {
         return liens;
     }
     
-    /** @return la liste des noeuds de ce graphe */
     @Override
     public ArrayList<NoeudProbabiliste> getNoeuds() {
         return noeuds;
@@ -177,6 +139,11 @@ public class GrapheProbabiliste extends Graphe{
         }
     }
     
+    /**
+     * Determine si la ponderation d'un noeud est inferieur ou egale a  1
+     * @param noeudATester noeud qu'on souhaite tester
+     * @return true si la ponderation du noeud est inferieur ou egale a 1, sinon false
+     */
     public boolean getPondeNoeud(Noeud noeudATester) {
         
         double sommePonderation = 0;
@@ -193,12 +160,6 @@ public class GrapheProbabiliste extends Graphe{
         return true;
     }
     
-    /**
-     * Determine si des coordonnées font partie d'un noeud du graphe
-     * @param xATester
-     * @param yATester
-     * @return true si les coordonnées en paramètre corresponde à un noeud, false sinon
-     */
     @Override
     public NoeudProbabiliste estNoeudGraphe(double xATester ,double yATester) {
         

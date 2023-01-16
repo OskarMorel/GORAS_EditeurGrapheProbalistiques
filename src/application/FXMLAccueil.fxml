@@ -39,7 +39,7 @@
                   </ImageView>
               </fx:define>
                 
-              <MenuItem fx:id="newGrapheBtn" graphic="$graphe" mnemonicParsing="false" onAction="#nouveauGraphe" text="Nouveau Graphe">
+              <MenuItem fx:id="newGrapheBtn" graphic="$graphe" mnemonicParsing="false" onAction="#afficheNouveauGraphe" text="Nouveau Graphe">
                      <accelerator>
                         <KeyCodeCombination alt="UP" code="N" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                      </accelerator>

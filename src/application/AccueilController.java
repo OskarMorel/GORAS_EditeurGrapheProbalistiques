@@ -1,7 +1,17 @@
+/*
+ * PROJET : Editeur de graphe probabiliste
+ * -------------------------------------------------
+ *
+ * AccueilController.java                 16/01/2023
+ * Copyright 2022 GORAS to Present
+ * All Rights Reserved
+ */
+
 package application;
 
-import static application.Accueil.mainStage;
+
 import exceptions.TypeGrapheFactoryException;
+
 import java.beans.XMLDecoder;
 import java.beans.XMLEncoder;
 import java.io.File;
@@ -38,7 +48,6 @@ import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-
 import traitement.FactoryGraphe;
 import traitement.FactoryGrapheProbabiliste;
 import traitement.FactoryManager;
@@ -46,13 +55,20 @@ import traitement.Graphe;
 import traitement.Noeud;
 import traitement.Lien;
 import traitement.NoeudProbabiliste;
-import traitement.Traitement;
 import traitement.TraitementProbabiliste;
+import static application.Accueil.mainStage;
 
 /**
- *
- * @author GORAS
+ * 
+ * Gestion des éléments de l'interface graphique
+ * 
+ * @author Antoine Gouzy
+ * @author Remi Jauzion
+ * @author Gauthier Jalbaud
+ * @author Oskar Morel
+ * @author Simon Launay
  */
+
 public class AccueilController implements Initializable {
     
     public static FactoryManager factoryManager = new FactoryManager();
@@ -84,7 +100,7 @@ public class AccueilController implements Initializable {
     /* Chemin du graphe courant dans l'explorateur de fichier */
     private static String filePath;
     
-    //Element de l'interface graphique
+    //Elements de l'interface graphique
     @FXML
     private ToggleButton selectionBtn;
     @FXML
@@ -212,12 +228,11 @@ public class AccueilController implements Initializable {
         
     }
     
-    /* 
-     * Création d'un nouveau graphe 
-     * Ouverture de la fenetre de selection de type
+    /*
+     * Ouverture de la fenetre de creation de graphe
      */
     @FXML
-    private void nouveauGraphe() throws IOException {
+    private void afficheNouveauGraphe() throws IOException {
         
         Parent root = FXMLLoader.load(getClass().getResource("FXMLNouveauGraphe.fxml"));
         Stage nouveauGrapheStage = new Stage();
@@ -343,10 +358,10 @@ public class AccueilController implements Initializable {
                     loiProbTransition.setOnAction((ActionEvent e) -> {
                         if (graphe.estGrapheProbabiliste()) {
                             try {
-                                Parent root = FXMLLoader.load(getClass().getResource("FXMLloiDeProbaNTranstion.fxml"));
+                                Parent root = FXMLLoader.load(getClass().getResource("FXMLLoiDeProbaNTransition.fxml"));
                                 Stage loiProba = new Stage();
                                 loiProba.initModality(Modality.APPLICATION_MODAL);
-                                loiProba.setTitle("loi de probabilité après n transition(s)");
+                                loiProba.setTitle("Loi de probabilité après n transition(s)");
                                 loiProba.setScene(new Scene(root));  
                                 loiProba.show();
                                 
@@ -366,7 +381,10 @@ public class AccueilController implements Initializable {
         }
         
     }
-
+    
+    /*
+     * Affiche la visualisation du lien lors de son dessin initial
+     */
     @FXML
     private void zoneDessinMouseDragged(MouseEvent evt) {
         
@@ -393,7 +411,11 @@ public class AccueilController implements Initializable {
 
         }
     }
-
+    
+    /*
+     * Affiche visuelement le lien une fois la souris relacher
+     * et les deux sommets corrects
+     */
     @FXML
     private void zoneDessinMouseReleased(MouseEvent evt){
         
@@ -520,8 +542,6 @@ public class AccueilController implements Initializable {
             
             Noeud.cpt = idMax;
             
-            System.out.println(graphe.toString());
-            
         } catch (IOException e) {
             System.err.println(e.getMessage());
         } catch (NullPointerException e) {
@@ -566,12 +586,16 @@ public class AccueilController implements Initializable {
         
         if (nbT != 0 && noeud1Ok && noeud2Ok) {
             double coeff = traitement.sommetASommetNTransition(noeud1, noeud2, nbT);
-        reponseTxt.setText("Loi de probabilité de passer du sommet " + noeud1Txt.getValue() 
+        reponseTxt.setText("Probabilité de passer du sommet " + noeud1Txt.getValue() 
                            + " au sommet " + noeud2Txt.getValue() + " en " 
                            + nbT + " transition(s) : " + coeff);
         }       
     }
     
+    /*
+     * 
+     */
+    @FXML
     private void afficheLoiProbaApresTransition() throws Exception {
         
         int exposant = 0;
@@ -584,20 +608,7 @@ public class AccueilController implements Initializable {
         
         if (exposant != 0) {
             double[] matrice = traitement.loiDeProbabiliteEnNTransitions(exposant);
-        reponseTxt.setText("Loi de probabilité après n transitions : " + matrice);
+            reponseTxt.setText("Loi de probabilité après n transitions : " + matrice);
         }     
-    }
-    
-    @FXML
-    private void traitement() throws Exception {  
-        
-        
-        TraitementProbabiliste traitement = new TraitementProbabiliste(graphe);
-        traitement.matriceTransition();
-        traitement.affichageChemin(modificationContainer);
-        //traitement.classificationSommet();
-        traitement.regroupementParClasse();
-        traitement.loiDeProbabiliteEnNTransitions(4);
-     
     }
 }    

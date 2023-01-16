@@ -1,7 +1,10 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * PROJET : Editeur de graphe probabiliste
+ * -------------------------------------------------
+ *
+ * NoeudProbabiliste.java                 16/01/2023
+ * Copyright 2022 GORAS to Present
+ * All Rights Reserved
  */
 package traitement;
 
@@ -19,15 +22,20 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
 /**
- *
- * @author antoine.gouzy
+ * 
+ * Gestion d'un noeud probabiliste
+ * @author Antoine Gouzy
+ * @author Remi Jauzion
+ * @author Gauthier Jalbaud
+ * @author Oskar Morel
+ * @author Simon Launay
  */
 public class NoeudProbabiliste extends Noeud{
     
+    /** ponderation du noeud (somme des ponderations des arcs sortant de celui ci */
     private double ponderation;
     
-    public NoeudProbabiliste() {
-    }
+    public NoeudProbabiliste() { }
     
     /**
      * Creer un noeud simple
@@ -40,19 +48,19 @@ public class NoeudProbabiliste extends Noeud{
         ponderation = 0.0;
     }
 
+    /** @return la ponderation du noeud */
     public double getPonderation() {
         return ponderation;
     }
 
+    /**
+     * Modifie la ponderation du noeud
+     * @param ponderation la nouvelle ponderation du noeud
+     */
     public void setPonderation(double ponderation) {
         this.ponderation = ponderation;
     }
 
-    /**
-     * Dessine un noeudSimple sur la zone de dessin
-     * @param zoneDessin zone de dessin de l'application
-     * @return Group le groupe crée
-     */
     @Override
     public Group dessinerNoeud(AnchorPane zoneDessin) {
         
@@ -87,6 +95,7 @@ public class NoeudProbabiliste extends Noeud{
         return groupe;
     }
 
+    @Override
     public void selectionGroupe(AnchorPane main, Group groupe, Graphe graphe, AnchorPane zoneDessin) {
         groupe.setOnMouseClicked((new EventHandler<MouseEvent>() {
             @Override
@@ -260,7 +269,6 @@ public class NoeudProbabiliste extends Noeud{
         }));
     }
 
-    /** @return l'id de ce noeud */
     @Override
     public int getId() {
         return id;

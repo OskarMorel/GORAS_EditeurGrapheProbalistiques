@@ -1,4 +1,13 @@
-package traitement;
+/*
+ * PROJET : Editeur de graphe probabiliste
+ * -------------------------------------------------
+ *
+ * Lien.java                              16/01/2023
+ * Copyright 2022 GORAS to Present
+ * All Rights Reserved
+ */
+
+package graphe;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -8,6 +17,14 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 
+/**
+ * Classe permettant la definition de lien pour un graphe
+ * @author Antoine Gouzy
+ * @author Remi Jauzion
+ * @author Gauthier Jalbaud
+ * @author Oskar Morel
+ * @author Simon Launay
+ */
 public abstract class Lien {
 
     /** Source du lien*/ 
@@ -16,9 +33,7 @@ public abstract class Lien {
     /** Cible du lien*/
     Noeud cible;
     
-    public Lien () {
-        
-    }
+    public Lien () { }
     
     /**
      * Creer une instance de Lien
@@ -37,13 +52,11 @@ public abstract class Lien {
     }
 
     /** @return la cible du lien */
-
     public Noeud getCible() {
         return cible;
     }
     
     /**
-     * Modifie la source du lien
      * @param nouvelleSource le noeud qui est la nouvelle source du lien
      */
     public void setSource(Noeud nouvelleSource) {
@@ -61,21 +74,21 @@ public abstract class Lien {
     /**
      * Supprime le lien de la zone de dessin
      * @param zoneDessin la zone de dessin du graphe
-     * @param groupe dessin du lien
+     * @param groupe groupe graphique du lien
      */
     public void supprimer(AnchorPane zoneDessin, Group groupe) {
+        
         //Suppression de ce que contient le groupe 
         groupe.getChildren().clear();
         //Suppression du groupe sur la zone de dessin
         zoneDessin.getChildren().remove(groupe);
     }
-
-    @Override
-    public String toString() {
-        String lien = "Source :" + source + " Cible: " + cible;
-        return lien;
-    }
-
+    
+    /**
+     * Dessine un lien sur la fenetre graphique de l'editeur
+     * @param zoneDessin zone de dessin de l'editeur
+     * @return le groupe graphique du lien
+     */
     public Group dessinerLien(AnchorPane zoneDessin) {
         return null;
     }
@@ -167,8 +180,30 @@ public abstract class Lien {
         });
    
     }
-    
+    /**
+     * Actualise les propriétés de l'arc en fonction des paramètres des combobox
+     * @param noeudsSource ComboBox contenant en valeur active le libelle du noeud source
+     * @param noeudsCible ComboBox contenant en valeur active le libelle du noeud cible
+     * @param graphe graphe en cours de traitement
+     * @param zoneDessin zone de dessin de l'editeur
+     * @param groupe groupe graphique de lien selectione
+     */
     public void setPropriete(ComboBox noeudsSource, ComboBox noeudsCible, Graphe graphe, AnchorPane zoneDessin, Group groupe) { }
+    
+    /**
+     * Actualise les propriétés de l'arc en fonction des paramètres des combobox et de la ponderation
+     * @param noeudsSource ComboBox contenant en valeur active le libelle du noeud source
+     * @param noeudsCible ComboBox contenant en valeur active le libelle du noeud cible
+     * @param graphe graphe en cours de traitement
+     * @param zoneDessin zone de dessin de l'editeur
+     * @param groupe groupe graphique de lien selectione
+     * @param ponderation la nouvelle ponderation du lien
+     */
     public void setPropriete(ComboBox noeudsSource, ComboBox noeudsCible, Graphe graphe, AnchorPane zoneDessin, Group groupe, double ponderation) { }
     
+    @Override
+    public String toString() {
+        String lien = "Source :" + source + " Cible: " + cible;
+        return lien;
+    }
 }

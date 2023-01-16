@@ -1,4 +1,13 @@
-package traitement;
+/*
+ * PROJET : Editeur de graphe probabiliste
+ * -------------------------------------------------
+ *
+ * Arete.java                             16/01/2023
+ * Copyright 2022 GORAS to Present
+ * All Rights Reserved
+ */
+
+package graphe;
 
 import application.AccueilController;
 import javafx.event.EventHandler;
@@ -9,6 +18,15 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 
+/**
+ * 
+ * Definition d'une arete pour les graphes simple
+ * @author Antoine Gouzy
+ * @author Remi Jauzion
+ * @author Gauthier Jalbaud
+ * @author Oskar Morel
+ * @author Simon Launay
+ */
 public class Arete extends Lien {
     
     public Arete() {
@@ -23,13 +41,6 @@ public class Arete extends Lien {
         super(source, cible);
     }
     
-    /**
-     * Dessine sur la zone de dessin une arete entre la source et la cible du lien
-     * Le dessin d'un arete comporte une ligne visible par l'utilisateur
-     * Et une enveloppe pour permettre les actions sur une arete plus confortable
-     * @param zoneDessin zone de dessin du graphe
-     * @return 
-     */
     @Override
     public Group dessinerLien(AnchorPane zoneDessin) {
         
@@ -71,14 +82,7 @@ public class Arete extends Lien {
         return groupe;
     }
 
-    
-    /**
-     * Actualise les propriétés de l'arete en fonction des paramètres des combobox
-     * @param noeudsSource ComboBox contenant tous les noeuds du graphe
-     * @param noeudsCible ComboBox contenant tous les noeuds du graphe
-     * @param graphe graphe en cours de traitement
-     * @param zoneDessin zone de dessin du graphe
-     */
+
     @Override
     public void setPropriete(ComboBox noeudsSource, ComboBox noeudsCible, Graphe graphe, AnchorPane zoneDessin, Group groupe) {
         

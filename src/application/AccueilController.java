@@ -319,9 +319,9 @@ public class AccueilController implements Initializable {
                     });
                     
                     coloration.setOnAction((ActionEvent e) -> {
-                        ///if (graphe.estGrapheProbabiliste()) {
+                        if (graphe.estGrapheProbabiliste()) {
                             traitement.regroupementParClasse(zoneDessinStatic);
-                        //}
+                        }
                     });
                     
                     sommetASommet.setOnAction((ActionEvent e) -> {

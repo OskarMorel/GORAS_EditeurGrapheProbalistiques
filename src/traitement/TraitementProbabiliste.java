@@ -141,8 +141,8 @@ public class TraitementProbabiliste extends Traitement {
             chemin.add(noeudS);
         }
         for (int i = indiceParcours ; i < graphe.getLiens().size() ; i++) {  
-            if (graphe.getLiens().get(i).getSource() == noeudS) {
-                if(graphe.getLiens().get(i).getCible() == noeudC){
+            if (graphe.getLiens().get(i).getSource().getId() == noeudS.getId()) {
+                if(graphe.getLiens().get(i).getCible().getId() == noeudC.getId()){
                     //indice = 0;
                     return true;
                 }
@@ -165,6 +165,7 @@ public class TraitementProbabiliste extends Traitement {
     }
     
     public void regroupementParClasse(AnchorPane zoneDessin){
+        listeClasse = "";
         listeNoeud = (ArrayList<Noeud>) graphe.getNoeuds().clone();
         while(listeNoeud.size()>0){
             classe.add((NoeudProbabiliste) listeNoeud.get(0));

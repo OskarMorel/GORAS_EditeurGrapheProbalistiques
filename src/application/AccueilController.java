@@ -21,8 +21,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -58,6 +56,7 @@ import graphe.Lien;
 import graphe.NoeudProbabiliste;
 import traitement.TraitementProbabiliste;
 import static application.Accueil.mainStage;
+import beans.GrapheBean;
 import javafx.scene.control.Alert;
 
 /**
@@ -329,67 +328,7 @@ public class AccueilController implements Initializable {
                 /* Affihage des traitements pour les graphes probabilistes */
                 if (factory instanceof FactoryGrapheProbabiliste) {
 
-                    menuTraitement.getItems().clear();
-
-                    traitement = new TraitementProbabiliste(graphe);
-                    
-                    MenuItem matrice = new MenuItem("Matrice de transition");
-                    MenuItem coloration = new MenuItem("Coloration du graphe");
-                    MenuItem sommetASommet = new MenuItem("Probabilité sommet a sommet en n transition(s)"); 
-                    MenuItem loiProbTransition = new MenuItem("Loi de probabilité atteinte après n transition(s)");
-                    menuTraitement.getItems().addAll(matrice, coloration, sommetASommet, loiProbTransition);
-
-                    matrice.setOnAction((ActionEvent e) -> {
-                        if (graphe.estGrapheProbabiliste()) {
-                            traitement.affichageMatrice();
-                        } else {
-                            afficheErreurPonderation();
-                        }
-                    });
-                    
-                    coloration.setOnAction((ActionEvent e) -> {
-                        if (graphe.estGrapheProbabiliste()) {
-                            traitement.regroupementParClasse(zoneDessinStatic);
-                        } else {
-                            afficheErreurPonderation();
-                        }
-                    });
-                    
-                    sommetASommet.setOnAction((ActionEvent e) -> {
-                        if (graphe.estGrapheProbabiliste()) {
-                            
-                            try {
-                                Parent root = FXMLLoader.load(getClass().getResource("FXMLProbaSommetSommetNTransition.fxml"));
-                                Stage sommetSommetStage = new Stage();
-                                sommetSommetStage.initModality(Modality.APPLICATION_MODAL);
-                                sommetSommetStage.setTitle("Probabilité sommet à sommet en n transition(s)");
-                                sommetSommetStage.getIcons().add(new Image("/img/line-chart.png"));
-                                sommetSommetStage.setScene(new Scene(root));  
-                                sommetSommetStage.show();
-                                
-                            } catch (IOException ex) { }
-                        } else {
-                            afficheErreurPonderation();
-                        }
-                    });
-                    
-                    loiProbTransition.setOnAction((ActionEvent e) -> {
-                        if (graphe.estGrapheProbabiliste()) {
-                            try {
-
-                                Parent root = FXMLLoader.load(getClass().getResource("FXMLLoiDeProbaNTransition.fxml"));
-
-                                Stage loiProba = new Stage();
-                                loiProba.initModality(Modality.APPLICATION_MODAL);
-                                loiProba.setTitle("Loi de probabilité après n transition(s)");
-                                loiProba.setScene(new Scene(root));  
-                                loiProba.show();
-                                
-                            } catch (IOException ex) { }
-                        } else {
-                            afficheErreurPonderation();
-                        }
-                    });
+                    invocationTraitement();
                 }
                 
             } catch (TypeGrapheFactoryException e) {
@@ -486,14 +425,16 @@ public class AccueilController implements Initializable {
             
             // Sérialisation XML d'un graphe dans fichier file
             XMLEncoder output = new XMLEncoder(new FileOutputStream(file));
-            output.writeObject(graphe);
-            output.writeObject(factory);
+            
+            GrapheBean grapheBean = graphe.toGrapheBean();
+            output.writeObject(grapheBean);
+            
             output.close();
             
-        } catch (NullPointerException e) {
-            //Enregistrement sans graphe
-            System.err.println(e.getMessage());
-        } catch (FileNotFoundException e) {
+        }catch (NullPointerException e) {
+           //Enregistrement sans graphe
+           System.err.println(e.getMessage());
+        }catch (FileNotFoundException e) {
             System.err.println(e.getMessage());
         }
         
@@ -510,8 +451,9 @@ public class AccueilController implements Initializable {
             try {
                 // Sérialisation XML d'un graphe dans fichier file
                 XMLEncoder output = new XMLEncoder(new FileOutputStream(filePath));
-                output.writeObject(graphe);
-                output.writeObject(factory);
+                
+                GrapheBean grapheBean = graphe.toGrapheBean();
+                output.writeObject(grapheBean);
                 output.close();
             } catch (FileNotFoundException e) {
                 System.err.println(e.getMessage());
@@ -526,12 +468,12 @@ public class AccueilController implements Initializable {
      * Ouvre un graphe a partir de son chemin
      */
     @FXML
-    private void ouvrir() {
+    private void ouvrir() throws TypeGrapheFactoryException {
         try {
             
             //Reinitialisation de la zone de dessin et des parametes de dessin
             zoneDessin.getChildren().clear();
-            graphe = null;
+            modificationContainer.getChildren().clear();
             Noeud.cpt = 0;
             
             FileChooser fileChooser = new FileChooser();
@@ -547,9 +489,11 @@ public class AccueilController implements Initializable {
 
             // Déserialisation
             XMLDecoder decoder = new XMLDecoder(new FileInputStream(file));
-            graphe = (Graphe) decoder.readObject();
-            factory = (FactoryGraphe) decoder.readObject();
-
+            GrapheBean grapheBean = (GrapheBean) decoder.readObject();
+            graphe = grapheBean.toGraphe();
+            
+            factory = factoryManager.getInstance().getFactoryGraphe(graphe.getType());
+            
             //Dessin du graphe choisi
             int idMax = 0;
             for (Noeud noeud : graphe.getNoeuds()) {
@@ -561,6 +505,12 @@ public class AccueilController implements Initializable {
             }
             
             Noeud.cpt = idMax;
+            
+            /* Affihage des traitements pour les graphes probabilistes */
+                if (factory instanceof FactoryGrapheProbabiliste) {
+
+                    invocationTraitement();
+                }
             
         } catch (IOException e) {
             System.err.println(e.getMessage());
@@ -649,8 +599,6 @@ public class AccueilController implements Initializable {
             reponseTxt.setText("loi incorrect !");
         }     
     }
-    
-    
 
     private void afficheErreurPonderation() {
         Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -660,6 +608,69 @@ public class AccueilController implements Initializable {
         alert.initOwner(mainStage);
         alert.showAndWait();
     }
+    
+    private void invocationTraitement() {
+        menuTraitement.getItems().clear();
 
+        traitement = new TraitementProbabiliste(graphe);
+
+        MenuItem matrice = new MenuItem("Matrice de transition");
+        MenuItem coloration = new MenuItem("Coloration du graphe");
+        MenuItem sommetASommet = new MenuItem("Probabilité sommet a sommet en n transition(s)"); 
+        MenuItem loiProbTransition = new MenuItem("Loi de probabilité atteinte après n transition(s)");
+        menuTraitement.getItems().addAll(matrice, coloration, sommetASommet, loiProbTransition);
+
+        matrice.setOnAction((ActionEvent e) -> {
+            if (graphe.estGrapheProbabiliste()) {
+                traitement.affichageMatrice();
+            } else {
+                afficheErreurPonderation();
+            }
+        });
+
+        coloration.setOnAction((ActionEvent e) -> {
+            if (graphe.estGrapheProbabiliste()) {
+                traitement.regroupementParClasse(zoneDessinStatic);
+            } else {
+                afficheErreurPonderation();
+            }
+        });
+
+        sommetASommet.setOnAction((ActionEvent e) -> {
+            if (graphe.estGrapheProbabiliste()) {
+
+                try {
+                    Parent root = FXMLLoader.load(getClass().getResource("FXMLProbaSommetSommetNTransition.fxml"));
+                    Stage sommetSommetStage = new Stage();
+                    sommetSommetStage.initModality(Modality.APPLICATION_MODAL);
+                    sommetSommetStage.setTitle("Probabilité sommet à sommet en n transition(s)");
+                    sommetSommetStage.getIcons().add(new Image("/img/line-chart.png"));
+                    sommetSommetStage.setScene(new Scene(root));  
+                    sommetSommetStage.show();
+
+                } catch (IOException ex) { }
+            } else {
+                afficheErreurPonderation();
+            }
+        });
+
+        loiProbTransition.setOnAction((ActionEvent e) -> {
+            if (graphe.estGrapheProbabiliste()) {
+                try {
+
+                    Parent root = FXMLLoader.load(getClass().getResource("FXMLLoiDeProbaNTransition.fxml"));
+
+                    Stage loiProba = new Stage();
+                    loiProba.initModality(Modality.APPLICATION_MODAL);
+                    loiProba.setTitle("Loi de probabilité après n transition(s)");
+                    loiProba.setScene(new Scene(root));  
+                    loiProba.show();
+
+                } catch (IOException ex) { }
+            } else {
+                afficheErreurPonderation();
+            }
+        });
+    }
     
 }    

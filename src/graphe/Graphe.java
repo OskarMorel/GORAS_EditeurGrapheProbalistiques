@@ -9,8 +9,8 @@
 
 package graphe;
 
+import beans.GrapheBean;
 import java.util.ArrayList;
-import java.util.List;
 import javafx.scene.control.ComboBox;
 import javafx.scene.layout.AnchorPane;
 
@@ -33,6 +33,9 @@ public abstract class Graphe {
 
     /** Liste des liens du graphe */
     private ArrayList<? extends Lien> liens;
+    
+    /** Type du graphe */
+    String type;
     
     public Graphe() {
         
@@ -134,11 +137,11 @@ public abstract class Graphe {
      * @param noeudCourant 
      */
     public void modifLienNoeud(Noeud noeudCourant) {
-        for (Lien lien : liens) {
-            if (lien.getCible() == noeudCourant) {
-                lien.setCible(noeudCourant); 
+        for (Lien lien : getLiens()) {
+            if (lien.getCible().getId() == noeudCourant.getId()) {
+                lien.setCible(noeudCourant);
             }
-            if (lien.getSource() == noeudCourant) {
+            if (lien.getSource().getId() == noeudCourant.getId()) {
                 lien.setSource(noeudCourant);
             }
         }
@@ -166,10 +169,23 @@ public abstract class Graphe {
             return false;
     }
     
+    public GrapheBean toGrapheBean() {
+        return null;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
     @Override
     public String toString() {
         String tout = "nom : " + libelle + "   noeuds : " + noeuds.toString() + "   liens : " + liens.toString();
         return tout;
     }   
 
+    
 }

@@ -2,7 +2,7 @@
  * PROJET : Editeur de graphe probabiliste
  * -------------------------------------------------
  *
- * ArcProbabiliste.java                   16/01/2023
+ * ArcPondere.java                          16/01/2023
  * Copyright 2022 GORAS to Present
  * All Rights Reserved
  */
@@ -10,11 +10,10 @@
 package graphe;
 
 import application.AccueilController;
-import beans.ArcProbabilisteBean;
+import beans.ArcPondereBean;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -34,32 +33,33 @@ import javafx.scene.shape.QuadCurve;
  * @author Oskar Morel
  * @author Simon Launay
  */
-public class ArcProbabiliste extends Lien{
+public class ArcPondere extends Lien{
     
     /** La ponderation de l'arc */
     private double ponderation;
     
-    public ArcProbabiliste() { }
+    public ArcPondere() { }
     
     /**
      * Creer un instance d'un arc probabiliste
      * @param source la source de l'arc
      * @param cible la cible de l'arc
      */
-    public ArcProbabiliste(Noeud source, Noeud cible) {
-        this.cible= cible;
+    public ArcPondere(Noeud source, Noeud cible) {
         this.source = source;
-        this.ponderation = 0.0;
+        this.cible = cible;
+        ponderation = 0.0;
     }
     
     /**
      * Creer un instance d'un arc probabiliste
      * @param source la source de l'arc
      * @param cible la cible de l'arc
+     * @param ponderation ponderation de l'arc
      */
-    public ArcProbabiliste(Noeud source, Noeud cible, double ponderation) {
-        this.cible= cible;
+    public ArcPondere(Noeud source, Noeud cible, double ponderation) {
         this.source = source;
+        this.cible = cible;
         this.ponderation = ponderation;
     }
 
@@ -308,44 +308,10 @@ public class ArcProbabiliste extends Lien{
             public void handle(ActionEvent evt) {
                 
                 double nouvellePonderation = Double.parseDouble(ponderationText.getText());
-                boolean ponderationOk = true;
-                
-                String libelleNoeudSource = (String) noeudsSource.getValue();
-                Noeud noeudSource = null; //Init pour le compilateur
-                
-                //Recuperation du noeud source en fonction du libelle
-                for (Noeud noeud : graphe.getNoeuds()) {
 
-                    if (noeud.getLibelle().equals(libelleNoeudSource)) {
-                        noeudSource = noeud;                
-                    }
-                }
-
-                if (noeudSource.getId() == getSource().getId()) {
-                    ponderationOk = ((NoeudProbabiliste) noeudSource).getPonderation() + nouvellePonderation - ponderation <= 1.0;
-                } else {
-                    ponderationOk = ((NoeudProbabiliste) noeudSource).getPonderation() + nouvellePonderation <= 1;
-                }
+                ponderation = nouvellePonderation;
+                setPropriete(noeudsSource, noeudsCible, graphe, zoneDessin, groupe, nouvellePonderation);
                 
-                
-                if (!ponderationOk) {
-                    
-                    Alert alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setTitle("Erreur Pondération");
-                    alert.setHeaderText("Pondération totale supérieur à 1");
-                    alert.showAndWait();
-                    
-                } else {                    
-                    if (noeudSource.getId() == getSource().getId()) {
-                        ((NoeudProbabiliste) noeudSource).setPonderation( ((NoeudProbabiliste) noeudSource).getPonderation() + nouvellePonderation - ponderation);
-                    } else {
-                        ((NoeudProbabiliste) getSource()).setPonderation( ((NoeudProbabiliste) getSource()).getPonderation() - nouvellePonderation);
-                        ((NoeudProbabiliste) noeudSource).setPonderation( ((NoeudProbabiliste) noeudSource).getPonderation() + nouvellePonderation);
-                    }
-
-                    ponderation = nouvellePonderation;
-                    setPropriete(noeudsSource, noeudsCible, graphe, zoneDessin, groupe, nouvellePonderation);
-                }
                 
                 zonePropriete.getChildren().clear();
             } 
@@ -364,14 +330,6 @@ public class ArcProbabiliste extends Lien{
             @Override
             public void handle(ActionEvent evt) {
                 supprimer(zoneDessin, groupe);
-                Noeud noeudSource = null;
-                for (Noeud noeud : graphe.getNoeuds()) {
-            
-                    if (noeud.getLibelle().equals(noeudsSource.getValue())) {
-                        noeudSource = noeud;                
-                    }
-                }   
-                ((NoeudProbabiliste) noeudSource).setPonderation(((NoeudProbabiliste) noeudSource).getPonderation() - ponderation);
                 graphe.supprimerLien(noeudsSource, noeudsCible);
                 zonePropriete.getChildren().clear();
             }
@@ -379,8 +337,8 @@ public class ArcProbabiliste extends Lien{
     }
     
     @Override
-    public ArcProbabilisteBean toLienBean() {
-        return new ArcProbabilisteBean(source.toNoeudBean(), cible.toNoeudBean(), ponderation);
+    public ArcPondereBean toLienBean() {
+        return new ArcPondereBean(source.toNoeudBean(), cible.toNoeudBean(), ponderation);
     }
     
     @Override

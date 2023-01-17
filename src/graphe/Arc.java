@@ -10,6 +10,8 @@
 package graphe;
 
 import application.AccueilController;
+import beans.ArcBean;
+import beans.LienBean;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.control.ComboBox;
@@ -182,6 +184,11 @@ public class Arc extends Lien {
             noeudsSource.setValue(getSource().getLibelle());
             noeudsCible.setValue(getCible().getLibelle());
         }
+    }
+    
+    @Override
+    public ArcBean toLienBean() {
+        return new ArcBean(source.toNoeudBean(), cible.toNoeudBean());
     }
     
 }

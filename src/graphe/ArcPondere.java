@@ -10,6 +10,7 @@
 package graphe;
 
 import application.AccueilController;
+import beans.ArcPondereBean;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
@@ -35,7 +36,7 @@ import javafx.scene.shape.QuadCurve;
 public class ArcPondere extends Lien{
     
     /** La ponderation de l'arc */
-    private double ponderation = 0.0;
+    private double ponderation;
     
     public ArcPondere() { }
     
@@ -45,7 +46,21 @@ public class ArcPondere extends Lien{
      * @param cible la cible de l'arc
      */
     public ArcPondere(Noeud source, Noeud cible) {
-        super(source, cible);
+        this.source = source;
+        this.cible = cible;
+        ponderation = 0.0;
+    }
+    
+    /**
+     * Creer un instance d'un arc probabiliste
+     * @param source la source de l'arc
+     * @param cible la cible de l'arc
+     * @param ponderation ponderation de l'arc
+     */
+    public ArcPondere(Noeud source, Noeud cible, double ponderation) {
+        this.source = source;
+        this.cible = cible;
+        this.ponderation = ponderation;
     }
 
     /**
@@ -235,7 +250,7 @@ public class ArcPondere extends Lien{
         
         for (Noeud noeud : graphe.getNoeuds()) {
             
-            if (noeud == getSource()) { // Si le noeud actuel est la source du lien
+            if (noeud.getId() == getSource().getId()) { // Si le noeud actuel est la source du lien
                 noeudsSource.getItems().add(noeud.getLibelle());
                 noeudsSource.setValue(noeud.getLibelle()); //Selected ComboBox
             } else { // Ajout des autres noeuds
@@ -254,7 +269,7 @@ public class ArcPondere extends Lien{
         noeudsCible.setLayoutY(100);
         for (Noeud noeud : graphe.getNoeuds()) {
             
-            if (noeud == getCible()) { // Si le noeud actuel est la cible du lien
+            if (noeud.getId() == getCible().getId()) { // Si le noeud actuel est la cible du lien
                 noeudsCible.getItems().add(noeud.getLibelle());
                 noeudsCible.setValue(noeud.getLibelle()); //Selected ComboBox
             } else { // Ajout des autres noeuds
@@ -322,8 +337,13 @@ public class ArcPondere extends Lien{
     }
     
     @Override
+    public ArcPondereBean toLienBean() {
+        return new ArcPondereBean(source.toNoeudBean(), cible.toNoeudBean(), ponderation);
+    }
+    
+    @Override
     public String toString() {
-        String arc = "pond: " + ponderation + "\n source: " + source + " cible: " + cible;
+        String arc = "pond: " + ponderation + "\n source: " + getSource() + " cible: " + getCible();
         return arc;
     }
 }

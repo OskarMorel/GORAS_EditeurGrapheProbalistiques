@@ -8,6 +8,11 @@
  */
 package graphe;
 
+import beans.ArcBean;
+import beans.GrapheOrienteBean;
+import beans.LienBean;
+import beans.NoeudBean;
+import beans.NoeudSimpleBean;
 import java.util.ArrayList;
 import java.util.Iterator;
 import javafx.scene.control.ComboBox;
@@ -34,7 +39,9 @@ public class GrapheOriente extends Graphe{
     private ArrayList<Arc> liens;
     
     public GrapheOriente() {
-        
+        noeuds = new ArrayList();
+        liens = new ArrayList();
+        type = "Graphe oriente";
     }
     
     /**
@@ -46,6 +53,7 @@ public class GrapheOriente extends Graphe{
         this.libelle = libelle;
         noeuds = new ArrayList<> ();
         liens = new ArrayList<> ();
+        type = "Graphe oriente";
     }
     
     @Override
@@ -62,7 +70,8 @@ public class GrapheOriente extends Graphe{
     public Arc getLienDuGraphe(Noeud sourceATester, Noeud cibleATester) {
         
         for (Arc lien : liens) {
-            if (lien.getSource() == sourceATester && lien.getCible() == cibleATester) {
+            if (lien.getSource().getId() == sourceATester.getId() 
+                && lien.getCible().getId() == cibleATester.getId()) {
                 return lien;
             }
         }
@@ -110,7 +119,7 @@ public class GrapheOriente extends Graphe{
     @Override
     public ArrayList<NoeudSimple> getNoeuds() {
         return noeuds;
-    }
+    } 
     
     @Override
     public void supprimerNoeud(Noeud noeud, AnchorPane zoneDessin) {
@@ -149,6 +158,15 @@ public class GrapheOriente extends Graphe{
         }
         
         return null;
+    }
+    
+    @Override
+    public GrapheOrienteBean toGrapheBean() {
+        ArrayList<NoeudSimpleBean> noeudsBeans = new ArrayList();
+        ArrayList<ArcBean> liensBeans = new ArrayList();
+        for(NoeudSimple n : noeuds) noeudsBeans.add(n.toNoeudBean());
+        for(Arc a: liens) liensBeans.add(a.toLienBean());
+        return new GrapheOrienteBean(libelle, noeudsBeans, liensBeans);
     }
     
 }

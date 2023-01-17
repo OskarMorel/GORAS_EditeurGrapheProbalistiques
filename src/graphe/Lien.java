@@ -9,6 +9,8 @@
 
 package graphe;
 
+import beans.AreteBean;
+import beans.LienBean;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
@@ -28,10 +30,10 @@ import javafx.scene.layout.AnchorPane;
 public abstract class Lien {
 
     /** Source du lien*/ 
-    private Noeud source;
+    Noeud source;
 
     /** Cible du lien*/
-    private Noeud cible;
+    Noeud cible;
     
     public Lien () { }
     
@@ -112,7 +114,7 @@ public abstract class Lien {
         noeudsSource.setLayoutY(50);
         for (Noeud noeud : graphe.getNoeuds()) {
             
-            if (noeud == this.source) { // Si le noeud actuel est la source du lien
+            if (noeud.getId() == this.source.getId()) { // Si le noeud actuel est la source du lien
                 noeudsSource.getItems().add(noeud.getLibelle());
                 noeudsSource.setValue(noeud.getLibelle()); //Selected ComboBox
             } else { // Ajout des autres noeuds
@@ -131,7 +133,7 @@ public abstract class Lien {
         noeudsCible.setLayoutY(100);
         for (Noeud noeud : graphe.getNoeuds()) {
             
-            if (noeud == this.cible) { // Si le noeud actuel est la cible du lien
+            if (noeud.getId() == this.cible.getId()) { // Si le noeud actuel est la cible du lien
                 noeudsCible.getItems().add(noeud.getLibelle());
                 noeudsCible.setValue(noeud.getLibelle()); //Selected ComboBox
             } else { // Ajout des autres noeuds
@@ -200,6 +202,10 @@ public abstract class Lien {
      * @param ponderation la nouvelle ponderation du lien
      */
     public void setPropriete(ComboBox noeudsSource, ComboBox noeudsCible, Graphe graphe, AnchorPane zoneDessin, Group groupe, double ponderation) { }
+    
+    public LienBean toLienBean() {
+        return null;
+    }
     
     @Override
     public String toString() {

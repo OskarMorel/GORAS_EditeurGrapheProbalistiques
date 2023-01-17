@@ -8,6 +8,9 @@
  */
 package graphe;
 
+import beans.ArcProbabilisteBean;
+import beans.GrapheProbabilisteBean;
+import beans.NoeudProbabilisteBean;
 import java.util.ArrayList;
 import java.util.Iterator;
 import javafx.scene.control.ComboBox;
@@ -34,7 +37,9 @@ public class GrapheProbabiliste extends Graphe{
     private ArrayList<ArcProbabiliste> liens;
     
     public GrapheProbabiliste() {
-        
+        noeuds = new ArrayList();
+        liens = new ArrayList();
+        type = "Graphe probabiliste";
     }
     
     /**
@@ -62,7 +67,7 @@ public class GrapheProbabiliste extends Graphe{
     public ArcProbabiliste getLienDuGraphe(Noeud sourceATester, Noeud cibleATester) {
         
         for (ArcProbabiliste lien : liens) {
-            if (lien.getSource() == sourceATester && lien.getCible() == cibleATester) {
+            if (lien.getSource().getId() == sourceATester.getId() && lien.getCible().getId() == cibleATester.getId()) {
                 return lien;
             }
         }
@@ -124,8 +129,11 @@ public class GrapheProbabiliste extends Graphe{
         Iterator liensASuppr = liens.iterator();
         while(liensASuppr.hasNext()) {
             ArcProbabiliste lien = (ArcProbabiliste) liensASuppr.next();
-            if (lien.getSource().getId() == noeud.getId() || lien.getCible().getId() == noeud.getId()) {
-                liensASuppr.remove();  
+            if (lien.getSource().getId() == noeud.getId()) {
+                liensASuppr.remove();
+            } else if (lien.getCible().getId() == noeud.getId()) {
+                ((NoeudProbabiliste)lien.getSource()).setPonderation(((NoeudProbabiliste)lien.getSource()).getPonderation()-lien.getPonderation());
+                 liensASuppr.remove();
             }
         }
         getNoeuds().remove(noeud);
@@ -189,6 +197,15 @@ public class GrapheProbabiliste extends Graphe{
             }
         }
         return true;
+    }
+    
+    @Override
+    public GrapheProbabilisteBean toGrapheBean() {
+        ArrayList<NoeudProbabilisteBean> noeudsBeans = new ArrayList();
+        ArrayList<ArcProbabilisteBean> liensBeans = new ArrayList();
+        for(NoeudProbabiliste n : noeuds) noeudsBeans.add(n.toNoeudBean());
+        for(ArcProbabiliste a: liens) liensBeans.add(a.toLienBean());
+        return new GrapheProbabilisteBean(libelle, noeudsBeans, liensBeans);
     }
     
 }

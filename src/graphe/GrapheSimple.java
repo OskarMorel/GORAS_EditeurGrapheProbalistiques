@@ -9,6 +9,9 @@
 
 package graphe;
 
+import beans.AreteBean;
+import beans.GrapheSimpleBean;
+import beans.NoeudSimpleBean;
 import java.util.ArrayList;
 import java.util.Iterator;
 import javafx.scene.control.ComboBox;
@@ -35,7 +38,9 @@ public class GrapheSimple extends Graphe {
     private ArrayList<Arete> liens;
     
     public GrapheSimple() {
-        
+        noeuds = new ArrayList();
+        liens = new ArrayList();
+        type = "Graphe simple";
     }
     
     /**
@@ -47,6 +52,7 @@ public class GrapheSimple extends Graphe {
         this.libelle = libelle;
         noeuds = new ArrayList<> ();
         liens = new ArrayList<> ();
+        type = "Graphe simple";
     }
     
     @Override
@@ -64,8 +70,8 @@ public class GrapheSimple extends Graphe {
     @Override
     public Arete getLienDuGraphe(Noeud sourceATester, Noeud cibleATester) {
         for (Arete lien : liens) {
-            if ((lien.getSource() == sourceATester && lien.getCible() == cibleATester )
-                || (lien.getSource() == cibleATester && lien.getCible() == sourceATester)) {
+            if ((lien.getSource().getId() == sourceATester.getId() && lien.getCible().getId() == cibleATester.getId() )
+                || (lien.getSource().getId() == cibleATester.getId() && lien.getCible().getId() == sourceATester.getId())) {
                 return lien;
             }
         }
@@ -160,4 +166,14 @@ public class GrapheSimple extends Graphe {
         
         return null;
     }
+    
+    @Override
+    public GrapheSimpleBean toGrapheBean() {
+        ArrayList<NoeudSimpleBean> noeudsBeans = new ArrayList();
+        ArrayList<AreteBean> liensBeans = new ArrayList();
+        for(NoeudSimple n : noeuds) noeudsBeans.add(n.toNoeudBean());
+        for(Arete a: liens) liensBeans.add(a.toLienBean());
+        return new GrapheSimpleBean(libelle, noeudsBeans, liensBeans);
+    }
+    
 }

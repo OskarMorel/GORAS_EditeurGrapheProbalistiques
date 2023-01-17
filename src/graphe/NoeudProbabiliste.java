@@ -10,6 +10,7 @@ package graphe;
 
 import static application.Accueil.mainStage;
 import application.AccueilController;
+import beans.NoeudProbabilisteBean;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
@@ -47,6 +48,22 @@ public class NoeudProbabiliste extends Noeud{
         super(Integer.toString(cpt+=1), coordX, coordY);
         id = cpt;
         ponderation = 0.0;
+    }
+    
+    /**
+     * Creer un noeud simple
+     * @param coordX coordonnee en abscisse de ce noeud
+     * @param coordY coordonnee en ordonnee de ce noeud
+     * @param ponderation ponderation du noeud
+     * @param id id du noeud
+     * @param libelle libelle du noeud
+     */
+    public NoeudProbabiliste(double coordX, double coordY, double ponderation, int id, String libelle) {
+        this.coordX = coordX;
+        this.coordY = coordY;
+        this.ponderation = ponderation;
+        this.id = id;
+        this.libelle = libelle;
     }
 
     /** @return la ponderation du noeud */
@@ -311,6 +328,11 @@ public class NoeudProbabiliste extends Noeud{
         }));
     }
 
+    @Override
+    public NoeudProbabilisteBean toNoeudBean() {
+        return new NoeudProbabilisteBean(libelle, coordX, coordY, id, ponderation);
+    }
+    
     @Override
     public int getId() {
         return id;

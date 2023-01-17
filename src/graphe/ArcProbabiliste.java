@@ -10,6 +10,7 @@
 package graphe;
 
 import application.AccueilController;
+import beans.ArcProbabilisteBean;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
@@ -36,7 +37,7 @@ import javafx.scene.shape.QuadCurve;
 public class ArcProbabiliste extends Lien{
     
     /** La ponderation de l'arc */
-    private double ponderation = 0.0;
+    private double ponderation;
     
     public ArcProbabiliste() { }
     
@@ -46,7 +47,20 @@ public class ArcProbabiliste extends Lien{
      * @param cible la cible de l'arc
      */
     public ArcProbabiliste(Noeud source, Noeud cible) {
-        super(source, cible);
+        this.cible= cible;
+        this.source = source;
+        this.ponderation = 0.0;
+    }
+    
+    /**
+     * Creer un instance d'un arc probabiliste
+     * @param source la source de l'arc
+     * @param cible la cible de l'arc
+     */
+    public ArcProbabiliste(Noeud source, Noeud cible, double ponderation) {
+        this.cible= cible;
+        this.source = source;
+        this.ponderation = ponderation;
     }
 
     /**
@@ -236,7 +250,7 @@ public class ArcProbabiliste extends Lien{
         
         for (Noeud noeud : graphe.getNoeuds()) {
             
-            if (noeud == getSource()) { // Si le noeud actuel est la source du lien
+            if (noeud.getId() == getSource().getId()) { // Si le noeud actuel est la source du lien
                 noeudsSource.getItems().add(noeud.getLibelle());
                 noeudsSource.setValue(noeud.getLibelle()); //Selected ComboBox
             } else { // Ajout des autres noeuds
@@ -255,7 +269,7 @@ public class ArcProbabiliste extends Lien{
         noeudsCible.setLayoutY(100);
         for (Noeud noeud : graphe.getNoeuds()) {
             
-            if (noeud == getCible()) { // Si le noeud actuel est la cible du lien
+            if (noeud.getId() == getCible().getId()) { // Si le noeud actuel est la cible du lien
                 noeudsCible.getItems().add(noeud.getLibelle());
                 noeudsCible.setValue(noeud.getLibelle()); //Selected ComboBox
             } else { // Ajout des autres noeuds
@@ -306,13 +320,13 @@ public class ArcProbabiliste extends Lien{
                         noeudSource = noeud;                
                     }
                 }
-                
 
-                if (noeudSource == getSource()) {
+                if (noeudSource.getId() == getSource().getId()) {
                     ponderationOk = ((NoeudProbabiliste) noeudSource).getPonderation() + nouvellePonderation - ponderation <= 1.0;
                 } else {
                     ponderationOk = ((NoeudProbabiliste) noeudSource).getPonderation() + nouvellePonderation <= 1;
                 }
+                
                 
                 if (!ponderationOk) {
                     
@@ -322,7 +336,7 @@ public class ArcProbabiliste extends Lien{
                     alert.showAndWait();
                     
                 } else {                    
-                    if (noeudSource == getSource()) {
+                    if (noeudSource.getId() == getSource().getId()) {
                         ((NoeudProbabiliste) noeudSource).setPonderation( ((NoeudProbabiliste) noeudSource).getPonderation() + nouvellePonderation - ponderation);
                     } else {
                         ((NoeudProbabiliste) getSource()).setPonderation( ((NoeudProbabiliste) getSource()).getPonderation() - nouvellePonderation);
@@ -350,10 +364,23 @@ public class ArcProbabiliste extends Lien{
             @Override
             public void handle(ActionEvent evt) {
                 supprimer(zoneDessin, groupe);
+                Noeud noeudSource = null;
+                for (Noeud noeud : graphe.getNoeuds()) {
+            
+                    if (noeud.getLibelle().equals(noeudsSource.getValue())) {
+                        noeudSource = noeud;                
+                    }
+                }   
+                ((NoeudProbabiliste) noeudSource).setPonderation(((NoeudProbabiliste) noeudSource).getPonderation() - ponderation);
                 graphe.supprimerLien(noeudsSource, noeudsCible);
                 zonePropriete.getChildren().clear();
             }
         });
+    }
+    
+    @Override
+    public ArcProbabilisteBean toLienBean() {
+        return new ArcProbabilisteBean(source.toNoeudBean(), cible.toNoeudBean(), ponderation);
     }
     
     @Override

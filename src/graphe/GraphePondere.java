@@ -8,6 +8,9 @@
  */
 package graphe;
 
+import beans.ArcPondereBean;
+import beans.GraphePondereBean;
+import beans.NoeudSimpleBean;
 import java.util.ArrayList;
 import java.util.Iterator;
 import javafx.scene.control.ComboBox;
@@ -34,7 +37,9 @@ public class GraphePondere extends Graphe{
     private ArrayList<ArcPondere> liens;
     
     public GraphePondere() {
-        
+        noeuds = new ArrayList();
+        liens = new ArrayList();
+        type = "Graphe pondere";
     }
     
     /**
@@ -42,10 +47,10 @@ public class GraphePondere extends Graphe{
      * @param libelle libelle de ce graphe
      */
     public GraphePondere(String libelle) {
-        super(libelle);
         this.libelle = libelle;
         noeuds = new ArrayList<> ();
         liens = new ArrayList<> ();
+        type = "Graphe pondere";
     }
     
     @Override
@@ -62,7 +67,8 @@ public class GraphePondere extends Graphe{
     public ArcPondere getLienDuGraphe(Noeud sourceATester, Noeud cibleATester) {
         
         for (ArcPondere lien : liens) {
-            if (lien.getSource() == sourceATester && lien.getCible() == cibleATester) {
+            if (lien.getSource().getId() == sourceATester.getId()
+                && lien.getCible().getId() == cibleATester.getId()) {
                 return lien;
             }
         }
@@ -123,7 +129,7 @@ public class GraphePondere extends Graphe{
         
         Iterator liensASuppr = liens.iterator();
         while(liensASuppr.hasNext()) {
-            ArcProbabiliste lien = (ArcProbabiliste) liensASuppr.next();
+            ArcPondere lien = (ArcPondere) liensASuppr.next();
             if (lien.getSource().getId() == noeud.getId() || lien.getCible().getId() == noeud.getId()) {
                 liensASuppr.remove();  
             }
@@ -175,6 +181,15 @@ public class GraphePondere extends Graphe{
         }
         
         return null;
+    }
+    
+    @Override
+    public GraphePondereBean toGrapheBean() {
+        ArrayList<NoeudSimpleBean> noeudsBeans = new ArrayList();
+        ArrayList<ArcPondereBean> liensBeans = new ArrayList();
+        for(NoeudSimple n : noeuds) noeudsBeans.add(n.toNoeudBean());
+        for(ArcPondere a: liens) liensBeans.add(a.toLienBean());
+        return new GraphePondereBean(libelle, noeudsBeans, liensBeans);
     }
     
 }

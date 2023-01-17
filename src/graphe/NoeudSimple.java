@@ -11,6 +11,7 @@ package graphe;
 
 import static application.Accueil.mainStage;
 import application.AccueilController;
+import beans.NoeudSimpleBean;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
@@ -46,6 +47,18 @@ public class NoeudSimple extends Noeud {
     public NoeudSimple(double coordX, double coordY) {
         super(Integer.toString(cpt+=1), coordX, coordY);
         id = cpt;
+    }
+    
+    /**
+     * Creer un noeud simple
+     * @param coordX coordonnee en abscisse de ce noeud
+     * @param coordY coordonnee en ordonnee de ce noeud
+     * @param id id du noeud
+     * @param libelle libelle du noeud
+     */
+    public NoeudSimple(double coordX, double coordY, int id, String libelle) {
+        super(libelle, coordX, coordY);
+        this.id = id;
     }
     
     @Override
@@ -229,7 +242,7 @@ public class NoeudSimple extends Noeud {
 
                             // On efface tout le dessin pour le redessiner avec les nouvelles modifications
                             zoneDessin.getChildren().clear();
-
+                            
                             // On redessine les noeuds et les liens
                             for (Noeud noeud : graphe.getNoeuds()) {
                                 noeud.dessinerNoeud(zoneDessin);
@@ -261,6 +274,11 @@ public class NoeudSimple extends Noeud {
         }));
     }
 
+    @Override
+    public NoeudSimpleBean toNoeudBean() {
+        return new NoeudSimpleBean(libelle, coordX, coordY, id);
+    }
+    
     @Override
     public int getId() {
         return id;
